@@ -124,6 +124,9 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
   window.dispatchEvent(new Event("firebase-ready"));
 </script>
 
+<!-- QR Code library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
 <!-- React via CDN -->
 <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -131,6 +134,7 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 
 <script type="text/babel" data-type="module">
 const { useState, useEffect, useCallback, useRef } = React;
+
 
 const CARD_POOL = [
   "Comedy","Drama","Horror","Action","Romance","Animated","Sci-Fi","Documentary","Musical","Thriller",
@@ -194,8 +198,20 @@ function extractYouTubeId(url){
 function isYouTubeUrl(url){return /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(url);}
 
 function QRCode({url,size=120}){
-  const src=`https://chart.googleapis.com/chart?cht=qr&chs=${size}x${size}&chl=${encodeURIComponent(url)}&choe=UTF-8`;
-  return <div className="qr-placeholder"><img src={src} width={size} height={size} alt="QR Code" style={{display:"block"}}/></div>;
+  const ref = useRef(null);
+  useEffect(()=>{
+    if(!ref.current) return;
+    ref.current.innerHTML = "";
+    new window.QRCode(ref.current, {
+      text: url,
+      width: size,
+      height: size,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: window.QRCode.CorrectLevel.M,
+    });
+  },[url,size]);
+  return <div ref={ref} style={{background:"#fff",borderRadius:8,padding:7,display:"inline-block"}}/>;
 }
 
 function CoinFlip({onClose}){
