@@ -8,134 +8,144 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-height:100vh;}
-.host{min-height:100vh;display:flex;flex-direction:column;background:#0a0a0a;}
-.host-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid #222;}
+
+/* ── Shared ── */
+.page{min-height:100vh;display:flex;flex-direction:column;background:#0a0a0a;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid #222;flex-shrink:0;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:2px;color:#fff;}
 .logo span{color:#f59e0b;}
-.score-bar{display:flex;gap:2rem;align-items:center;}
-.score-chip{padding:.4rem 1.2rem;border-radius:999px;font-weight:600;font-size:1.1rem;}
-.score-chip.red{background:#b91c1c;color:#fff;}
-.score-chip.blue{background:#1d4ed8;color:#fff;}
-.round-badge{background:#222;color:#aaa;padding:.3rem .8rem;border-radius:6px;font-size:.85rem;}
-.main-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:2rem;}
-.cards-grid{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
-.game-card{background:#161616;border:1.5px solid #333;border-radius:16px;padding:1.5rem 1.2rem;width:160px;text-align:center;}
-.card-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#f59e0b;line-height:1;}
-.card-text{font-size:.95rem;color:#ddd;margin-top:.3rem;line-height:1.3;}
-.submissions-row{display:flex;gap:2rem;justify-content:center;width:100%;max-width:900px;}
-.sub-box{flex:1;background:#111;border-radius:14px;padding:1.2rem 1.5rem;border:1.5px solid #222;}
-.sub-box h3{font-size:.8rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.6rem;}
-.sub-box h3.red{color:#f87171;}
-.sub-box h3.blue{color:#60a5fa;}
-.sub-status{font-size:.9rem;color:#666;font-style:italic;}
-.sub-scene{font-size:.95rem;color:#eee;}
-.sub-link{font-size:.75rem;color:#666;word-break:break-all;margin-top:.3rem;}
-.sub-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem;}
-.sub-tag{padding:.2rem .7rem;border-radius:999px;font-size:.75rem;font-weight:500;}
-.sub-tag.red{background:#450a0a;color:#fca5a5;}
-.sub-tag.blue{background:#1e3a8a;color:#93c5fd;}
+.main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1.8rem;}
 .btn{padding:.6rem 1.4rem;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.9rem;transition:opacity .15s;}
 .btn:hover{opacity:.85;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
 .btn-gold{background:#f59e0b;color:#000;}
 .btn-green{background:#16a34a;color:#fff;}
 .btn-red{background:#dc2626;color:#fff;}
 .btn-gray{background:#333;color:#eee;}
 .btn-outline{background:transparent;border:1.5px solid #444;color:#eee;}
-.action-row{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;justify-content:center;}
-.video-area{width:100%;max-width:800px;}
-.video-area iframe{width:100%;aspect-ratio:16/9;border-radius:12px;border:none;}
-.review-label{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;}
-.review-label.red{color:#f87171;}
-.review-label.blue{color:#60a5fa;}
-.dispute-cards{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;}
-.dispute-card{padding:.6rem 1rem;border-radius:10px;cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s;user-select:none;}
-.dispute-card.on{background:#16a34a;color:#fff;border:1.5px solid #16a34a;}
-.dispute-card.off{background:#1a1a1a;color:#888;border:1.5px solid #333;text-decoration:line-through;}
-.coin{font-size:3rem;display:block;text-align:center;}
-.winner-screen{text-align:center;}
-.winner-title{font-family:'Bebas Neue',sans-serif;font-size:5rem;letter-spacing:4px;}
-.winner-title.red{color:#f87171;}
-.winner-title.blue{color:#60a5fa;}
-.winner-title.tie{color:#f59e0b;}
-.final-scores{display:flex;gap:3rem;justify-content:center;margin:1.5rem 0;}
-.final-score{text-align:center;}
-.final-score-num{font-family:'Bebas Neue',sans-serif;font-size:4rem;}
-.final-score-num.red{color:#f87171;}
-.final-score-num.blue{color:#60a5fa;}
-.final-score-label{font-size:.85rem;color:#777;text-transform:uppercase;letter-spacing:1px;}
-.qr-placeholder{background:#fff;border-radius:8px;padding:8px;display:inline-block;}
-.player{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2rem 1.2rem;background:#0a0a0a;}
-.player-header{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;margin-bottom:1.5rem;}
-.player-card{background:#111;border-radius:16px;padding:1.5rem;border:1.5px solid #222;width:100%;max-width:420px;}
-.player-cards-list{display:flex;flex-direction:column;gap:.6rem;margin:1rem 0;}
-.player-card-item{display:flex;align-items:center;gap:.8rem;padding:.7rem 1rem;background:#1a1a1a;border-radius:10px;cursor:pointer;border:1.5px solid transparent;transition:all .15s;}
-.player-card-item.selected-red{background:#450a0a;border-color:#f87171;}
-.player-card-item.selected-blue{background:#1e3a8a;border-color:#60a5fa;}
-.player-card-num{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:#f59e0b;width:24px;text-align:center;}
-.player-card-text{font-size:.9rem;color:#ddd;}
-.input-group{margin:.8rem 0;}
-.input-group label{font-size:.8rem;text-transform:uppercase;letter-spacing:1px;color:#777;display:block;margin-bottom:.4rem;}
-.input-group input{width:100%;background:#1a1a1a;border:1.5px solid #333;border-radius:8px;color:#eee;font-family:'DM Sans',sans-serif;font-size:.9rem;padding:.7rem .9rem;outline:none;}
-.input-group input:focus{border-color:#555;}
-.submitted-msg{text-align:center;padding:2rem;}
-.submitted-msg .big{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:2px;}
+.btn-lg{font-size:1.1rem;padding:.8rem 2.2rem;border-radius:10px;}
+.row{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;justify-content:center;}
 .spinner{display:inline-block;width:18px;height:18px;border:2px solid #444;border-top-color:#f59e0b;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;}
-.sync-dot.live{background:#16a34a;animation:pulse 1.5s infinite;}
-.sync-dot.waiting{background:#f59e0b;}
+.dot-live{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;background:#16a34a;animation:pulse 1.5s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-.scored-badge{display:inline-block;padding:.15rem .6rem;border-radius:999px;font-size:.75rem;font-weight:600;background:#14532d;color:#86efac;margin-left:.5rem;}
+.input-field{width:100%;background:#1a1a1a;border:1.5px solid #333;border-radius:8px;color:#eee;font-family:'DM Sans',sans-serif;font-size:.95rem;padding:.7rem .9rem;outline:none;}
+.input-field:focus{border-color:#555;}
+.input-label{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:#777;display:block;margin-bottom:.35rem;}
+.input-group{margin:.6rem 0;width:100%;}
+.card-surface{background:#111;border-radius:16px;padding:1.8rem;border:1.5px solid #222;width:100%;max-width:440px;}
+.error-msg{color:#f87171;font-size:.82rem;margin-top:.3rem;}
+
+/* ── PIN display ── */
+.pin-display{font-family:'Bebas Neue',sans-serif;font-size:6rem;letter-spacing:12px;color:#f59e0b;line-height:1;text-align:center;}
+.pin-sub{font-size:.85rem;color:#555;text-align:center;margin-top:.3rem;letter-spacing:1px;text-transform:uppercase;}
+.pin-url{font-size:.9rem;color:#888;text-align:center;}
+.pin-url span{color:#f59e0b;}
+
+/* ── Lobby team list ── */
+.teams-grid{display:flex;flex-direction:column;gap:.7rem;width:100%;max-width:560px;}
+.team-row{display:flex;align-items:center;gap:1rem;background:#111;border-radius:12px;padding:.85rem 1.2rem;border:1.5px solid #222;}
+.team-swatch{width:18px;height:18px;border-radius:50%;flex-shrink:0;}
+.team-name-text{font-weight:600;font-size:1rem;}
+.team-ready{font-size:.75rem;color:#16a34a;margin-left:auto;}
+.waiting-teams{color:#555;font-style:italic;font-size:.9rem;text-align:center;}
+
+/* ── Game cards ── */
+.cards-grid{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;}
+.game-card{background:#161616;border:1.5px solid #333;border-radius:16px;padding:1.4rem 1rem;width:155px;text-align:center;}
+.card-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#f59e0b;line-height:1;}
+.card-text{font-size:.9rem;color:#ddd;margin-top:.3rem;line-height:1.3;}
+
+/* ── Submissions ── */
+.subs-grid{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;width:100%;max-width:960px;}
+.sub-box{flex:1;min-width:180px;background:#111;border-radius:14px;padding:1rem 1.2rem;border:1.5px solid #222;}
+.sub-title{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.5rem;font-weight:600;}
+.sub-waiting{font-size:.85rem;color:#555;font-style:italic;}
+.sub-scene{font-size:.9rem;color:#eee;}
+.sub-link{font-size:.68rem;color:#555;word-break:break-all;margin-top:.2rem;}
+.tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem;}
+.tag{padding:.15rem .55rem;border-radius:999px;font-size:.7rem;font-weight:500;}
+.scored-badge{display:inline-block;padding:.1rem .5rem;border-radius:999px;font-size:.7rem;font-weight:600;background:#14532d;color:#86efac;margin-left:.5rem;}
+
+/* ── Score bar ── */
+.score-chips{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
+.score-chip{padding:.3rem .9rem;border-radius:999px;font-weight:600;font-size:.88rem;color:#fff;}
+.round-badge{background:#222;color:#aaa;padding:.25rem .7rem;border-radius:6px;font-size:.8rem;}
+
+/* ── Dispute ── */
+.dispute-cards{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
+.dispute-card{padding:.5rem .9rem;border-radius:10px;cursor:pointer;font-size:.82rem;font-weight:500;user-select:none;transition:all .15s;}
+.dispute-card.on{background:#16a34a;color:#fff;border:1.5px solid #16a34a;}
+.dispute-card.off{background:#1a1a1a;color:#888;border:1.5px solid #333;text-decoration:line-through;}
+
+/* ── Video ── */
+.video-area{width:100%;max-width:800px;}
+.video-area iframe{width:100%;aspect-ratio:16/9;border-radius:12px;border:none;}
+.review-label{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;text-align:center;margin-bottom:.8rem;}
+
+/* ── Winner ── */
+.winner-screen{text-align:center;}
+.winner-title{font-family:'Bebas Neue',sans-serif;font-size:4.5rem;letter-spacing:4px;}
+.final-scores{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin:1.2rem 0;}
+.final-score{text-align:center;}
+.final-score-num{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;}
+.final-score-label{font-size:.8rem;color:#777;text-transform:uppercase;letter-spacing:1px;}
+
+/* ── Coin ── */
+.coin{font-size:3rem;display:block;text-align:center;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:999;}
+.modal{background:#111;border:1.5px solid #333;border-radius:20px;padding:2.5rem 3rem;text-align:center;max-width:360px;width:90%;}
+
+/* ── Player join ── */
+.player-page{min-height:100vh;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.2rem;}
+.player-logo{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:2px;color:#fff;margin-bottom:1.5rem;text-align:center;}
+.player-logo span{color:#f59e0b;}
+.color-picker{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.5rem 0;}
+.color-swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s;}
+.color-swatch.selected{border-color:#fff;transform:scale(1.15);}
+.player-card-item{display:flex;align-items:center;gap:.7rem;padding:.65rem .9rem;background:#1a1a1a;border-radius:10px;cursor:pointer;border:1.5px solid transparent;margin-bottom:.5rem;transition:all .15s;}
+.player-card-num{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:#f59e0b;width:22px;text-align:center;}
+.player-card-text{font-size:.88rem;color:#ddd;}
+
+/* ── PIN entry ── */
+.pin-input{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:8px;text-align:center;background:#1a1a1a;border:2px solid #333;border-radius:12px;color:#f59e0b;width:100%;padding:.6rem;outline:none;}
+.pin-input:focus{border-color:#f59e0b;}
 </style>
 </head>
 <body>
 <div id="root"></div>
 
-<!-- Firebase -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyAP0gSeSOYrRWplnClLZ8Y5D9vXcJTpKro",
+  authDomain: "film-in-the-blank.firebaseapp.com",
+  databaseURL: "https://film-in-the-blank-default-rtdb.firebaseio.com",
+  projectId: "film-in-the-blank",
+  storageBucket: "film-in-the-blank.firebasestorage.app",
+  messagingSenderId: "407899539410",
+  appId: "1:407899539410:web:f10ed0ce84fcc0d6cd2a0b",
+  measurementId: "G-HE75E4S7MF"
+});
+const db = firebase.database();
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAP0gSeSOYrRWplnClLZ8Y5D9vXcJTpKro",
-    authDomain: "film-in-the-blank.firebaseapp.com",
-    databaseURL: "https://film-in-the-blank-default-rtdb.firebaseio.com",
-    projectId: "film-in-the-blank",
-    storageBucket: "film-in-the-blank.firebasestorage.app",
-    messagingSenderId: "407899539410",
-    appId: "1:407899539410:web:f10ed0ce84fcc0d6cd2a0b",
-    measurementId: "G-HE75E4S7MF"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const db = getDatabase(app);
-
-  // Expose Firebase helpers to the React app via window
-  window._fbDb = db;
-  window._fbRef = ref;
-  window._fbSet = set;
-  window._fbOnValue = onValue;
-  window._fbGet = get;
-  window._fbReady = true;
-
-  // Signal that Firebase is ready
-  window.dispatchEvent(new Event("firebase-ready"));
+function dbGet(path){ return db.ref(path).get().then(s=>s.exists()?s.val():null); }
+function dbSet(path,val){ return db.ref(path).set(val); }
+function dbUpdate(path,val){ return db.ref(path).update(val); }
+function dbSub(path,cb){ const ref=db.ref(path); ref.on('value',s=>cb(s.exists()?s.val():null)); return ()=>ref.off(); }
+function dbPush(path,val){ return db.ref(path).push(val); }
 </script>
 
-<!-- QR Code library -->
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
-<!-- React via CDN -->
 <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js"></script>
 
-<script type="text/babel" data-type="module">
+<script type="text/babel">
 const { useState, useEffect, useCallback, useRef } = React;
 
-
+/* ── Constants ── */
 const CARD_POOL = [
   "Comedy","Drama","Horror","Action","Romance","Animated","Sci-Fi","Documentary","Musical","Thriller",
   "With Brad Pitt","With Meryl Streep","With Tom Hanks","With Leonardo DiCaprio","With Cate Blanchett",
@@ -150,46 +160,26 @@ const CARD_POOL = [
   "Won an Oscar","Directed by a woman","Foreign language film","A sequel","A remake",
 ];
 
-const STATE_KEY = "game/state";
+const PALETTE = [
+  {hex:"#e53935",name:"Red"},
+  {hex:"#1e88e5",name:"Blue"},
+  {hex:"#43a047",name:"Green"},
+  {hex:"#fb8c00",name:"Orange"},
+  {hex:"#8e24aa",name:"Purple"},
+  {hex:"#e91e63",name:"Pink"},
+  {hex:"#00acc1",name:"Teal"},
+  {hex:"#fdd835",name:"Yellow"},
+];
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function pick5(){return shuffle(CARD_POOL).slice(0,5);}
+function genPin(){return String(Math.floor(1000+Math.random()*9000));}
 function generateRounds(){
   return Array.from({length:5},(_,i)=>({
-    round:i+1,
-    cards:pick5(),
-    submissions:{red:null,blue:null},
-    scores:{red:0,blue:0},
-    scored:{red:false,blue:false},
+    round:i+1, cards:pick5(), submissions:{}, scores:{}, scored:{}
   }));
 }
-
-// ── Firebase helpers ──────────────────────────────────────────────────────────
-async function loadState(){
-  try{
-    const snap = await window._fbGet(window._fbRef(window._fbDb, STATE_KEY));
-    return snap.exists() ? snap.val() : null;
-  } catch(e){ console.error("loadState error:", e); return null; }
-}
-
-async function saveState(state){
-  try{
-    await window._fbSet(window._fbRef(window._fbDb, STATE_KEY), state);
-  } catch(e){ console.error("saveState error:", e); }
-}
-
-// Subscribe to real-time updates, returns unsubscribe fn
-function subscribeState(cb){
-  const unsub = window._fbOnValue(window._fbRef(window._fbDb, STATE_KEY), snap => {
-    cb(snap.exists() ? snap.val() : null);
-  });
-  return unsub;
-}
-
-const COLORS={
-  red:{bg:"#b91c1c",border:"#fca5a5",name:"Team Red"},
-  blue:{bg:"#1d4ed8",border:"#93c5fd",name:"Team Blue"},
-};
+function hex2rgba(hex,a=1){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
 
 function extractYouTubeId(url){
   try{const u=new URL(url);if(u.hostname.includes("youtu.be"))return u.pathname.slice(1).split("?")[0];return u.searchParams.get("v");}
@@ -197,35 +187,41 @@ function extractYouTubeId(url){
 }
 function isYouTubeUrl(url){return /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(url);}
 
-function QRCode({url,size=120}){
-  const ref = useRef(null);
+/* ── QR Code ── */
+function QRBlock({url,size=160}){
+  const ref=useRef(null);
   useEffect(()=>{
-    if(!ref.current) return;
-    ref.current.innerHTML = "";
-    new window.QRCode(ref.current, {
-      text: url,
-      width: size,
-      height: size,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: window.QRCode.CorrectLevel.M,
+    if(!ref.current||!window.QRCode) return;
+    ref.current.innerHTML="";
+    new window.QRCode(ref.current,{
+      text:url,
+      width:size,
+      height:size,
+      colorDark:"#000000",
+      colorLight:"#ffffff",
+      correctLevel:window.QRCode.CorrectLevel.M,
     });
   },[url,size]);
-  return <div ref={ref} style={{background:"#fff",borderRadius:8,padding:7,display:"inline-block"}}/>;
+  return(
+    <div style={{display:"inline-block",background:"#fff",borderRadius:12,padding:10,marginTop:".8rem"}}>
+      <div ref={ref}/>
+    </div>
+  );
 }
 
+/* ── Coin Flip ── */
 function CoinFlip({onClose}){
   const [result,setResult]=useState(null);
   const [flipping,setFlipping]=useState(false);
   const flip=()=>{setFlipping(true);setResult(null);setTimeout(()=>{setResult(Math.random()<.5?"HEADS":"TAILS");setFlipping(false);},700);};
   return(
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999}}>
-      <div style={{background:"#111",border:"1.5px solid #333",borderRadius:20,padding:"2.5rem 3rem",textAlign:"center",maxWidth:340}}>
-        <p style={{color:"#aaa",fontSize:".85rem",textTransform:"uppercase",letterSpacing:2,marginBottom:"1rem"}}>Coin Flip</p>
+    <div className="overlay">
+      <div className="modal">
+        <p style={{color:"#aaa",fontSize:".8rem",textTransform:"uppercase",letterSpacing:2,marginBottom:"1rem"}}>Coin Flip</p>
         {flipping&&<span className="coin">🪙</span>}
         {result&&<div><span className="coin">🪙</span><p style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.5rem",color:"#f59e0b",letterSpacing:3}}>{result}</p></div>}
-        {!result&&!flipping&&<div style={{height:80,display:"flex",alignItems:"center",justifyContent:"center",color:"#555"}}>Press flip to decide!</div>}
-        <div style={{display:"flex",gap:"1rem",justifyContent:"center",marginTop:"1.5rem"}}>
+        {!result&&!flipping&&<div style={{height:70,display:"flex",alignItems:"center",justifyContent:"center",color:"#555"}}>Press flip to decide!</div>}
+        <div className="row" style={{marginTop:"1.2rem"}}>
           <button className="btn btn-gold" onClick={flip}>Flip!</button>
           <button className="btn btn-gray" onClick={onClose}>Close</button>
         </div>
@@ -234,254 +230,454 @@ function CoinFlip({onClose}){
   );
 }
 
-// ── Player Page ───────────────────────────────────────────────────────────────
-function PlayerPage({team}){
-  const color=COLORS[team];
-  const [gameState,setGameState]=useState(null);
-  const [loading,setLoading]=useState(true);
+/* ══════════════════════════════════════════════
+   PLAYER SIDE
+══════════════════════════════════════════════ */
+function PlayerApp(){
+  const [screen,setScreen]=useState("pin"); // pin | join | lobby | game | submitted
+  const [pin,setPin]=useState("");
+  const [game,setGame]=useState(null);
+  const [teamId,setTeamId]=useState(null);
+  const [teamName,setTeamName]=useState("");
+  const [teamColor,setTeamColor]=useState(PALETTE[0].hex);
+  const [error,setError]=useState("");
+  const [busy,setBusy]=useState(false);
+
+  // Game submission state
   const [link,setLink]=useState("");
   const [scene,setScene]=useState("");
   const [selected,setSelected]=useState([]);
-  const [submitted,setSubmitted]=useState(false);
-  const [error,setError]=useState("");
+  const [submitError,setSubmitError]=useState("");
   const [syncing,setSyncing]=useState(false);
+  const [submitted,setSubmitted]=useState(false);
+  const roundRef=useRef(null);
 
-  // Real-time listener — updates instantly when host changes round
+  // Subscribe to game once joined
   useEffect(()=>{
-    const unsub = subscribeState(s=>{
-      setGameState(s);
-      setLoading(false);
+    if(!pin||!teamId) return;
+    const unsub=dbSub(`games/${pin}`,g=>{
+      setGame(g);
+      if(g&&g.status==="started") setScreen("game");
+      if(g&&g.status==="lobby") setScreen("lobby");
     });
-    return ()=> unsub();
-  },[]);
+    return unsub;
+  },[pin,teamId]);
 
-  // Reset submission state when round changes
-  const roundRef = useRef(null);
+  // Reset submission when round changes
   useEffect(()=>{
-    if(!gameState) return;
-    const r = gameState.currentRound;
-    if(roundRef.current !== null && roundRef.current !== r){
-      setSubmitted(false);
-      setSelected([]);
-      setLink("");
-      setScene("");
-      setError("");
+    if(!game) return;
+    const r=game.currentRound;
+    if(roundRef.current!==null&&roundRef.current!==r){
+      setSubmitted(false);setSelected([]);setLink("");setScene("");setSubmitError("");
     }
-    roundRef.current = r;
-  },[gameState?.currentRound]);
+    roundRef.current=r;
+  },[game?.currentRound]);
 
-  if(loading) return(
-    <div className="player">
-      <div className="player-header" style={{color:color.bg}}><span className="spinner"/>Connecting…</div>
-    </div>
-  );
-  if(!gameState) return(
-    <div className="player">
-      <div className="player-header" style={{color:color.bg}}>Waiting for host…</div>
-      <p style={{color:"#666",fontSize:".9rem"}}>The host hasn't started the game yet.</p>
-    </div>
-  );
-
-  const round=gameState.rounds[gameState.currentRound];
-  const alreadySubmitted=round.submissions && round.submissions[team]!=null;
-  const toggleCard=(i)=>setSelected(s=>s.includes(i)?s.filter(x=>x!==i):[...s,i]);
-
-  const submit=async()=>{
+  /* ── PIN entry screen ── */
+  const joinPin=async()=>{
     setError("");
-    if(!link.trim()){setError("Please paste a YouTube link.");return;}
-    if(!isYouTubeUrl(link.trim())){setError("Only YouTube links are allowed!");return;}
-    if(!extractYouTubeId(link.trim())){setError("Couldn't parse a YouTube video ID.");return;}
-    if(selected.length===0){setError("Select at least one card your scene covers.");return;}
+    const p=pin.trim();
+    if(p.length!==4||isNaN(p)){setError("Enter the 4-digit PIN from the host screen.");return;}
+    setBusy(true);
+    const g=await dbGet(`games/${p}`);
+    if(!g){setError("Game not found. Check the PIN and try again.");setBusy(false);return;}
+    if(g.status!=="lobby"){setError("This game has already started.");setBusy(false);return;}
+    const teams=g.teams?Object.values(g.teams):[];
+    if(teams.length>=4){setError("This game is full (4 teams max).");setBusy(false);return;}
+    setGame(g);
+    setScreen("join");
+    setBusy(false);
+  };
+
+  /* ── Team name/color screen ── */
+  const joinGame=async()=>{
+    setError("");
+    if(!teamName.trim()){setError("Please enter a team name.");return;}
+    if(teamName.trim().length>20){setError("Team name must be 20 characters or less.");return;}
+    // Check color not taken
+    const g=await dbGet(`games/${pin}`);
+    const existingTeams=g.teams?Object.values(g.teams):[];
+    if(existingTeams.find(t=>t.color===teamColor)){setError("That color is taken! Pick another.");return;}
+    if(existingTeams.find(t=>t.name.toLowerCase()===teamName.trim().toLowerCase())){setError("That team name is taken!");return;}
+    setBusy(true);
+    const ref=await dbPush(`games/${pin}/teams`,{name:teamName.trim(),color:teamColor,score:0});
+    setTeamId(ref.key);
+    setScreen("lobby");
+    setBusy(false);
+  };
+
+  /* ── Submit scene ── */
+  const submitScene=async()=>{
+    setSubmitError("");
+    if(!link.trim()){setSubmitError("Please paste a YouTube link.");return;}
+    if(!isYouTubeUrl(link.trim())){setSubmitError("Only YouTube links are allowed!");return;}
+    if(!extractYouTubeId(link.trim())){setSubmitError("Couldn't parse a video ID from that link.");return;}
+    if(selected.length===0){setSubmitError("Select at least one card your scene covers.");return;}
     setSyncing(true);
-    // Read fresh state then write just this team's submission
-    const fresh=await loadState();
-    if(!fresh){setError("Couldn't reach game. Try again.");setSyncing(false);return;}
-    if(!fresh.rounds[fresh.currentRound].submissions) fresh.rounds[fresh.currentRound].submissions={red:null,blue:null};
-    fresh.rounds[fresh.currentRound].submissions[team]={
+    const round=game.currentRound;
+    await dbSet(`games/${pin}/rounds/${round}/submissions/${teamId}`,{
       link:link.trim(),
       scene:scene.trim()||"Untitled scene",
       cards:selected,
-    };
-    await saveState(fresh);
+      teamName:teamName||game.teams[teamId]?.name||"Team",
+      teamColor:teamColor||game.teams[teamId]?.color||"#888",
+    });
     setSyncing(false);
     setSubmitted(true);
   };
 
-  if(alreadySubmitted||submitted) return(
-    <div className="player">
-      <div className="submitted-msg">
-        <div className="big" style={{color:color.bg}}>Submitted!</div>
-        <p style={{color:"#777",marginTop:".5rem"}}>Waiting for the host screen…</p>
-      </div>
-    </div>
-  );
-
-  return(
-    <div className="player">
-      <div className="player-header" style={{color:color.bg}}>{color.name}</div>
-      <div className="player-card">
-        <p style={{fontSize:".85rem",color:"#777",marginBottom:".5rem"}}>
-          Round {gameState.currentRound+1} · Select the cards your scene covers
-        </p>
-        <div className="player-cards-list">
-          {round.cards.map((c,i)=>(
-            <div key={i} className={`player-card-item ${selected.includes(i)?"selected-"+team:""}`} onClick={()=>toggleCard(i)}>
-              <span className="player-card-num">{i+1}</span>
-              <span className="player-card-text">{c}</span>
-              {selected.includes(i)&&<span style={{marginLeft:"auto",color:team==="red"?"#f87171":"#60a5fa"}}>✓</span>}
-            </div>
-          ))}
-        </div>
-        <div className="input-group">
-          <label>YouTube Link</label>
-          <input value={link} onChange={e=>setLink(e.target.value)} placeholder="https://youtube.com/watch?v=…"/>
-        </div>
-        <div className="input-group">
-          <label>Scene Description (optional)</label>
-          <input value={scene} onChange={e=>setScene(e.target.value)} placeholder="e.g. The lawnmower scene in Signs"/>
-        </div>
-        {error&&<p style={{color:"#f87171",fontSize:".85rem",marginBottom:".5rem"}}>{error}</p>}
-        <button className="btn" style={{background:color.bg,color:"#fff",width:"100%",marginTop:".5rem"}} onClick={submit} disabled={syncing}>
-          {syncing?<><span className="spinner"/>Submitting…</>:"Submit Scene"}
+  /* ── Screens ── */
+  if(screen==="pin") return(
+    <div className="player-page">
+      <div className="player-logo">Film <span>In</span> The Blank</div>
+      <div className="card-surface">
+        <p style={{color:"#777",fontSize:".85rem",marginBottom:"1.2rem",textAlign:"center"}}>Enter the PIN shown on the host screen</p>
+        <input
+          className="pin-input"
+          value={pin}
+          onChange={e=>setPin(e.target.value.replace(/\D/g,"").slice(0,4))}
+          placeholder="0000"
+          maxLength={4}
+          inputMode="numeric"
+          onKeyDown={e=>e.key==="Enter"&&joinPin()}
+        />
+        {error&&<p className="error-msg" style={{textAlign:"center",marginTop:".5rem"}}>{error}</p>}
+        <button className="btn btn-gold btn-lg" style={{width:"100%",marginTop:"1rem"}} onClick={joinPin} disabled={busy||pin.length!==4}>
+          {busy?<><span className="spinner"/>Checking…</>:"Join Game →"}
         </button>
       </div>
     </div>
   );
+
+  if(screen==="join") return(
+    <div className="player-page">
+      <div className="player-logo">Film <span>In</span> The Blank</div>
+      <div className="card-surface">
+        <p style={{color:"#777",fontSize:".85rem",marginBottom:"1rem",textAlign:"center"}}>Create your team</p>
+        <div className="input-group">
+          <label className="input-label">Team Name</label>
+          <input className="input-field" value={teamName} onChange={e=>setTeamName(e.target.value)} placeholder="e.g. The Cinephiles" maxLength={20}/>
+        </div>
+        <div className="input-group">
+          <label className="input-label">Team Color</label>
+          <div className="color-picker">
+            {PALETTE.map(p=>{
+              const taken=(game?.teams?Object.values(game.teams):[]).find(t=>t.color===p.hex);
+              return(
+                <div
+                  key={p.hex}
+                  className={`color-swatch${teamColor===p.hex?" selected":""}`}
+                  style={{background:p.hex,opacity:taken?0.25:1,cursor:taken?"not-allowed":"pointer"}}
+                  onClick={()=>!taken&&setTeamColor(p.hex)}
+                  title={taken?`${p.name} (taken)`:p.name}
+                />
+              );
+            })}
+          </div>
+        </div>
+        {error&&<p className="error-msg">{error}</p>}
+        <button className="btn btn-gold btn-lg" style={{width:"100%",marginTop:"1rem"}} onClick={joinGame} disabled={busy||!teamName.trim()}>
+          {busy?<><span className="spinner"/>Joining…</>:"Join Lobby →"}
+        </button>
+      </div>
+    </div>
+  );
+
+  if(screen==="lobby"&&game) return(
+    <div className="player-page">
+      <div className="player-logo">Film <span>In</span> The Blank</div>
+      <div className="card-surface" style={{textAlign:"center"}}>
+        <p style={{color:"#777",fontSize:".85rem",marginBottom:".5rem"}}>You're in! Waiting for the host to start…</p>
+        <div style={{margin:"1.2rem 0"}}>
+          {game.teams&&Object.values(game.teams).map((t,i)=>(
+            <div key={i} className="team-row" style={{borderColor:hex2rgba(t.color,.4)}}>
+              <div className="team-swatch" style={{background:t.color}}/>
+              <span className="team-name-text">{t.name}</span>
+              {t.name===teamName&&<span className="team-ready">← You</span>}
+            </div>
+          ))}
+        </div>
+        <p style={{color:"#555",fontSize:".8rem"}}>PIN: <strong style={{color:"#f59e0b",letterSpacing:2}}>{pin}</strong></p>
+      </div>
+    </div>
+  );
+
+  if(screen==="game"&&game){
+    const round=game.rounds?.[game.currentRound];
+    if(!round) return <div className="player-page"><span className="spinner"/>Loading round…</div>;
+    const myTeam=game.teams?.[teamId];
+    const myColor=myTeam?.color||teamColor||"#f59e0b";
+    const alreadySubmitted=round.submissions?.[teamId]!=null;
+
+    if(alreadySubmitted||submitted) return(
+      <div className="player-page">
+        <div style={{textAlign:"center",padding:"3rem 2rem"}}>
+          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.5rem",letterSpacing:2,color:myColor}}>Submitted!</div>
+          <p style={{color:"#777",marginTop:".5rem"}}>Waiting for the host…</p>
+          <div style={{marginTop:"1.5rem"}}>
+            <p style={{color:"#555",fontSize:".8rem",marginBottom:".5rem"}}>Cards you claimed:</p>
+            <div className="tags" style={{justifyContent:"center"}}>
+              {selected.map(i=><span key={i} className="tag" style={{background:hex2rgba(myColor,.2),color:myColor}}>{round.cards[i]}</span>)}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    return(
+      <div className="player-page">
+        <div style={{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.6rem",letterSpacing:2,marginBottom:"1rem"}}>{myTeam?.name||"Your Team"}</div>
+        <div className="card-surface">
+          <p style={{fontSize:".82rem",color:"#777",marginBottom:".5rem"}}>Round {game.currentRound+1} · Tap the cards your scene covers</p>
+          {round.cards.map((c,i)=>(
+            <div key={i} className="player-card-item" onClick={()=>setSelected(s=>s.includes(i)?s.filter(x=>x!==i):[...s,i])}
+              style={{background:selected.includes(i)?hex2rgba(myColor,.15):"#1a1a1a",borderColor:selected.includes(i)?myColor:"transparent"}}>
+              <span className="player-card-num">{i+1}</span>
+              <span className="player-card-text">{c}</span>
+              {selected.includes(i)&&<span style={{marginLeft:"auto",color:myColor}}>✓</span>}
+            </div>
+          ))}
+          <div className="input-group" style={{marginTop:".5rem"}}>
+            <label className="input-label">YouTube Link</label>
+            <input className="input-field" value={link} onChange={e=>setLink(e.target.value)} placeholder="https://youtube.com/watch?v=…"/>
+          </div>
+          <div className="input-group">
+            <label className="input-label">Scene Description (optional)</label>
+            <input className="input-field" value={scene} onChange={e=>setScene(e.target.value)} placeholder="e.g. The lawnmower scene in Signs"/>
+          </div>
+          {submitError&&<p className="error-msg">{submitError}</p>}
+          <button className="btn" style={{background:myColor,color:"#fff",width:"100%",marginTop:".6rem"}} onClick={submitScene} disabled={syncing}>
+            {syncing?<><span className="spinner"/>Submitting…</>:"Submit Scene"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return <div className="player-page"><span className="spinner"/>Connecting…</div>;
 }
 
-// ── Host Screen ───────────────────────────────────────────────────────────────
-function HostScreen(){
-  const [gameState,setGameState]=useState(null);
-  const [initializing,setInitializing]=useState(true);
+/* ══════════════════════════════════════════════
+   HOST SIDE
+══════════════════════════════════════════════ */
+function HostApp(){
+  const [game,setGame]=useState(null);
+  const [pin,setPin]=useState(null);
+  const [loading,setLoading]=useState(true);
   const [showCoin,setShowCoin]=useState(false);
-  const [disputeCards,setDisputeCards]=useState(null);
+  const [disputeState,setDisputeState]=useState(null); // {teamId, cards:[bool]}
   const [watchingTeam,setWatchingTeam]=useState(null);
-  const stateRef=useRef(null);
+  const gameRef=useRef(null);
+  const pinRef=useRef(null);
 
+  // Load or create game from localStorage pin
   useEffect(()=>{
     (async()=>{
-      let s=await loadState();
-      if(!s){
-        const rounds=generateRounds();
-        s={rounds,currentRound:0,totalScores:{red:0,blue:0},started:true};
-        await saveState(s);
+      let savedPin=localStorage.getItem("fitb_host_pin");
+      if(savedPin){
+        const g=await dbGet(`games/${savedPin}`);
+        if(g){
+          pinRef.current=savedPin;
+          setPin(savedPin);
+          gameRef.current=g;
+          setGame(g);
+          setLoading(false);
+          dbSub(`games/${savedPin}`,fresh=>{
+            if(!fresh) return;
+            gameRef.current=fresh;
+            setGame({...fresh});
+          });
+          return;
+        }
       }
-      // Migrate old saves without scored flag
-      s.rounds=s.rounds.map(r=>({...r,scored:r.scored||{red:false,blue:false}}));
-      stateRef.current=s;
-      setGameState(s);
-      setInitializing(false);
-
-      // Real-time listener for player submissions
-      subscribeState(fresh=>{
+      // Create new game
+      const newPin=genPin();
+      const rounds=generateRounds();
+      const newGame={pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds,teams:{}};
+      await dbSet(`games/${newPin}`,newGame);
+      localStorage.setItem("fitb_host_pin",newPin);
+      pinRef.current=newPin;
+      setPin(newPin);
+      gameRef.current=newGame;
+      setGame(newGame);
+      setLoading(false);
+      dbSub(`games/${newPin}`,fresh=>{
         if(!fresh) return;
-        fresh.rounds=fresh.rounds.map(r=>({...r,scored:r.scored||{red:false,blue:false}}));
-        stateRef.current=fresh;
-        setGameState({...fresh});
+        gameRef.current=fresh;
+        setGame({...fresh});
       });
     })();
   },[]);
 
-  const update=useCallback(async(fn)=>{
-    const next=fn(JSON.parse(JSON.stringify(stateRef.current)));
-    stateRef.current=next;
-    await saveState(next);
-    // State will update via the real-time listener automatically
+  const update=useCallback(async(path,val)=>{
+    await dbUpdate(`games/${pinRef.current}`,{[path]:val});
   },[]);
 
-  if(initializing) return(
-    <div className="host">
-      <div className="host-header"><div className="logo">Film <span>In</span> The Blank</div></div>
-      <div className="main-area"><span className="spinner"/> Connecting to Firebase…</div>
-    </div>
-  );
-
-  const round=gameState.rounds[gameState.currentRound];
-  const bothSubmitted=round.submissions && round.submissions.red && round.submissions.blue;
-  const baseUrl=window.location.href.split("#")[0];
-  const roundDone=round.scored.red&&round.scored.blue;
-  const gameOver=gameState.currentRound>=4&&roundDone;
-
-  const awardPoints=async(team,pts)=>{
-    await update(s=>{
-      s.rounds[s.currentRound].scores[team]=pts;
-      s.rounds[s.currentRound].scored[team]=true;
-      s.totalScores[team]+=pts;
-      return s;
-    });
-  };
-
-  const startDispute=(team)=>{
-    setDisputeCards({team,cards:round.submissions[team].cards.map(()=>true)});
-    setWatchingTeam(null);
-  };
-
-  const confirmDispute=async()=>{
-    if(!disputeCards) return;
-    const{team,cards}=disputeCards;
-    await awardPoints(team,cards.filter(Boolean).length);
-    setDisputeCards(null);
-  };
-
-  const nextRound=async()=>{
-    await update(s=>{s.currentRound+=1;return s;});
-    setDisputeCards(null);
-    setWatchingTeam(null);
+  const startGame=async()=>{
+    await dbUpdate(`games/${pinRef.current}`,{status:"started",currentRound:0});
   };
 
   const resetGame=async()=>{
+    const newPin=genPin();
     const rounds=generateRounds();
-    const fresh={rounds,currentRound:0,totalScores:{red:0,blue:0},started:true};
-    stateRef.current=fresh;
-    await saveState(fresh);
-    setDisputeCards(null);
+    const newGame={pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds,teams:{}};
+    await dbSet(`games/${newPin}`,newGame);
+    localStorage.setItem("fitb_host_pin",newPin);
+    pinRef.current=newPin;
+    setPin(newPin);
+    setDisputeState(null);
     setWatchingTeam(null);
   };
 
+  const awardPoints=async(teamId,pts)=>{
+    const g=gameRef.current;
+    const cur=g.currentRound;
+    const prev=g.totalScores?.[teamId]||0;
+    await dbUpdate(`games/${pinRef.current}/rounds/${cur}/scores`,{[teamId]:pts});
+    await dbUpdate(`games/${pinRef.current}/rounds/${cur}/scored`,{[teamId]:true});
+    await dbUpdate(`games/${pinRef.current}/totalScores`,{[teamId]:prev+pts});
+  };
+
+  const confirmDispute=async()=>{
+    if(!disputeState) return;
+    const pts=disputeState.cards.filter(Boolean).length;
+    await awardPoints(disputeState.teamId,pts);
+    setDisputeState(null);
+  };
+
+  const nextRound=async()=>{
+    const cur=gameRef.current.currentRound;
+    await dbUpdate(`games/${pinRef.current}`,{currentRound:cur+1});
+    setDisputeState(null);
+    setWatchingTeam(null);
+  };
+
+  if(loading) return(
+    <div className="page">
+      <div className="header"><div className="logo">Film <span>In</span> The Blank</div></div>
+      <div className="main"><span className="spinner"/>Setting up game…</div>
+    </div>
+  );
+
+  if(!game) return null;
+
+  const teams=game.teams?Object.entries(game.teams).map(([id,t])=>({id,...t})):[];
+  const baseUrl=window.location.href.split("?")[0].split("#")[0];
+
+  /* ── LOBBY ── */
+  if(game.status==="lobby") return(
+    <div className="page">
+      <div className="header">
+        <div className="logo">Film <span>In</span> The Blank</div>
+        <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>New Game</button>
+      </div>
+      <div className="main">
+        <div style={{textAlign:"center"}}>
+          <p style={{color:"#555",fontSize:".85rem",textTransform:"uppercase",letterSpacing:2,marginBottom:".5rem"}}>Game PIN</p>
+          <div className="pin-display">{pin}</div>
+          <p className="pin-sub" style={{marginTop:".8rem"}}>Scan to join</p>
+          <QRBlock url={baseUrl} />
+          <p style={{color:"#555",fontSize:".78rem",marginTop:".4rem"}}>or go to <span style={{color:"#f59e0b"}}>{baseUrl}</span> and enter the PIN</p>
+        </div>
+
+        <div style={{width:"100%",maxWidth:480}}>
+          <p style={{color:"#555",fontSize:".78rem",textTransform:"uppercase",letterSpacing:1,marginBottom:".8rem",textAlign:"center"}}>
+            Teams joined ({teams.length}/4)
+          </p>
+          {teams.length===0?(
+            <p className="waiting-teams">Waiting for players to join…</p>
+          ):(
+            <div className="teams-grid">
+              {teams.map(t=>(
+                <div key={t.id} className="team-row" style={{borderColor:hex2rgba(t.color,.4)}}>
+                  <div className="team-swatch" style={{background:t.color}}/>
+                  <span className="team-name-text" style={{color:t.color}}>{t.name}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <button
+          className="btn btn-gold btn-lg"
+          onClick={startGame}
+          disabled={teams.length<1}
+          style={{minWidth:200}}
+        >
+          {teams.length<1?"Waiting for players…":"Start Game →"}
+        </button>
+      </div>
+    </div>
+  );
+
+  /* ── GAME ── */
+  const cur=game.currentRound;
+  const round=game.rounds?.[cur];
+  if(!round) return <div className="page"><div className="main"><span className="spinner"/></div></div>;
+
+  const submissions=round.submissions||{};
+  const scored=round.scored||{};
+  const scores=round.scores||{};
+  const totalScores=game.totalScores||{};
+
+  const allSubmitted=teams.length>0&&teams.every(t=>submissions[t.id]!=null);
+  const allScored=teams.length>0&&teams.every(t=>scored[t.id]);
+  const gameOver=cur>=4&&allScored;
+
   const getYTEmbed=(url)=>{const id=extractYouTubeId(url);return id?`https://www.youtube.com/embed/${id}?autoplay=1`:null;};
 
+  /* ── WINNER ── */
   if(gameOver){
-    const{red,blue}=gameState.totalScores;
-    const winner=red>blue?"red":blue>red?"blue":"tie";
+    const sorted=[...teams].sort((a,b)=>(totalScores[b.id]||0)-(totalScores[a.id]||0));
+    const topScore=totalScores[sorted[0].id]||0;
+    const winners=sorted.filter(t=>(totalScores[t.id]||0)===topScore);
     return(
-      <div className="host">
-        <div className="host-header">
+      <div className="page">
+        <div className="header">
           <div className="logo">Film <span>In</span> The Blank</div>
           <button className="btn btn-gold" onClick={resetGame}>New Game</button>
         </div>
-        <div className="main-area winner-screen">
-          <div className={`winner-title ${winner}`}>{winner==="tie"?"It's a Tie!":`${COLORS[winner].name} Wins!`}</div>
+        <div className="main winner-screen">
+          {winners.length===1?(
+            <div className="winner-title" style={{color:winners[0].color}}>{winners[0].name} Wins!</div>
+          ):(
+            <div className="winner-title" style={{color:"#f59e0b"}}>It's a Tie!</div>
+          )}
           <div className="final-scores">
-            {["red","blue"].map(t=>(
-              <div className="final-score" key={t}>
-                <div className={`final-score-num ${t}`}>{gameState.totalScores[t]}</div>
-                <div className="final-score-label">{COLORS[t].name}</div>
+            {sorted.map(t=>(
+              <div key={t.id} className="final-score">
+                <div className="final-score-num" style={{color:t.color}}>{totalScores[t.id]||0}</div>
+                <div className="final-score-label">{t.name}</div>
               </div>
             ))}
           </div>
-          <button className="btn btn-gold" onClick={resetGame} style={{marginTop:"1rem"}}>Play Again</button>
+          <button className="btn btn-gold btn-lg" onClick={resetGame}>Play Again</button>
         </div>
       </div>
     );
   }
 
   return(
-    <div className="host">
+    <div className="page">
       {showCoin&&<CoinFlip onClose={()=>setShowCoin(false)}/>}
-      <div className="host-header">
+      <div className="header">
         <div className="logo">Film <span>In</span> The Blank</div>
-        <div className="score-bar">
-          <span className="score-chip red">🔴 {gameState.totalScores.red} pts</span>
-          <span className="round-badge">Round {gameState.currentRound+1} / 5</span>
-          <span className="score-chip blue">🔵 {gameState.totalScores.blue} pts</span>
+        <div className="score-chips">
+          {teams.map(t=>(
+            <span key={t.id} className="score-chip" style={{background:t.color}}>
+              {t.name}: {totalScores[t.id]||0} pts
+            </span>
+          ))}
+          <span className="round-badge">Round {cur+1}/5</span>
         </div>
         <div style={{display:"flex",gap:".5rem",alignItems:"center"}}>
-          <span style={{fontSize:".7rem",color:"#16a34a"}}><span className="sync-dot live"/>LIVE</span>
+          <span style={{fontSize:".68rem",color:"#16a34a"}}><span className="dot-live"/>LIVE</span>
           <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>Reset</button>
         </div>
       </div>
 
-      <div className="main-area">
+      <div className="main">
+        {/* Cards */}
         <div className="cards-grid">
           {round.cards.map((c,i)=>(
             <div className="game-card" key={i}>
@@ -491,149 +687,142 @@ function HostScreen(){
           ))}
         </div>
 
-        <div className="submissions-row">
-          {["red","blue"].map(team=>{
-            const sub=round.submissions?round.submissions[team]:null;
+        {/* Submissions */}
+        <div className="subs-grid">
+          {teams.map(t=>{
+            const sub=submissions[t.id];
             return(
-              <div className="sub-box" key={team} style={{borderColor:sub?COLORS[team].border:"#222"}}>
-                <h3 className={team}>
-                  {COLORS[team].name} {sub?"✓":""}
-                  {round.scored[team]&&<span className="scored-badge">+{round.scores[team]} pts</span>}
-                </h3>
+              <div key={t.id} className="sub-box" style={{borderColor:sub?hex2rgba(t.color,.5):"#222"}}>
+                <div className="sub-title" style={{color:t.color}}>
+                  {t.name} {sub?"✓":""}
+                  {scored[t.id]&&<span className="scored-badge">+{scores[t.id]||0} pts</span>}
+                </div>
                 {sub?(
                   <>
                     <div className="sub-scene">{sub.scene}</div>
                     <div className="sub-link">{sub.link}</div>
-                    <div className="sub-tags">
-                      {sub.cards.map(ci=><span key={ci} className={`sub-tag ${team}`}>{round.cards[ci]}</span>)}
+                    <div className="tags">
+                      {(sub.cards||[]).map(ci=>(
+                        <span key={ci} className="tag" style={{background:hex2rgba(t.color,.18),color:t.color}}>{round.cards[ci]}</span>
+                      ))}
                     </div>
                   </>
                 ):(
-                  <div className="sub-status"><span className="sync-dot waiting"/>Waiting for submission…</div>
+                  <div className="sub-waiting">
+                    <span style={{width:7,height:7,borderRadius:"50%",display:"inline-block",marginRight:5,background:"#f59e0b",verticalAlign:"middle"}}/>
+                    Waiting…
+                  </div>
                 )}
               </div>
             );
           })}
         </div>
 
-        {!bothSubmitted&&(
-          <div style={{display:"flex",gap:"3rem",alignItems:"center"}}>
-            {["red","blue"].map(team=>(
-              <div key={team} style={{textAlign:"center"}}>
-                <QRCode url={`${baseUrl}#${team}`} size={120}/>
-                <p style={{fontSize:".75rem",color:"#666",marginTop:".4rem"}}>{COLORS[team].name}</p>
-                <p style={{fontSize:".65rem",color:"#444"}}>{baseUrl}#{team}</p>
-              </div>
-            ))}
+        {/* PIN reminder while waiting */}
+        {!allSubmitted&&(
+          <div style={{textAlign:"center"}}>
+            <p style={{color:"#444",fontSize:".78rem",marginBottom:".3rem"}}>PIN</p>
+            <p style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2rem",color:"#f59e0b",letterSpacing:6}}>{pin}</p>
           </div>
         )}
 
-        {bothSubmitted&&!roundDone&&(
+        {/* Video review */}
+        {allSubmitted&&!allScored&&(
           <>
-            {watchingTeam?(
-              <div className="video-area">
-                <div className={`review-label ${watchingTeam}`} style={{marginBottom:".8rem",textAlign:"center"}}>
-                  Now watching: {COLORS[watchingTeam].name}
+            {watchingTeam?(()=>{
+              const t=teams.find(x=>x.id===watchingTeam);
+              const sub=submissions[watchingTeam];
+              return(
+                <div className="video-area">
+                  <div className="review-label" style={{color:t.color}}>Now watching: {t.name}</div>
+                  <iframe src={getYTEmbed(sub.link)} title="Scene" allowFullScreen allow="autoplay"/>
+                  <div className="row" style={{marginTop:"1rem"}}>
+                    {!scored[watchingTeam]?(
+                      <>
+                        <button className="btn btn-green" onClick={()=>awardPoints(watchingTeam,(sub.cards||[]).length)}>
+                          ✓ Grant Full ({(sub.cards||[]).length} pts)
+                        </button>
+                        <button className="btn btn-red" onClick={()=>{
+                          setDisputeState({teamId:watchingTeam,cards:(sub.cards||[]).map(()=>true)});
+                          setWatchingTeam(null);
+                        }}>Dispute</button>
+                        <button className="btn btn-outline" onClick={()=>setShowCoin(true)}>🪙 Coin Flip</button>
+                        <button className="btn btn-gray" onClick={()=>setWatchingTeam(null)}>← Back</button>
+                      </>
+                    ):(
+                      <p style={{color:"#16a34a",fontWeight:600}}>+{scores[watchingTeam]} pts awarded!</p>
+                    )}
+                  </div>
                 </div>
-                <iframe src={getYTEmbed(round.submissions[watchingTeam].link)} title="Scene" allowFullScreen allow="autoplay"/>
-                <div className="action-row" style={{marginTop:"1rem"}}>
-                  {!round.scored[watchingTeam]?(
-                    <>
-                      <button className="btn btn-green" onClick={()=>awardPoints(watchingTeam,round.submissions[watchingTeam].cards.length)}>
-                        ✓ Grant Full Points ({round.submissions[watchingTeam].cards.length})
-                      </button>
-                      <button className="btn btn-red" onClick={()=>startDispute(watchingTeam)}>Dispute</button>
-                      <button className="btn btn-outline" onClick={()=>setShowCoin(true)}>🪙 Coin Flip</button>
-                    </>
-                  ):(
-                    <p style={{color:"#16a34a",fontWeight:600}}>+{round.scores[watchingTeam]} pts awarded to {COLORS[watchingTeam].name}</p>
-                  )}
+              );
+            })():(
+              <div className="row" style={{flexDirection:"column",gap:".6rem"}}>
+                <p style={{color:"#888"}}>All submitted! Review each team's scene:</p>
+                <div className="row">
+                  {teams.map(t=>(
+                    <button key={t.id} className="btn" style={{background:t.color,color:"#fff"}} onClick={()=>setWatchingTeam(t.id)}>
+                      {scored[t.id]?"✓ ":""}▶ {t.name}
+                    </button>
+                  ))}
                 </div>
-              </div>
-            ):(
-              <div className="action-row">
-                <p style={{color:"#888"}}>Both teams submitted! Play each video:</p>
-                {["red","blue"].map(team=>(
-                  <button key={team} className="btn" style={{background:COLORS[team].bg,color:"#fff"}} onClick={()=>setWatchingTeam(team)}>
-                    {round.scored[team]?"✓ ":""}▶ {COLORS[team].name}
-                  </button>
-                ))}
+                {teams.some(t=>scored[t.id])&&!allScored&&(
+                  <p style={{color:"#555",fontSize:".82rem"}}>
+                    Still to judge: {teams.filter(t=>!scored[t.id]).map(t=>t.name).join(", ")}
+                  </p>
+                )}
               </div>
             )}
           </>
         )}
 
-        {disputeCards&&(
-          <div style={{background:"#111",border:"1.5px solid #333",borderRadius:14,padding:"1.5rem",maxWidth:600,width:"100%"}}>
-            <p style={{color:"#aaa",fontSize:".85rem",marginBottom:"1rem",textAlign:"center"}}>
-              Toggle cards to remove points for <strong style={{color:COLORS[disputeCards.team].bg}}>{COLORS[disputeCards.team].name}</strong>
-            </p>
-            <div className="dispute-cards">
-              {round.submissions[disputeCards.team].cards.map((ci,idx)=>(
-                <div key={idx} className={`dispute-card ${disputeCards.cards[idx]?"on":"off"}`}
-                  onClick={()=>setDisputeCards(d=>{const cards=[...d.cards];cards[idx]=!cards[idx];return{...d,cards};})}>
-                  {round.cards[ci]}
-                </div>
-              ))}
-            </div>
-            <div className="action-row" style={{marginTop:"1rem"}}>
-              <button className="btn btn-green" onClick={confirmDispute}>Confirm ({disputeCards.cards.filter(Boolean).length} pts)</button>
-              <button className="btn btn-outline" onClick={()=>setShowCoin(true)}>🪙 Coin Flip</button>
-              <button className="btn btn-gray" onClick={()=>setDisputeCards(null)}>Cancel</button>
-            </div>
-          </div>
-        )}
-
-        {roundDone&&!gameOver&&(
-          <div className="action-row">
-            <div style={{textAlign:"center"}}>
-              <p style={{color:"#888",marginBottom:"1rem"}}>
-                Round scores: 🔴 +{round.scores.red} · 🔵 +{round.scores.blue}
+        {/* Dispute UI */}
+        {disputeState&&(()=>{
+          const t=teams.find(x=>x.id===disputeState.teamId);
+          const sub=submissions[disputeState.teamId];
+          return(
+            <div style={{background:"#111",border:"1.5px solid #333",borderRadius:14,padding:"1.5rem",maxWidth:600,width:"100%"}}>
+              <p style={{color:"#aaa",fontSize:".82rem",marginBottom:"1rem",textAlign:"center"}}>
+                Toggle off cards <strong style={{color:t.color}}>{t.name}</strong> didn't cover
               </p>
-              <button className="btn btn-gold" onClick={nextRound}>Next Round →</button>
+              <div className="dispute-cards">
+                {(sub.cards||[]).map((ci,idx)=>(
+                  <div key={idx} className={`dispute-card ${disputeState.cards[idx]?"on":"off"}`}
+                    onClick={()=>setDisputeState(d=>{const cards=[...d.cards];cards[idx]=!cards[idx];return{...d,cards};})}>
+                    {round.cards[ci]}
+                  </div>
+                ))}
+              </div>
+              <div className="row" style={{marginTop:"1rem"}}>
+                <button className="btn btn-green" onClick={confirmDispute}>
+                  Confirm ({disputeState.cards.filter(Boolean).length} pts)
+                </button>
+                <button className="btn btn-outline" onClick={()=>setShowCoin(true)}>🪙 Coin Flip</button>
+                <button className="btn btn-gray" onClick={()=>setDisputeState(null)}>Cancel</button>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
-        {bothSubmitted&&!roundDone&&(round.scored.red||round.scored.blue)&&(
-          <p style={{color:"#666",fontSize:".85rem"}}>
-            Still need to judge: {!round.scored.red?COLORS.red.name:""}{!round.scored.red&&!round.scored.blue?" & ":""}{!round.scored.blue?COLORS.blue.name:""}
-          </p>
+        {/* Next round */}
+        {allScored&&!gameOver&&(
+          <div style={{textAlign:"center"}}>
+            <p style={{color:"#888",marginBottom:"1rem"}}>
+              Round scores: {teams.map(t=>`${t.name} +${scores[t.id]||0}`).join(" · ")}
+            </p>
+            <button className="btn btn-gold btn-lg" onClick={nextRound}>Next Round →</button>
+          </div>
         )}
       </div>
     </div>
   );
 }
 
-// ── Router ────────────────────────────────────────────────────────────────────
+/* ══════════════════════════════════════════════
+   ROUTER
+══════════════════════════════════════════════ */
 function App(){
-  const [hash,setHash]=useState(window.location.hash);
-  const [fbReady,setFbReady]=useState(!!window._fbReady);
-
-  useEffect(()=>{
-    if(!fbReady){
-      const onReady=()=>setFbReady(true);
-      window.addEventListener("firebase-ready",onReady);
-      return()=>window.removeEventListener("firebase-ready",onReady);
-    }
-  },[fbReady]);
-
-  useEffect(()=>{
-    const onHash=()=>setHash(window.location.hash);
-    window.addEventListener("hashchange",onHash);
-    return()=>window.removeEventListener("hashchange",onHash);
-  },[]);
-
-  if(!fbReady) return(
-    <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:"#0a0a0a",color:"#666"}}>
-      <span style={{display:"inline-block",width:20,height:20,border:"2px solid #444",borderTopColor:"#f59e0b",borderRadius:"50%",animation:"spin .7s linear infinite",marginRight:8}}/>
-      Connecting…
-    </div>
-  );
-
-  if(hash==="#red") return <PlayerPage team="red"/>;
-  if(hash==="#blue") return <PlayerPage team="blue"/>;
-  return <HostScreen/>;
+  const isHost=!window.location.hash||window.location.hash==="#host";
+  return isHost?<HostApp/>:<PlayerApp/>;
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
