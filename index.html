@@ -115,10 +115,11 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 <body>
 <div id="root"></div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script>
-firebase.initializeApp({
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, get, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const app = initializeApp({
   apiKey: "AIzaSyAP0gSeSOYrRWplnClLZ8Y5D9vXcJTpKro",
   authDomain: "film-in-the-blank.firebaseapp.com",
   databaseURL: "https://film-in-the-blank-default-rtdb.firebaseio.com",
@@ -128,13 +129,14 @@ firebase.initializeApp({
   appId: "1:407899539410:web:f10ed0ce84fcc0d6cd2a0b",
   measurementId: "G-HE75E4S7MF"
 });
-const db = firebase.database();
+const db = getDatabase(app);
 
-function dbGet(path){ return db.ref(path).get().then(s=>s.exists()?s.val():null); }
-function dbSet(path,val){ return db.ref(path).set(val); }
-function dbUpdate(path,val){ return db.ref(path).update(val); }
-function dbSub(path,cb){ const ref=db.ref(path); ref.on('value',s=>cb(s.exists()?s.val():null)); return ()=>ref.off(); }
-function dbPush(path,val){ return db.ref(path).push(val); }
+window.dbGet  = (path) => get(ref(db,path)).then(s=>s.exists()?s.val():null);
+window.dbSet  = (path,val) => set(ref(db,path),val);
+window.dbUpdate = (path,val) => update(ref(db,path),val);
+window.dbSub  = (path,cb) => { const r=ref(db,path); onValue(r,s=>cb(s.exists()?s.val():null)); return ()=>{}; };
+window.dbPush = (path,val) => push(ref(db,path),val);
+window.dispatchEvent(new Event("firebase-ready"));
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -825,7 +827,13 @@ function App(){
   return isHost?<HostApp/>:<PlayerApp/>;
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+function waitForFirebase(cb){
+  if(window.dbGet){ cb(); return; }
+  window.addEventListener("firebase-ready", cb, {once:true});
+}
+waitForFirebase(()=>{
+  ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+});
 </script>
 </body>
 </html>
