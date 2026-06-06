@@ -466,6 +466,7 @@ function HostApp(){
     await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scores",scoreUpdate);
     await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scored",scoredUpdate);
     await dbUpdate("games/"+pinRef.current+"/totalScores",totalUpdate);
+    setWatchingTeam(null); // always return to team list after scoring
   };
 
   const confirmDispute=async()=>{
@@ -511,8 +512,8 @@ function HostApp(){
           <p style={{color:"#555",fontSize:".85rem",textTransform:"uppercase",letterSpacing:2,marginBottom:".3rem"}}>Game PIN</p>
           <div className="pin-display">{pin}</div>
           <p className="pin-sub" style={{marginTop:".6rem"}}>Scan to join</p>
-          <QRBlock url={baseUrl} size={160}/>
-          <p style={{color:"#444",fontSize:".75rem",marginTop:".5rem"}}>or visit <span style={{color:"#f59e0b"}}>{baseUrl}</span> and enter the PIN</p>
+          <QRBlock url={baseUrl+"#player"} size={160}/>
+          <p style={{color:"#444",fontSize:".75rem",marginTop:".5rem"}}>or visit <span style={{color:"#f59e0b"}}>{baseUrl}</span> and add <span style={{color:"#f59e0b"}}>#player</span></p>
         </div>
 
         <div style={{width:"100%",maxWidth:480}}>
