@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Film In The Blank</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* ── Layout ── */
 .page{min-height:100vh;display:flex;flex-direction:column;background:#0a0a0a;}
-.header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid #222;flex-shrink:0;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid #2a2a2a;flex-shrink:0;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:2px;color:#fff;}
 .logo span{color:#f59e0b;}
 .main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1.8rem;}
+
+/* ── Buttons ── */
 .btn{padding:.6rem 1.4rem;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.9rem;transition:opacity .15s;}
 .btn:hover{opacity:.85;}
 .btn:disabled{opacity:.4;cursor:not-allowed;}
@@ -23,6 +27,8 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .btn-outline{background:transparent;border:1.5px solid #444;color:#eee;}
 .btn-lg{font-size:1.1rem;padding:.8rem 2.2rem;border-radius:10px;}
 .row{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;justify-content:center;}
+
+/* ── Misc ── */
 .spinner{display:inline-block;width:18px;height:18px;border:2px solid #444;border-top-color:#f59e0b;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .dot-live{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;background:#16a34a;animation:pulse 1.5s infinite;}
@@ -33,17 +39,33 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .input-group{margin:.6rem 0;width:100%;}
 .card-surface{background:#111;border-radius:16px;padding:1.8rem;border:1.5px solid #222;width:100%;max-width:440px;}
 .error-msg{color:#f87171;font-size:.82rem;margin-top:.3rem;}
+
+/* ── Award show announcement ── */
+.announcement-wrap{text-align:center;max-width:760px;width:100%;}
+.curtain-label{font-family:'Playfair Display',serif;font-style:italic;font-size:1.15rem;color:#aaa;letter-spacing:1px;margin-bottom:.6rem;}
+.announce-title{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;letter-spacing:3px;color:#f5f5f5;line-height:1.1;margin-bottom:.4rem;}
+.announce-title span{color:#f59e0b;}
+.featuring-label{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:#777;margin:.5rem 0;}
+.cards-reveal{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center;min-height:60px;margin:.6rem 0;}
+.reveal-card{background:#161616;border:1.5px solid #333;border-radius:12px;padding:.8rem 1.1rem;font-size:.9rem;color:#f5f5f5;display:flex;align-items:center;gap:.5rem;opacity:0;transform:translateY(12px) scale(.95);transition:opacity .45s ease, transform .45s ease;}
+.reveal-card.visible{opacity:1;transform:translateY(0) scale(1);}
+.reveal-card-num{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:#f59e0b;line-height:1;}
+.are-label{font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:#f59e0b;margin-top:.4rem;opacity:0;transition:opacity .6s ease;}
+.are-label.visible{opacity:1;}
+.divider{width:60px;height:2px;background:linear-gradient(90deg,transparent,#f59e0b,transparent);margin:.5rem auto;}
+
+/* ── PIN display ── */
 .pin-display{font-family:'Bebas Neue',sans-serif;font-size:6rem;letter-spacing:12px;color:#f59e0b;line-height:1;text-align:center;}
 .pin-sub{font-size:.85rem;color:#555;text-align:center;margin-top:.3rem;letter-spacing:1px;text-transform:uppercase;}
-.teams-grid{display:flex;flex-direction:column;gap:.7rem;width:100%;max-width:560px;}
-.team-row{display:flex;align-items:center;gap:1rem;background:#111;border-radius:12px;padding:.85rem 1.2rem;border:1.5px solid #222;}
-.team-swatch{width:18px;height:18px;border-radius:50%;flex-shrink:0;}
-.team-name-text{font-weight:600;font-size:1rem;}
-.waiting-teams{color:#555;font-style:italic;font-size:.9rem;text-align:center;}
-.cards-grid{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;}
-.game-card{background:#161616;border:1.5px solid #333;border-radius:16px;padding:1.4rem 1rem;width:155px;text-align:center;}
-.card-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#f59e0b;line-height:1;}
-.card-text{font-size:.9rem;color:#ddd;margin-top:.3rem;line-height:1.3;}
+
+/* ── Director/team list ── */
+.directors-grid{display:flex;flex-direction:column;gap:.7rem;width:100%;max-width:560px;}
+.director-row{display:flex;align-items:center;gap:1rem;background:#111;border-radius:12px;padding:.85rem 1.2rem;border:1.5px solid #222;}
+.director-swatch{width:16px;height:16px;border-radius:50%;flex-shrink:0;}
+.director-name{font-weight:600;font-size:1rem;}
+.waiting-directors{color:#555;font-style:italic;font-size:.9rem;text-align:center;}
+
+/* ── Submissions ── */
 .subs-grid{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;width:100%;max-width:960px;}
 .sub-box{flex:1;min-width:180px;background:#111;border-radius:14px;padding:1rem 1.2rem;border:1.5px solid #222;}
 .sub-title{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.5rem;font-weight:600;}
@@ -53,25 +75,44 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem;}
 .tag{padding:.15rem .55rem;border-radius:999px;font-size:.7rem;font-weight:500;}
 .scored-badge{display:inline-block;padding:.1rem .5rem;border-radius:999px;font-size:.7rem;font-weight:600;background:#14532d;color:#86efac;margin-left:.5rem;}
+
+/* ── Score bar ── */
 .score-chips{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
 .score-chip{padding:.3rem .9rem;border-radius:999px;font-weight:600;font-size:.88rem;color:#fff;}
 .round-badge{background:#222;color:#aaa;padding:.25rem .7rem;border-radius:6px;font-size:.8rem;}
+
+/* ── Dispute ── */
 .dispute-cards{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
 .dispute-card{padding:.5rem .9rem;border-radius:10px;cursor:pointer;font-size:.82rem;font-weight:500;user-select:none;transition:all .15s;}
 .dispute-card.on{background:#16a34a;color:#fff;border:1.5px solid #16a34a;}
 .dispute-card.off{background:#1a1a1a;color:#888;border:1.5px solid #333;text-decoration:line-through;}
+
+/* ── Video ── */
 .video-area{width:100%;max-width:800px;}
 .video-area iframe{width:100%;aspect-ratio:16/9;border-radius:12px;border:none;}
 .review-label{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;text-align:center;margin-bottom:.8rem;}
-.winner-screen{text-align:center;}
-.winner-title{font-family:'Bebas Neue',sans-serif;font-size:4.5rem;letter-spacing:4px;}
-.final-scores{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin:1.2rem 0;}
+
+/* ── Winner screen ── */
+.winner-screen{text-align:center;padding:2rem;}
+.winner-envelope{font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;color:#aaa;margin-bottom:.5rem;}
+.winner-and{font-family:'Playfair Display',serif;font-style:italic;font-size:1.6rem;color:#f5f5f5;margin:.3rem 0;}
+.winner-award{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:3px;color:#f59e0b;margin-bottom:.8rem;}
+.winner-goes-to{font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:#aaa;margin-bottom:.5rem;}
+.winner-name{font-family:'Bebas Neue',sans-serif;letter-spacing:4px;color:#f59e0b;opacity:0;transform:scale(.8);transition:opacity .8s ease, transform .8s ease;}
+.winner-name.visible{opacity:1;transform:scale(1);}
+.winner-applause{font-size:2rem;margin-top:.8rem;opacity:0;transition:opacity .5s ease .8s;}
+.winner-applause.visible{opacity:1;}
+.final-scores{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0;}
 .final-score{text-align:center;}
 .final-score-num{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;}
 .final-score-label{font-size:.8rem;color:#777;text-transform:uppercase;letter-spacing:1px;}
+
+/* ── Coin ── */
 .coin{font-size:3rem;display:block;text-align:center;}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:999;}
 .modal{background:#111;border:1.5px solid #333;border-radius:20px;padding:2.5rem 3rem;text-align:center;max-width:360px;width:90%;}
+
+/* ── Player/Director page ── */
 .player-page{min-height:100vh;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.2rem;}
 .player-logo{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:2px;color:#fff;margin-bottom:1.5rem;text-align:center;}
 .player-logo span{color:#f59e0b;}
@@ -83,44 +124,43 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .player-card-text{font-size:.88rem;color:#ddd;}
 .pin-input{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:8px;text-align:center;background:#1a1a1a;border:2px solid #333;border-radius:12px;color:#f59e0b;width:100%;padding:.6rem;outline:none;}
 .pin-input:focus{border-color:#f59e0b;}
+.nomination-header{font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:#888;margin-bottom:.8rem;text-align:center;line-height:1.5;}
+.nomination-cards{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-bottom:1rem;}
+.nomination-card-tag{padding:.25rem .7rem;border-radius:999px;font-size:.78rem;font-weight:600;background:#1a1a1a;border:1px solid #333;color:#f59e0b;}
 </style>
 </head>
 <body>
-<div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0a0a;color:#555;font-family:sans-serif;">Loading…</div></div>
+<div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0a0a;color:#555;">Loading…</div></div>
 
-<!-- Firebase via CDN (compat version — works with regular script tags) -->
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-app-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-database-compat.js"></script>
 <script>
-  firebase.initializeApp({
-    apiKey: "AIzaSyAP0gSeSOYrRWplnClLZ8Y5D9vXcJTpKro",
-    authDomain: "film-in-the-blank.firebaseapp.com",
-    databaseURL: "https://film-in-the-blank-default-rtdb.firebaseio.com",
-    projectId: "film-in-the-blank",
-    storageBucket: "film-in-the-blank.firebasestorage.app",
-    messagingSenderId: "407899539410",
-    appId: "1:407899539410:web:f10ed0ce84fcc0d6cd2a0b"
-  });
-  var _db = firebase.database();
-  function dbGet(path){ return _db.ref(path).get().then(function(s){ return s.exists()?s.val():null; }); }
-  function dbSet(path,val){ return _db.ref(path).set(val); }
-  function dbUpdate(path,val){ return _db.ref(path).update(val); }
-  function dbSub(path,cb){ var r=_db.ref(path); r.on('value',function(s){ cb(s.exists()?s.val():null); }); return function(){ r.off(); }; }
-  function dbPush(path,val){ return _db.ref(path).push(val); }
+firebase.initializeApp({
+  apiKey:"AIzaSyAP0gSeSOYrRWplnClLZ8Y5D9vXcJTpKro",
+  authDomain:"film-in-the-blank.firebaseapp.com",
+  databaseURL:"https://film-in-the-blank-default-rtdb.firebaseio.com",
+  projectId:"film-in-the-blank",
+  storageBucket:"film-in-the-blank.firebasestorage.app",
+  messagingSenderId:"407899539410",
+  appId:"1:407899539410:web:f10ed0ce84fcc0d6cd2a0b"
+});
+var _db=firebase.database();
+function dbGet(p){return _db.ref(p).get().then(function(s){return s.exists()?s.val():null;});}
+function dbSet(p,v){return _db.ref(p).set(v);}
+function dbUpdate(p,v){return _db.ref(p).update(v);}
+function dbSub(p,cb){var r=_db.ref(p);r.on('value',function(s){cb(s.exists()?s.val():null);});return function(){r.off();};}
+function dbPush(p,v){return _db.ref(p).push(v);}
 </script>
 
-<!-- QR Code library -->
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
-<!-- React -->
 <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js"></script>
 
 <script type="text/babel">
-const { useState, useEffect, useCallback, useRef } = React;
+const {useState,useEffect,useRef,useCallback}=React;
 
-const CARD_POOL = [
+const CARD_POOL=[
   "Comedy","Drama","Horror","Action","Romance","Animated","Sci-Fi","Documentary","Musical","Thriller",
   "With Brad Pitt","With Meryl Streep","With Tom Hanks","With Leonardo DiCaprio","With Cate Blanchett",
   "With Denzel Washington","With Jennifer Lawrence","With Morgan Freeman","With Scarlett Johansson","With Will Smith",
@@ -131,21 +171,16 @@ const CARD_POOL = [
   "Takes place outside","Takes place at night","Takes place in winter","Takes place in a city","Takes place in space",
   "Takes place at school","Takes place at a party","Takes place on a boat","Takes place in a hospital","Takes place in the past",
   "1990s film","2000s film","2010s film","Before 1990","Based on a true story",
-  "Won an Oscar","Directed by a woman","Foreign language film","A sequel","A remake",
+  "Won an Award","Directed by a woman","Foreign language film","A sequel","A remake",
 ];
 
-const PALETTE = [
-  {hex:"#e53935",name:"Red"},
-  {hex:"#1e88e5",name:"Blue"},
-  {hex:"#43a047",name:"Green"},
-  {hex:"#fb8c00",name:"Orange"},
-  {hex:"#8e24aa",name:"Purple"},
-  {hex:"#e91e63",name:"Pink"},
-  {hex:"#00acc1",name:"Teal"},
-  {hex:"#fdd835",name:"Yellow"},
+const PALETTE=[
+  {hex:"#e53935",name:"Red"},{hex:"#1e88e5",name:"Blue"},{hex:"#43a047",name:"Green"},
+  {hex:"#fb8c00",name:"Orange"},{hex:"#8e24aa",name:"Purple"},{hex:"#e91e63",name:"Pink"},
+  {hex:"#00acc1",name:"Teal"},{hex:"#fdd835",name:"Yellow"},
 ];
 
-function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 function pick5(){return shuffle(CARD_POOL).slice(0,5);}
 function genPin(){return String(Math.floor(1000+Math.random()*9000));}
 function generateRounds(){return Array.from({length:5},(_,i)=>({round:i+1,cards:pick5(),submissions:{},scores:{},scored:{}}));}
@@ -153,17 +188,19 @@ function hex2rgba(hex,a){try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.
 function extractYouTubeId(url){try{const u=new URL(url);if(u.hostname.includes("youtu.be"))return u.pathname.slice(1).split("?")[0];return u.searchParams.get("v");}catch(e){return null;}}
 function isYouTubeUrl(url){return /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(url);}
 
+/* ── QR Code ── */
 function QRBlock({url,size}){
   const sz=size||160;
   const ref=useRef(null);
   useEffect(()=>{
-    if(!ref.current||!window.QRCode) return;
+    if(!ref.current||!window.QRCode)return;
     ref.current.innerHTML="";
     new window.QRCode(ref.current,{text:url,width:sz,height:sz,colorDark:"#000000",colorLight:"#ffffff",correctLevel:window.QRCode.CorrectLevel.M});
   },[url,sz]);
   return <div style={{display:"inline-block",background:"#fff",borderRadius:12,padding:10,marginTop:".6rem"}}><div ref={ref}/></div>;
 }
 
+/* ── Coin Flip ── */
 function CoinFlip({onClose}){
   const [result,setResult]=useState(null);
   const [flipping,setFlipping]=useState(false);
@@ -174,7 +211,7 @@ function CoinFlip({onClose}){
         <p style={{color:"#aaa",fontSize:".8rem",textTransform:"uppercase",letterSpacing:2,marginBottom:"1rem"}}>Coin Flip</p>
         {flipping&&<span className="coin">🪙</span>}
         {result&&<div><span className="coin">🪙</span><p style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.5rem",color:"#f59e0b",letterSpacing:3}}>{result}</p></div>}
-        {!result&&!flipping&&<div style={{height:70,display:"flex",alignItems:"center",justifyContent:"center",color:"#555"}}>Press flip to decide!</div>}
+        {!result&&!flipping&&<div style={{height:70,display:"flex",alignItems:"center",justifyContent:"center",color:"#555"}}>Press flip!</div>}
         <div className="row" style={{marginTop:"1.2rem"}}>
           <button className="btn btn-gold" onClick={flip}>Flip!</button>
           <button className="btn btn-gray" onClick={onClose}>Close</button>
@@ -184,7 +221,100 @@ function CoinFlip({onClose}){
   );
 }
 
-/* ══ PLAYER ══════════════════════════════════════════ */
+/* ── Card Reveal Announcement ── */
+function CardAnnouncement({cards, onDone}){
+  const [revealed,setRevealed]=useState([]);
+  const [showAre,setShowAre]=useState(false);
+  const [done,setDone]=useState(false);
+
+  useEffect(()=>{
+    // Reveal cards one by one, 900ms apart
+    const timers=[];
+    cards.forEach(function(_,i){
+      timers.push(setTimeout(()=>{
+        setRevealed(function(r){return r.includes(i)?r:[...r,i];});
+      },(i+1)*900));
+    });
+    // Show "...are" after all cards
+    timers.push(setTimeout(()=>setShowAre(true),(cards.length+1)*900));
+    // Signal done after a beat
+    timers.push(setTimeout(()=>setDone(true),(cards.length+2)*900+400));
+    return()=>timers.forEach(clearTimeout);
+  },[]);
+
+  useEffect(()=>{ if(done&&onDone) onDone(); },[done]);
+
+  return(
+    <div className="announcement-wrap">
+      <div className="curtain-label">🎬 Round Announcement</div>
+      <div className="divider"/>
+      <div className="announce-title">The Nominees for</div>
+      <div className="announce-title"><span>Best Movie Scene</span></div>
+      <div className="featuring-label">featuring…</div>
+      <div className="cards-reveal">
+        {cards.map(function(c,i){return(
+          <div key={i} className={"reveal-card"+(revealed.includes(i)?" visible":"")}>
+            <span className="reveal-card-num">{i+1}</span>
+            <span>{c}</span>
+          </div>
+        );})}
+      </div>
+      <div className={"are-label"+(showAre?" visible":"")}>…are</div>
+    </div>
+  );
+}
+
+/* ── Winner Reveal ── */
+function WinnerReveal({winners, scores, allDirectors, onPlayAgain}){
+  const [step,setStep]=useState(0);
+  // step 0: "opening envelope" text
+  // step 1: show award name
+  // step 2: reveal winner name
+  // step 3: show scores + play again
+
+  useEffect(()=>{
+    const t1=setTimeout(()=>setStep(1),1800);
+    const t2=setTimeout(()=>setStep(2),3400);
+    const t3=setTimeout(()=>setStep(3),5200);
+    return()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);};
+  },[]);
+
+  const isTie=winners.length>1;
+
+  return(
+    <div className="winner-screen">
+      {step>=0&&<div className="winner-envelope" style={{opacity:step>=1?.3:1,transition:"opacity .8s"}}>
+        — And the award goes to… —
+      </div>}
+      {step>=1&&<div className="winner-award" style={{animation:"fadeIn .6s ease forwards"}}>
+        🏆 Best Director 🏆
+      </div>}
+      {step>=2&&(
+        <div className={"winner-name"+(step>=2?" visible":"")} style={{fontSize:isTie?"3rem":"4.5rem"}}>
+          {isTie?winners.map(function(w){return w.name;}).join(" & "):winners[0].name}
+        </div>
+      )}
+      {step>=2&&<div className={"winner-applause"+(step>=2?" visible":"")}>🎬 🎉 🏆</div>}
+      {step>=3&&(
+        <>
+          <div className="divider" style={{margin:"1.5rem auto"}}/>
+          <div className="final-scores">
+            {allDirectors.map(function(d){return(
+              <div key={d.id} className="final-score">
+                <div className="final-score-num" style={{color:d.color}}>{scores[d.id]||0}</div>
+                <div className="final-score-label">{d.name}</div>
+              </div>
+            );})}
+          </div>
+          <button className="btn btn-gold btn-lg" onClick={onPlayAgain} style={{marginTop:"1rem"}}>Play Again</button>
+        </>
+      )}
+      <style>{`@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}`}</style>
+    </div>
+  );
+}
+
+/* ══════════ PLAYER APP ══════════════════════════════ */
 function PlayerApp(){
   const [screen,setScreen]=useState("pin");
   const [pin,setPin]=useState("");
@@ -204,19 +334,19 @@ function PlayerApp(){
   const unsubRef=useRef(null);
 
   useEffect(()=>{
-    if(!pin||!teamId) return;
-    if(unsubRef.current) unsubRef.current();
+    if(!pin||!teamId)return;
+    if(unsubRef.current)unsubRef.current();
     unsubRef.current=dbSub("games/"+pin,function(g){
-      if(!g) return;
+      if(!g)return;
       setGame(g);
-      if(g.status==="started") setScreen("game");
-      if(g.status==="lobby") setScreen("lobby");
+      if(g.status==="started")setScreen("game");
+      if(g.status==="lobby")setScreen("lobby");
     });
-    return ()=>{ if(unsubRef.current) unsubRef.current(); };
+    return()=>{if(unsubRef.current)unsubRef.current();};
   },[pin,teamId]);
 
   useEffect(()=>{
-    if(!game) return;
+    if(!game)return;
     const r=game.currentRound;
     if(roundRef.current!==null&&roundRef.current!==r){
       setSubmitted(false);setSelected([]);setLink("");setScene("");setSubmitError("");
@@ -232,19 +362,19 @@ function PlayerApp(){
     const g=await dbGet("games/"+p);
     if(!g){setError("Game not found. Check the PIN and try again.");setBusy(false);return;}
     if(g.status!=="lobby"){setError("This game has already started.");setBusy(false);return;}
-    const teams=g.teams?Object.values(g.teams):[];
-    if(teams.length>=4){setError("This game is full (4 teams max).");setBusy(false);return;}
+    const dirs=g.teams?Object.values(g.teams):[];
+    if(dirs.length>=4){setError("This game is full (4 directors max).");setBusy(false);return;}
     setGame(g);setScreen("join");setBusy(false);
   };
 
   const joinGame=async()=>{
     setError("");
-    if(!teamName.trim()){setError("Please enter a team name.");return;}
-    if(teamName.trim().length>20){setError("Team name must be 20 characters or less.");return;}
+    if(!teamName.trim()){setError("Please enter a director name.");return;}
+    if(teamName.trim().length>20){setError("Name must be 20 characters or less.");return;}
     const g=await dbGet("games/"+pin);
-    const existingTeams=g&&g.teams?Object.values(g.teams):[];
-    if(existingTeams.find(function(t){return t.color===teamColor;})){setError("That color is taken! Pick another.");return;}
-    if(existingTeams.find(function(t){return t.name.toLowerCase()===teamName.trim().toLowerCase();})){setError("That team name is taken!");return;}
+    const existing=g&&g.teams?Object.values(g.teams):[];
+    if(existing.find(function(t){return t.color===teamColor;})){setError("That color is taken! Pick another.");return;}
+    if(existing.find(function(t){return t.name.toLowerCase()===teamName.trim().toLowerCase();})){setError("That name is taken!");return;}
     setBusy(true);
     const pushRef=await dbPush("games/"+pin+"/teams",{name:teamName.trim(),color:teamColor,score:0});
     setTeamId(pushRef.key);
@@ -262,92 +392,91 @@ function PlayerApp(){
     const round=game.currentRound;
     await dbSet("games/"+pin+"/rounds/"+round+"/submissions/"+teamId,{
       link:link.trim(),scene:scene.trim()||"Untitled scene",cards:selected,
-      teamName:teamName||(game.teams&&game.teams[teamId]?game.teams[teamId].name:"Team"),
+      teamName:teamName||(game.teams&&game.teams[teamId]?game.teams[teamId].name:"Director"),
       teamColor:teamColor||(game.teams&&game.teams[teamId]?game.teams[teamId].color:"#888"),
     });
     setSyncing(false);setSubmitted(true);
   };
 
-  if(screen==="pin") return(
+  /* PIN screen */
+  if(screen==="pin")return(
     <div className="player-page">
       <div className="player-logo">Film <span>In</span> The Blank</div>
       <div className="card-surface">
         <p style={{color:"#777",fontSize:".85rem",marginBottom:"1.2rem",textAlign:"center"}}>Enter the PIN shown on the host screen</p>
-        <input className="pin-input" value={pin} onChange={function(e){setPin(e.target.value.replace(/\D/g,"").slice(0,4));}} placeholder="0000" maxLength={4} inputMode="numeric" onKeyDown={function(e){if(e.key==="Enter") joinPin();}}/>
+        <input className="pin-input" value={pin} onChange={function(e){setPin(e.target.value.replace(/\D/g,"").slice(0,4));}} placeholder="0000" maxLength={4} inputMode="numeric" onKeyDown={function(e){if(e.key==="Enter")joinPin();}}/>
         {error&&<p className="error-msg" style={{textAlign:"center",marginTop:".5rem"}}>{error}</p>}
         <button className="btn btn-gold btn-lg" style={{width:"100%",marginTop:"1rem"}} onClick={joinPin} disabled={busy||pin.length!==4}>
-          {busy?React.createElement("span",null,React.createElement("span",{className:"spinner"}),"Checking…"):"Join Game →"}
+          {busy?"Checking…":"Join Game →"}
         </button>
       </div>
     </div>
   );
 
-  if(screen==="join") return(
+  /* Join / create director */
+  if(screen==="join")return(
     <div className="player-page">
       <div className="player-logo">Film <span>In</span> The Blank</div>
       <div className="card-surface">
-        <p style={{color:"#777",fontSize:".85rem",marginBottom:"1rem",textAlign:"center"}}>Create your team</p>
+        <p style={{color:"#777",fontSize:".85rem",marginBottom:"1rem",textAlign:"center"}}>Create your director</p>
         <div className="input-group">
-          <label className="input-label">Team Name</label>
-          <input className="input-field" value={teamName} onChange={function(e){setTeamName(e.target.value);}} placeholder="e.g. The Cinephiles" maxLength={20}/>
+          <label className="input-label">Director Name</label>
+          <input className="input-field" value={teamName} onChange={function(e){setTeamName(e.target.value);}} placeholder="e.g. Spielberg Jr." maxLength={20}/>
         </div>
         <div className="input-group">
-          <label className="input-label">Team Color</label>
+          <label className="input-label">Your Color</label>
           <div className="color-picker">
             {PALETTE.map(function(p){
               const taken=game&&game.teams?Object.values(game.teams).find(function(t){return t.color===p.hex;}):false;
-              return(
-                <div key={p.hex} className={"color-swatch"+(teamColor===p.hex?" selected":"")}
-                  style={{background:p.hex,opacity:taken?0.25:1,cursor:taken?"not-allowed":"pointer"}}
-                  onClick={function(){if(!taken) setTeamColor(p.hex);}}
-                  title={taken?p.name+" (taken)":p.name}/>
-              );
+              return <div key={p.hex} className={"color-swatch"+(teamColor===p.hex?" selected":"")} style={{background:p.hex,opacity:taken?.25:1,cursor:taken?"not-allowed":"pointer"}} onClick={function(){if(!taken)setTeamColor(p.hex);}} title={taken?p.name+" (taken)":p.name}/>;
             })}
           </div>
         </div>
         {error&&<p className="error-msg">{error}</p>}
         <button className="btn btn-gold btn-lg" style={{width:"100%",marginTop:"1rem"}} onClick={joinGame} disabled={busy||!teamName.trim()}>
-          {busy?"Joining…":"Join Lobby →"}
+          {busy?"Joining…":"Enter the Room →"}
         </button>
       </div>
     </div>
   );
 
-  if(screen==="lobby"&&game) return(
+  /* Lobby */
+  if(screen==="lobby"&&game)return(
     <div className="player-page">
       <div className="player-logo">Film <span>In</span> The Blank</div>
       <div className="card-surface" style={{textAlign:"center"}}>
-        <p style={{color:"#777",fontSize:".85rem",marginBottom:".5rem"}}>You're in! Waiting for the host to start…</p>
-        <div style={{margin:"1.2rem 0"}}>
-          {game.teams&&Object.values(game.teams).map(function(t,i){
-            return(
-              <div key={i} className="team-row" style={{borderColor:hex2rgba(t.color,.4)}}>
-                <div className="team-swatch" style={{background:t.color}}/>
-                <span className="team-name-text">{t.name}</span>
-                {t.name===teamName&&<span style={{marginLeft:"auto",fontSize:".75rem",color:"#16a34a"}}>← You</span>}
-              </div>
-            );
-          })}
+        <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",color:"#888",fontSize:".95rem",marginBottom:".8rem"}}>Welcome to the screening room</div>
+        <p style={{color:"#777",fontSize:".85rem",marginBottom:"1rem"}}>Waiting for the host to call action…</p>
+        <div style={{margin:"1rem 0"}}>
+          {game.teams&&Object.values(game.teams).map(function(t,i){return(
+            <div key={i} className="director-row" style={{borderColor:hex2rgba(t.color,.4)}}>
+              <div className="director-swatch" style={{background:t.color}}/>
+              <span className="director-name" style={{color:t.color}}>{t.name}</span>
+              {t.name===teamName&&<span style={{marginLeft:"auto",fontSize:".75rem",color:"#16a34a"}}>← You</span>}
+            </div>
+          );})}
         </div>
         <p style={{color:"#555",fontSize:".8rem"}}>PIN: <strong style={{color:"#f59e0b",letterSpacing:2}}>{pin}</strong></p>
       </div>
     </div>
   );
 
+  /* Game screen */
   if(screen==="game"&&game){
     const round=game.rounds&&game.rounds[game.currentRound];
-    if(!round) return <div className="player-page"><span className="spinner"/>Loading round…</div>;
+    if(!round)return <div className="player-page"><span className="spinner"/>Loading…</div>;
     const myTeam=game.teams&&game.teams[teamId];
     const myColor=(myTeam&&myTeam.color)||teamColor||"#f59e0b";
     const alreadySubmitted=round.submissions&&round.submissions[teamId]!=null;
 
-    if(alreadySubmitted||submitted) return(
+    if(alreadySubmitted||submitted)return(
       <div className="player-page">
-        <div style={{textAlign:"center",padding:"3rem 2rem"}}>
-          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.5rem",letterSpacing:2,color:myColor}}>Submitted!</div>
-          <p style={{color:"#777",marginTop:".5rem"}}>Waiting for the host…</p>
+        <div style={{textAlign:"center",padding:"2rem"}}>
+          <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",fontSize:"1rem",color:"#777",marginBottom:".5rem"}}>Your nomination has been submitted</div>
+          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.5rem",letterSpacing:2,color:myColor}}>Awaiting the Verdict</div>
+          <p style={{color:"#555",marginTop:".5rem",fontSize:".85rem"}}>The host is reviewing all nominations…</p>
           <div style={{marginTop:"1.5rem"}}>
-            <p style={{color:"#555",fontSize:".8rem",marginBottom:".5rem"}}>Cards you claimed:</p>
+            <p style={{color:"#555",fontSize:".78rem",marginBottom:".5rem"}}>Your nominated cards:</p>
             <div className="tags" style={{justifyContent:"center"}}>
               {selected.map(function(i){return <span key={i} className="tag" style={{background:hex2rgba(myColor,.2),color:myColor}}>{round.cards[i]}</span>;})}
             </div>
@@ -358,14 +487,21 @@ function PlayerApp(){
 
     return(
       <div className="player-page">
-        <div style={{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.6rem",letterSpacing:2,marginBottom:"1rem"}}>{myTeam?myTeam.name:"Your Team"}</div>
+        <div style={{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.6rem",letterSpacing:2,marginBottom:".3rem"}}>{myTeam?myTeam.name:"Your Director"}</div>
         <div className="card-surface">
-          <p style={{fontSize:".82rem",color:"#777",marginBottom:".5rem"}}>Round {game.currentRound+1} · Tap the cards your scene covers</p>
+          {/* Award show framing on player screen */}
+          <div className="nomination-header">
+            Submit your nomination for<br/>
+            <strong style={{color:"#f5f5f5"}}>Best Movie Scene</strong> featuring:
+          </div>
+          <div className="nomination-cards">
+            {round.cards.map(function(c,i){return <span key={i} className="nomination-card-tag">{c}</span>;})}
+          </div>
+          <p style={{fontSize:".78rem",color:"#555",marginBottom:".6rem"}}>Tap the cards your scene covers:</p>
           {round.cards.map(function(c,i){
             const sel=selected.includes(i);
             return(
-              <div key={i} className="player-card-item" onClick={function(){setSelected(function(s){return s.includes(i)?s.filter(function(x){return x!==i;}):[...s,i];});}}
-                style={{background:sel?hex2rgba(myColor,.15):"#1a1a1a",borderColor:sel?myColor:"transparent"}}>
+              <div key={i} className="player-card-item" onClick={function(){setSelected(function(s){return s.includes(i)?s.filter(function(x){return x!==i;}):[...s,i];});}} style={{background:sel?hex2rgba(myColor,.15):"#1a1a1a",borderColor:sel?myColor:"transparent"}}>
                 <span className="player-card-num">{i+1}</span>
                 <span className="player-card-text">{c}</span>
                 {sel&&<span style={{marginLeft:"auto",color:myColor}}>✓</span>}
@@ -378,11 +514,11 @@ function PlayerApp(){
           </div>
           <div className="input-group">
             <label className="input-label">Scene Description (optional)</label>
-            <input className="input-field" value={scene} onChange={function(e){setScene(e.target.value);}} placeholder="e.g. The lawnmower scene in Signs"/>
+            <input className="input-field" value={scene} onChange={function(e){setScene(e.target.value);}} placeholder="e.g. The cerulean sweater speech in The Devil Wears Prada"/>
           </div>
           {submitError&&<p className="error-msg">{submitError}</p>}
-          <button className="btn" style={{background:myColor,color:"#fff",width:"100%",marginTop:".6rem"}} onClick={submitScene} disabled={syncing}>
-            {syncing?React.createElement("span",null,React.createElement("span",{className:"spinner"}),"Submitting…"):"Submit Scene"}
+          <button className="btn btn-gold" style={{width:"100%",marginTop:".6rem",padding:".7rem"}} onClick={submitScene} disabled={syncing}>
+            {syncing?"Submitting Nomination…":"🎬 Submit Nomination"}
           </button>
         </div>
       </div>
@@ -392,7 +528,7 @@ function PlayerApp(){
   return <div className="player-page"><span className="spinner"/>Connecting…</div>;
 }
 
-/* ══ HOST ════════════════════════════════════════════ */
+/* ══════════ HOST APP ════════════════════════════════ */
 function HostApp(){
   const [game,setGame]=useState(null);
   const [pin,setPin]=useState(null);
@@ -400,7 +536,15 @@ function HostApp(){
   const [showCoin,setShowCoin]=useState(false);
   const [disputeState,setDisputeState]=useState(null);
   const [watchingTeam,setWatchingTeam]=useState(null);
+  const [announcing,setAnnouncing]=useState(false);
   const pinRef=useRef(null);
+
+  const subscribeGame=useCallback(function(p){
+    dbSub("games/"+p,function(fresh){
+      if(!fresh)return;
+      setGame(function(){return Object.assign({},fresh);});
+    });
+  },[]);
 
   useEffect(()=>{
     (async function(){
@@ -411,68 +555,54 @@ function HostApp(){
           pinRef.current=savedPin;
           setPin(savedPin);
           setLoading(false);
-          dbSub("games/"+savedPin,function(fresh){
-            if(!fresh) return;
-            setGame(function(){return Object.assign({},fresh);});
-          });
+          subscribeGame(savedPin);
           return;
         }
       }
       const newPin=genPin();
       const rounds=generateRounds();
-      const newGame={pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds:rounds,teams:{}};
-      await dbSet("games/"+newPin,newGame);
+      await dbSet("games/"+newPin,{pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds:rounds,teams:{}});
       localStorage.setItem("fitb_host_pin",newPin);
       pinRef.current=newPin;
       setPin(newPin);
       setLoading(false);
-      dbSub("games/"+newPin,function(fresh){
-        if(!fresh) return;
-        setGame(function(){return Object.assign({},fresh);});
-      });
+      subscribeGame(newPin);
     })();
   },[]);
 
   const resetGame=async()=>{
     const newPin=genPin();
     const rounds=generateRounds();
-    const newGame={pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds:rounds,teams:{}};
-    await dbSet("games/"+newPin,newGame);
+    await dbSet("games/"+newPin,{pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds:rounds,teams:{}});
     localStorage.setItem("fitb_host_pin",newPin);
     pinRef.current=newPin;
     setPin(newPin);
-    setGame(newGame);
     setDisputeState(null);
     setWatchingTeam(null);
-    dbSub("games/"+newPin,function(fresh){
-      if(!fresh) return;
-      setGame(function(){return Object.assign({},fresh);});
-    });
+    setAnnouncing(false);
+    subscribeGame(newPin);
   };
 
   const startGame=async()=>{
+    setAnnouncing(true);
     await dbUpdate("games/"+pinRef.current,{status:"started",currentRound:0});
   };
 
   const awardPoints=async(teamId,pts)=>{
     const cur=game.currentRound;
     const prev=(game.totalScores&&game.totalScores[teamId])||0;
-    const scoreUpdate={};
-    scoreUpdate[teamId]=pts;
-    const scoredUpdate={};
-    scoredUpdate[teamId]=true;
-    const totalUpdate={};
-    totalUpdate[teamId]=prev+pts;
-    await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scores",scoreUpdate);
-    await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scored",scoredUpdate);
-    await dbUpdate("games/"+pinRef.current+"/totalScores",totalUpdate);
-    setWatchingTeam(null); // always return to team list after scoring
+    const su={};su[teamId]=pts;
+    const sc={};sc[teamId]=true;
+    const ts={};ts[teamId]=prev+pts;
+    await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scores",su);
+    await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scored",sc);
+    await dbUpdate("games/"+pinRef.current+"/totalScores",ts);
+    setWatchingTeam(null);
   };
 
   const confirmDispute=async()=>{
-    if(!disputeState) return;
-    const pts=disputeState.cards.filter(Boolean).length;
-    await awardPoints(disputeState.teamId,pts);
+    if(!disputeState)return;
+    await awardPoints(disputeState.teamId,disputeState.cards.filter(Boolean).length);
     setDisputeState(null);
   };
 
@@ -481,27 +611,28 @@ function HostApp(){
     await dbUpdate("games/"+pinRef.current,{currentRound:cur+1});
     setDisputeState(null);
     setWatchingTeam(null);
+    setAnnouncing(true); // trigger announcement for next round
   };
 
-  if(loading) return(
+  if(loading)return(
     <div className="page">
       <div className="header"><div className="logo">Film <span>In</span> The Blank</div></div>
-      <div className="main"><span className="spinner"/>Setting up game…</div>
+      <div className="main"><span className="spinner"/>Setting up…</div>
     </div>
   );
 
-  if(!game) return(
+  if(!game)return(
     <div className="page">
       <div className="header"><div className="logo">Film <span>In</span> The Blank</div></div>
-      <div className="main"><span className="spinner"/>Connecting to Firebase…</div>
+      <div className="main"><span className="spinner"/>Connecting…</div>
     </div>
   );
 
-  const teams=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
+  const directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
   const baseUrl=window.location.href.split("?")[0].replace(/#.*/,"");
 
-  /* LOBBY */
-  if(game.status==="lobby") return(
+  /* ── LOBBY ── */
+  if(game.status==="lobby")return(
     <div className="page">
       <div className="header">
         <div className="logo">Film <span>In</span> The Blank</div>
@@ -509,93 +640,89 @@ function HostApp(){
       </div>
       <div className="main">
         <div style={{textAlign:"center"}}>
+          <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",color:"#777",fontSize:"1rem",marginBottom:".8rem"}}>Welcome to the screening room</div>
           <p style={{color:"#555",fontSize:".85rem",textTransform:"uppercase",letterSpacing:2,marginBottom:".3rem"}}>Game PIN</p>
           <div className="pin-display">{pin}</div>
           <p className="pin-sub" style={{marginTop:".6rem"}}>Scan to join</p>
           <QRBlock url={baseUrl+"#player"} size={160}/>
-          <p style={{color:"#444",fontSize:".75rem",marginTop:".5rem"}}>or visit <span style={{color:"#f59e0b"}}>{baseUrl}</span> and add <span style={{color:"#f59e0b"}}>#player</span></p>
+          <p style={{color:"#444",fontSize:".72rem",marginTop:".5rem"}}>or visit <span style={{color:"#f59e0b"}}>{baseUrl}</span> with <span style={{color:"#f59e0b"}}>#player</span></p>
         </div>
-
         <div style={{width:"100%",maxWidth:480}}>
-          <p style={{color:"#555",fontSize:".78rem",textTransform:"uppercase",letterSpacing:1,marginBottom:".8rem",textAlign:"center"}}>
-            Teams joined ({teams.length}/4)
-          </p>
-          {teams.length===0?(
-            <p className="waiting-teams">Waiting for players to join…</p>
-          ):(
-            <div className="teams-grid">
-              {teams.map(function(t){return(
-                <div key={t.id} className="team-row" style={{borderColor:hex2rgba(t.color,.4)}}>
-                  <div className="team-swatch" style={{background:t.color}}/>
-                  <span className="team-name-text" style={{color:t.color}}>{t.name}</span>
+          <p style={{color:"#555",fontSize:".78rem",textTransform:"uppercase",letterSpacing:1,marginBottom:".8rem",textAlign:"center"}}>Directors in the room ({directors.length}/4)</p>
+          {directors.length===0
+            ?<p className="waiting-directors">Waiting for directors to arrive…</p>
+            :<div className="directors-grid">
+              {directors.map(function(d){return(
+                <div key={d.id} className="director-row" style={{borderColor:hex2rgba(d.color,.4)}}>
+                  <div className="director-swatch" style={{background:d.color}}/>
+                  <span className="director-name" style={{color:d.color}}>{d.name}</span>
                 </div>
               );})}
             </div>
-          )}
+          }
         </div>
-
-        <button className="btn btn-gold btn-lg" onClick={startGame} disabled={teams.length<1} style={{minWidth:200}}>
-          {teams.length<1?"Waiting for players…":"Start Game →"}
+        <button className="btn btn-gold btn-lg" onClick={startGame} disabled={directors.length<1} style={{minWidth:220}}>
+          {directors.length<1?"Waiting for directors…":"🎬 Call Action →"}
         </button>
       </div>
     </div>
   );
 
-  /* GAME */
+  /* ── GAME ── */
   const cur=game.currentRound;
   const round=game.rounds&&game.rounds[cur];
-  if(!round) return <div className="page"><div className="main"><span className="spinner"/></div></div>;
+  if(!round)return <div className="page"><div className="main"><span className="spinner"/></div></div>;
 
   const submissions=round.submissions||{};
   const scored=round.scored||{};
   const scores=round.scores||{};
   const totalScores=game.totalScores||{};
-  const allSubmitted=teams.length>0&&teams.every(function(t){return submissions[t.id]!=null;});
-  const allScored=teams.length>0&&teams.every(function(t){return scored[t.id];});
+  const allSubmitted=directors.length>0&&directors.every(function(d){return submissions[d.id]!=null;});
+  const allScored=directors.length>0&&directors.every(function(d){return scored[d.id];});
   const gameOver=cur>=4&&allScored;
 
   function getYTEmbed(url){var id=extractYouTubeId(url);return id?"https://www.youtube.com/embed/"+id+"?autoplay=1":null;}
 
-  /* WINNER */
+  /* ── WINNER ── */
   if(gameOver){
-    const sorted=[...teams].sort(function(a,b){return (totalScores[b.id]||0)-(totalScores[a.id]||0);});
+    const sorted=[...directors].sort(function(a,b){return (totalScores[b.id]||0)-(totalScores[a.id]||0);});
     const topScore=totalScores[sorted[0].id]||0;
-    const winners=sorted.filter(function(t){return (totalScores[t.id]||0)===topScore;});
+    const winners=sorted.filter(function(d){return (totalScores[d.id]||0)===topScore;});
     return(
       <div className="page">
         <div className="header">
           <div className="logo">Film <span>In</span> The Blank</div>
-          <button className="btn btn-gold" onClick={resetGame}>New Game</button>
+          <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem",visibility:"hidden"}}>New Game</button>
         </div>
-        <div className="main winner-screen">
-          {winners.length===1
-            ?<div className="winner-title" style={{color:winners[0].color}}>{winners[0].name} Wins!</div>
-            :<div className="winner-title" style={{color:"#f59e0b"}}>It's a Tie!</div>
-          }
-          <div className="final-scores">
-            {sorted.map(function(t){return(
-              <div key={t.id} className="final-score">
-                <div className="final-score-num" style={{color:t.color}}>{totalScores[t.id]||0}</div>
-                <div className="final-score-label">{t.name}</div>
-              </div>
-            );})}
-          </div>
-          <button className="btn btn-gold btn-lg" onClick={resetGame}>Play Again</button>
+        <div className="main">
+          <WinnerReveal winners={winners} scores={totalScores} allDirectors={sorted} onPlayAgain={resetGame}/>
         </div>
       </div>
     );
   }
 
+  /* ── ANNOUNCEMENT ── */
+  if(announcing)return(
+    <div className="page">
+      <div className="header">
+        <div className="logo">Film <span>In</span> The Blank</div>
+        <span className="round-badge">Round {cur+1}/5</span>
+      </div>
+      <div className="main">
+        <CardAnnouncement cards={round.cards} onDone={function(){setAnnouncing(false);}}/>
+      </div>
+    </div>
+  );
+
+  /* ── MAIN GAME SCREEN ── */
   return(
     <div className="page">
       {showCoin&&<CoinFlip onClose={function(){setShowCoin(false);}}/>}
       <div className="header">
         <div className="logo">Film <span>In</span> The Blank</div>
         <div className="score-chips">
-          {teams.map(function(t){return(
-            <span key={t.id} className="score-chip" style={{background:t.color}}>
-              {t.name}: {totalScores[t.id]||0} pts
-            </span>
+          {directors.map(function(d){return(
+            <span key={d.id} className="score-chip" style={{background:d.color}}>{d.name}: {totalScores[d.id]||0} pts</span>
           );})}
           <span className="round-badge">Round {cur+1}/5</span>
         </div>
@@ -606,46 +733,50 @@ function HostApp(){
       </div>
 
       <div className="main">
-        <div className="cards-grid">
-          {round.cards.map(function(c,i){return(
-            <div className="game-card" key={i}>
-              <div className="card-num">{i+1}</div>
-              <div className="card-text">{c}</div>
-            </div>
-          );})}
+        {/* Award show framing on host screen */}
+        <div className="announcement-wrap" style={{marginBottom:"-.5rem"}}>
+          <div className="curtain-label">🎬 Round {cur+1} — The nominees for <span style={{color:"#f59e0b",fontStyle:"normal",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:1}}>Best Movie Scene</span> featuring</div>
+          <div className="cards-reveal" style={{marginTop:".4rem"}}>
+            {round.cards.map(function(c,i){return(
+              <div key={i} className="reveal-card visible">
+                <span className="reveal-card-num">{i+1}</span>
+                <span>{c}</span>
+              </div>
+            );})}
+          </div>
+          <div className="are-label visible">…are</div>
         </div>
 
+        {/* Submissions */}
         <div className="subs-grid">
-          {teams.map(function(t){
-            const sub=submissions[t.id];
+          {directors.map(function(d){
+            const sub=submissions[d.id];
             return(
-              <div key={t.id} className="sub-box" style={{borderColor:sub?hex2rgba(t.color,.5):"#222"}}>
-                <div className="sub-title" style={{color:t.color}}>
-                  {t.name} {sub?"✓":""}
-                  {scored[t.id]&&<span className="scored-badge">+{scores[t.id]||0} pts</span>}
+              <div key={d.id} className="sub-box" style={{borderColor:sub?hex2rgba(d.color,.5):"#222"}}>
+                <div className="sub-title" style={{color:d.color}}>
+                  {d.name} {sub?"✓":""}
+                  {scored[d.id]&&<span className="scored-badge">+{scores[d.id]||0} pts</span>}
                 </div>
                 {sub?(
                   <>
                     <div className="sub-scene">{sub.scene}</div>
                     <div className="sub-link">{sub.link}</div>
                     <div className="tags">
-                      {(sub.cards||[]).map(function(ci){return(
-                        <span key={ci} className="tag" style={{background:hex2rgba(t.color,.18),color:t.color}}>{round.cards[ci]}</span>
-                      );})}
+                      {(sub.cards||[]).map(function(ci){return <span key={ci} className="tag" style={{background:hex2rgba(d.color,.18),color:d.color}}>{round.cards[ci]}</span>;})}
                     </div>
                   </>
                 ):(
-                  <div className="sub-waiting">Waiting…</div>
+                  <div className="sub-waiting">Awaiting nomination…</div>
                 )}
               </div>
             );
           })}
         </div>
 
-        {/* PIN reminder while waiting for submissions */}
+        {/* PIN reminder */}
         {!allSubmitted&&(
           <div style={{textAlign:"center"}}>
-            <p style={{color:"#444",fontSize:".78rem",marginBottom:".2rem"}}>PIN</p>
+            <p style={{color:"#333",fontSize:".72rem",marginBottom:".2rem"}}>PIN</p>
             <p style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2rem",color:"#f59e0b",letterSpacing:6}}>{pin}</p>
           </div>
         )}
@@ -653,22 +784,17 @@ function HostApp(){
         {/* Video review */}
         {allSubmitted&&!allScored&&(
           watchingTeam?(function(){
-            const t=teams.find(function(x){return x.id===watchingTeam;});
+            const d=directors.find(function(x){return x.id===watchingTeam;});
             const sub=submissions[watchingTeam];
             return(
               <div className="video-area">
-                <div className="review-label" style={{color:t.color}}>Now watching: {t.name}</div>
+                <div className="review-label" style={{color:d.color}}>Now screening: {d.name}</div>
                 <iframe src={getYTEmbed(sub.link)} title="Scene" allowFullScreen allow="autoplay"/>
                 <div className="row" style={{marginTop:"1rem"}}>
                   {!scored[watchingTeam]?(
                     <>
-                      <button className="btn btn-green" onClick={function(){awardPoints(watchingTeam,(sub.cards||[]).length);}}>
-                        ✓ Grant Full ({(sub.cards||[]).length} pts)
-                      </button>
-                      <button className="btn btn-red" onClick={function(){
-                        setDisputeState({teamId:watchingTeam,cards:(sub.cards||[]).map(function(){return true;})});
-                        setWatchingTeam(null);
-                      }}>Dispute</button>
+                      <button className="btn btn-green" onClick={function(){awardPoints(watchingTeam,(sub.cards||[]).length);}}>✓ Grant Full ({(sub.cards||[]).length} pts)</button>
+                      <button className="btn btn-red" onClick={function(){setDisputeState({teamId:watchingTeam,cards:(sub.cards||[]).map(function(){return true;})});setWatchingTeam(null);}}>Dispute</button>
                       <button className="btn btn-outline" onClick={function(){setShowCoin(true);}}>🪙 Coin Flip</button>
                       <button className="btn btn-gray" onClick={function(){setWatchingTeam(null);}}>← Back</button>
                     </>
@@ -680,18 +806,16 @@ function HostApp(){
             );
           })():(
             <div className="row" style={{flexDirection:"column",gap:".6rem"}}>
-              <p style={{color:"#888"}}>All submitted! Review each team's scene:</p>
+              <p style={{color:"#888",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>All nominations are in. Screen each director's scene:</p>
               <div className="row">
-                {teams.map(function(t){return(
-                  <button key={t.id} className="btn" style={{background:t.color,color:"#fff"}} onClick={function(){setWatchingTeam(t.id);}}>
-                    {scored[t.id]?"✓ ":""}▶ {t.name}
+                {directors.map(function(d){return(
+                  <button key={d.id} className="btn" style={{background:d.color,color:"#fff"}} onClick={function(){setWatchingTeam(d.id);}}>
+                    {scored[d.id]?"✓ ":""}▶ {d.name}
                   </button>
                 );})}
               </div>
-              {teams.some(function(t){return scored[t.id];})&&!allScored&&(
-                <p style={{color:"#555",fontSize:".82rem"}}>
-                  Still to judge: {teams.filter(function(t){return !scored[t.id];}).map(function(t){return t.name;}).join(", ")}
-                </p>
+              {directors.some(function(d){return scored[d.id];})&&!allScored&&(
+                <p style={{color:"#555",fontSize:".82rem"}}>Still to screen: {directors.filter(function(d){return !scored[d.id];}).map(function(d){return d.name;}).join(", ")}</p>
               )}
             </div>
           )
@@ -699,25 +823,22 @@ function HostApp(){
 
         {/* Dispute */}
         {disputeState&&(function(){
-          const t=teams.find(function(x){return x.id===disputeState.teamId;});
+          const d=directors.find(function(x){return x.id===disputeState.teamId;});
           const sub=submissions[disputeState.teamId];
           return(
             <div style={{background:"#111",border:"1.5px solid #333",borderRadius:14,padding:"1.5rem",maxWidth:600,width:"100%"}}>
               <p style={{color:"#aaa",fontSize:".82rem",marginBottom:"1rem",textAlign:"center"}}>
-                Toggle off cards <strong style={{color:t.color}}>{t.name}</strong> didn't cover
+                Toggle off cards <strong style={{color:d.color}}>{d.name}</strong> didn't cover
               </p>
               <div className="dispute-cards">
                 {(sub.cards||[]).map(function(ci,idx){return(
-                  <div key={idx} className={"dispute-card "+(disputeState.cards[idx]?"on":"off")}
-                    onClick={function(){setDisputeState(function(d){var cards=[...d.cards];cards[idx]=!cards[idx];return Object.assign({},d,{cards:cards});});}}>
+                  <div key={idx} className={"dispute-card "+(disputeState.cards[idx]?"on":"off")} onClick={function(){setDisputeState(function(ds){var c=[...ds.cards];c[idx]=!c[idx];return Object.assign({},ds,{cards:c});});}}>
                     {round.cards[ci]}
                   </div>
                 );})}
               </div>
               <div className="row" style={{marginTop:"1rem"}}>
-                <button className="btn btn-green" onClick={confirmDispute}>
-                  Confirm ({disputeState.cards.filter(Boolean).length} pts)
-                </button>
+                <button className="btn btn-green" onClick={confirmDispute}>Confirm ({disputeState.cards.filter(Boolean).length} pts)</button>
                 <button className="btn btn-outline" onClick={function(){setShowCoin(true);}}>🪙 Coin Flip</button>
                 <button className="btn btn-gray" onClick={function(){setDisputeState(null);}}>Cancel</button>
               </div>
@@ -728,8 +849,8 @@ function HostApp(){
         {/* Next round */}
         {allScored&&!gameOver&&(
           <div style={{textAlign:"center"}}>
-            <p style={{color:"#888",marginBottom:"1rem"}}>
-              Round: {teams.map(function(t){return t.name+" +"+(scores[t.id]||0);}).join(" · ")}
+            <p style={{color:"#888",marginBottom:"1rem",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>
+              Round {cur+1} complete — {directors.map(function(d){return d.name+" +"+(scores[d.id]||0);}).join(" · ")}
             </p>
             <button className="btn btn-gold btn-lg" onClick={nextRound}>Next Round →</button>
           </div>
@@ -739,11 +860,10 @@ function HostApp(){
   );
 }
 
-/* ══ ROUTER ══════════════════════════════════════════ */
+/* ══════════ ROUTER ══════════════════════════════════ */
 function App(){
-  // Host if no hash, or hash is #host. Player if any other hash or ?player in URL
   const hash=window.location.hash;
-  const isPlayer=hash==="#player"||hash==="#join"||window.location.search.includes("player");
+  const isPlayer=hash==="#player"||hash==="#join";
   return isPlayer?<PlayerApp/>:<HostApp/>;
 }
 
