@@ -177,7 +177,8 @@ const CARD_POOL=[
 const PALETTE=[
   {hex:"#e53935",name:"Red"},{hex:"#1e88e5",name:"Blue"},{hex:"#43a047",name:"Green"},
   {hex:"#fb8c00",name:"Orange"},{hex:"#8e24aa",name:"Purple"},{hex:"#e91e63",name:"Pink"},
-  {hex:"#00acc1",name:"Teal"},{hex:"#fdd835",name:"Yellow"},
+  {hex:"#00acc1",name:"Teal"},{hex:"#fdd835",name:"Yellow"},{hex:"#6d4c41",name:"Brown"},
+  {hex:"#00897b",name:"Mint"},{hex:"#e64a19",name:"Crimson"},{hex:"#5c6bc0",name:"Indigo"},
 ];
 
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
@@ -363,7 +364,7 @@ function PlayerApp(){
     if(!g){setError("Game not found. Check the PIN and try again.");setBusy(false);return;}
     if(g.status!=="lobby"){setError("This game has already started.");setBusy(false);return;}
     const dirs=g.teams?Object.values(g.teams):[];
-    if(dirs.length>=4){setError("This game is full (4 directors max).");setBusy(false);return;}
+    if(dirs.length>=8){setError("This game is full (8 directors max).");setBusy(false);return;}
     setGame(g);setScreen("join");setBusy(false);
   };
 
@@ -600,7 +601,25 @@ function HostApp(){
     setWatchingTeam(null);
   };
 
-  const confirmDispute=async()=>{
+  const skipRound=async()=>{
+    const cur=game.currentRound;
+    // Award 0 to anyone who hasn't submitted or been scored yet
+    for(const d of directors){
+      if(!scored[d.id]){
+        const prev=(game.totalScores&&game.totalScores[d.id])||0;
+        const su={};su[d.id]=0;
+        const sc={};sc[d.id]=true;
+        const ts={};ts[d.id]=prev;
+        await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scores",su);
+        await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scored",sc);
+        await dbUpdate("games/"+pinRef.current+"/totalScores",ts);
+      }
+    }
+    await dbUpdate("games/"+pinRef.current,{currentRound:cur+1});
+    setDisputeState(null);
+    setWatchingTeam(null);
+    setAnnouncing(true);
+  };
     if(!disputeState)return;
     await awardPoints(disputeState.teamId,disputeState.cards.filter(Boolean).length);
     setDisputeState(null);
@@ -648,7 +667,7 @@ function HostApp(){
           <p style={{color:"#444",fontSize:".72rem",marginTop:".5rem"}}>or visit <span style={{color:"#f59e0b"}}>{baseUrl}</span> with <span style={{color:"#f59e0b"}}>#player</span></p>
         </div>
         <div style={{width:"100%",maxWidth:480}}>
-          <p style={{color:"#555",fontSize:".78rem",textTransform:"uppercase",letterSpacing:1,marginBottom:".8rem",textAlign:"center"}}>Directors in the room ({directors.length}/4)</p>
+          <p style={{color:"#555",fontSize:".78rem",textTransform:"uppercase",letterSpacing:1,marginBottom:".8rem",textAlign:"center"}}>Directors in the room ({directors.length}/8)</p>
           {directors.length===0
             ?<p className="waiting-directors">Waiting for directors to arrive…</p>
             :<div className="directors-grid">
@@ -677,6 +696,7 @@ function HostApp(){
   const scored=round.scored||{};
   const scores=round.scores||{};
   const totalScores=game.totalScores||{};
+  const anySubmitted=directors.some(function(d){return submissions[d.id]!=null;});
   const allSubmitted=directors.length>0&&directors.every(function(d){return submissions[d.id]!=null;});
   const allScored=directors.length>0&&directors.every(function(d){return scored[d.id];});
   const gameOver=cur>=4&&allScored;
@@ -758,13 +778,9 @@ function HostApp(){
                   {scored[d.id]&&<span className="scored-badge">+{scores[d.id]||0} pts</span>}
                 </div>
                 {sub?(
-                  <>
-                    <div className="sub-scene">{sub.scene}</div>
-                    <div className="sub-link">{sub.link}</div>
-                    <div className="tags">
-                      {(sub.cards||[]).map(function(ci){return <span key={ci} className="tag" style={{background:hex2rgba(d.color,.18),color:d.color}}>{round.cards[ci]}</span>;})}
-                    </div>
-                  </>
+                  <div style={{fontSize:".82rem",color:"#aaa",fontFamily:"'Playfair Display',serif",fontStyle:"italic",marginTop:".2rem"}}>
+                    Nomination received
+                  </div>
                 ):(
                   <div className="sub-waiting">Awaiting nomination…</div>
                 )}
@@ -773,16 +789,36 @@ function HostApp(){
           })}
         </div>
 
-        {/* PIN reminder */}
-        {!allSubmitted&&(
+        {/* PIN reminder + manual skip */}
+        {!allScored&&(
           <div style={{textAlign:"center"}}>
-            <p style={{color:"#333",fontSize:".72rem",marginBottom:".2rem"}}>PIN</p>
-            <p style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2rem",color:"#f59e0b",letterSpacing:6}}>{pin}</p>
+            {!allSubmitted&&(
+              <>
+                <p style={{color:"#333",fontSize:".72rem",marginBottom:".2rem"}}>PIN</p>
+                <p style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2rem",color:"#f59e0b",letterSpacing:6,marginBottom:".8rem"}}>{pin}</p>
+              </>
+            )}
+            {anySubmitted&&!allSubmitted&&(
+              <div style={{marginTop:".4rem"}}>
+                <p style={{color:"#555",fontSize:".78rem",marginBottom:".5rem",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>Still waiting on some directors…</p>
+                <button className="btn btn-outline" style={{fontSize:".78rem"}} onClick={()=>setWatchingTeam(null)}>
+                  ▶ Start reviewing what's in
+                </button>
+                {cur<4&&<button className="btn btn-gray" style={{fontSize:".78rem",marginLeft:".5rem"}} onClick={skipRound}>
+                  Skip Round →
+                </button>}
+              </div>
+            )}
+            {!anySubmitted&&cur<4&&(
+              <button className="btn btn-gray" style={{fontSize:".75rem",marginTop:".5rem"}} onClick={skipRound}>
+                Skip Round →
+              </button>
+            )}
           </div>
         )}
 
         {/* Video review */}
-        {allSubmitted&&!allScored&&(
+        {anySubmitted&&!allScored&&(
           watchingTeam?(function(){
             const d=directors.find(function(x){return x.id===watchingTeam;});
             const sub=submissions[watchingTeam];
@@ -806,9 +842,9 @@ function HostApp(){
             );
           })():(
             <div className="row" style={{flexDirection:"column",gap:".6rem"}}>
-              <p style={{color:"#888",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>All nominations are in. Screen each director's scene:</p>
+              <p style={{color:"#888",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>{allSubmitted?"All nominations are in.":"Some nominations are in."} Screen each director's scene:</p>
               <div className="row">
-                {directors.map(function(d){return(
+                {directors.filter(function(d){return submissions[d.id]!=null;}).map(function(d){return(
                   <button key={d.id} className="btn" style={{background:d.color,color:"#fff"}} onClick={function(){setWatchingTeam(d.id);}}>
                     {scored[d.id]?"✓ ":""}▶ {d.name}
                   </button>
