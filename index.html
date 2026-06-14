@@ -316,9 +316,36 @@ function WinnerReveal({winners, scores, allDirectors, onPlayAgain}){
 }
 
 /* ══════════ PLAYER APP ══════════════════════════════ */
+const PLAYER_STORAGE_KEY="fitb_player_session";
+
+function savePlayerSession(pin,teamId,teamName,teamColor){
+  try{localStorage.setItem(PLAYER_STORAGE_KEY,JSON.stringify({pin,teamId,teamName,teamColor,savedAt:Date.now()}));}catch(e){}
+}
+function loadPlayerSession(){
+  try{
+    const s=localStorage.getItem(PLAYER_STORAGE_KEY);
+    if(!s)return null;
+    const d=JSON.parse(s);
+    // Sessions expire after 12 hours
+    if(Date.now()-d.savedAt>12*60*60*1000){localStorage.removeItem(PLAYER_STORAGE_KEY);return null;}
+    return d;
+  }catch(e){return null;}
+}
+function clearPlayerSession(){
+  try{localStorage.removeItem(PLAYER_STORAGE_KEY);}catch(e){}
+}
+
+// Read PIN from URL hash e.g. #player?pin=1234
+function getPinFromUrl(){
+  const hash=window.location.hash;
+  const match=hash.match(/[?&]pin=(\d{4})/);
+  return match?match[1]:null;
+}
+
 function PlayerApp(){
-  const [screen,setScreen]=useState("pin");
+  const [screen,setScreen]=useState("loading"); // loading|pin|join|lobby|game|submitted
   const [pin,setPin]=useState("");
+  const [pinInput,setPinInput]=useState("");
   const [game,setGame]=useState(null);
   const [teamId,setTeamId]=useState(null);
   const [teamName,setTeamName]=useState("");
@@ -334,15 +361,64 @@ function PlayerApp(){
   const roundRef=useRef(null);
   const unsubRef=useRef(null);
 
+  // On mount: try to restore session or auto-fill PIN from URL
   useEffect(()=>{
-    if(!pin||!teamId)return;
+    (async function(){
+      // 1. Try to restore from localStorage
+      const session=loadPlayerSession();
+      if(session){
+        const g=await dbGet("games/"+session.pin);
+        if(g&&(g.status==="lobby"||g.status==="started")){
+          // Verify our teamId still exists in the game
+          if(g.teams&&g.teams[session.teamId]){
+            setPin(session.pin);
+            setTeamId(session.teamId);
+            setTeamName(session.teamName);
+            setTeamColor(session.teamColor);
+            setGame(g);
+            setScreen(g.status==="started"?"game":"lobby");
+            subscribeGame(session.pin);
+            return;
+          }
+        }
+        // Session stale — clear it
+        clearPlayerSession();
+      }
+      // 2. Check for PIN in QR URL
+      const urlPin=getPinFromUrl();
+      if(urlPin){
+        setPinInput(urlPin);
+        // Auto-validate and skip to join screen
+        const g=await dbGet("games/"+urlPin);
+        if(g&&g.status==="lobby"){
+          const dirs=g.teams?Object.values(g.teams):[];
+          if(dirs.length<8){
+            setPin(urlPin);
+            setGame(g);
+            setScreen("join");
+            return;
+          }
+        }
+        // Game full or not found — fall through to PIN screen with value pre-filled
+        setPinInput(urlPin);
+      }
+      setScreen("pin");
+    })();
+  },[]);
+
+  function subscribeGame(p){
     if(unsubRef.current)unsubRef.current();
-    unsubRef.current=dbSub("games/"+pin,function(g){
+    unsubRef.current=dbSub("games/"+p,function(g){
       if(!g)return;
       setGame(g);
       if(g.status==="started")setScreen("game");
       if(g.status==="lobby")setScreen("lobby");
     });
+  }
+
+  useEffect(()=>{
+    if(!pin||!teamId)return;
+    subscribeGame(pin);
     return()=>{if(unsubRef.current)unsubRef.current();};
   },[pin,teamId]);
 
@@ -357,7 +433,7 @@ function PlayerApp(){
 
   const joinPin=async()=>{
     setError("");
-    const p=pin.trim();
+    const p=pinInput.trim();
     if(p.length!==4||isNaN(Number(p))){setError("Enter the 4-digit PIN from the host screen.");return;}
     setBusy(true);
     const g=await dbGet("games/"+p);
@@ -365,7 +441,10 @@ function PlayerApp(){
     if(g.status!=="lobby"){setError("This game has already started.");setBusy(false);return;}
     const dirs=g.teams?Object.values(g.teams):[];
     if(dirs.length>=8){setError("This game is full (8 directors max).");setBusy(false);return;}
-    setGame(g);setScreen("join");setBusy(false);
+    setPin(p);
+    setGame(g);
+    setScreen("join");
+    setBusy(false);
   };
 
   const joinGame=async()=>{
@@ -378,7 +457,10 @@ function PlayerApp(){
     if(existing.find(function(t){return t.name.toLowerCase()===teamName.trim().toLowerCase();})){setError("That name is taken!");return;}
     setBusy(true);
     const pushRef=await dbPush("games/"+pin+"/teams",{name:teamName.trim(),color:teamColor,score:0});
-    setTeamId(pushRef.key);
+    const newTeamId=pushRef.key;
+    setTeamId(newTeamId);
+    // Save session to localStorage so they can return after switching apps
+    savePlayerSession(pin,newTeamId,teamName.trim(),teamColor);
     setScreen("lobby");
     setBusy(false);
   };
@@ -399,15 +481,23 @@ function PlayerApp(){
     setSyncing(false);setSubmitted(true);
   };
 
-  /* PIN screen */
+  /* Loading screen while we check localStorage / URL */
+  if(screen==="loading")return(
+    <div className="player-page">
+      <div className="player-logo">Film <span>In</span> The Blank</div>
+      <span className="spinner"/>
+    </div>
+  );
+
+  /* PIN screen — fallback for manual entry */
   if(screen==="pin")return(
     <div className="player-page">
       <div className="player-logo">Film <span>In</span> The Blank</div>
       <div className="card-surface">
         <p style={{color:"#777",fontSize:".85rem",marginBottom:"1.2rem",textAlign:"center"}}>Enter the PIN shown on the host screen</p>
-        <input className="pin-input" value={pin} onChange={function(e){setPin(e.target.value.replace(/\D/g,"").slice(0,4));}} placeholder="0000" maxLength={4} inputMode="numeric" onKeyDown={function(e){if(e.key==="Enter")joinPin();}}/>
+        <input className="pin-input" value={pinInput} onChange={function(e){setPinInput(e.target.value.replace(/\D/g,"").slice(0,4));}} placeholder="0000" maxLength={4} inputMode="numeric" onKeyDown={function(e){if(e.key==="Enter")joinPin();}}/>
         {error&&<p className="error-msg" style={{textAlign:"center",marginTop:".5rem"}}>{error}</p>}
-        <button className="btn btn-gold btn-lg" style={{width:"100%",marginTop:"1rem"}} onClick={joinPin} disabled={busy||pin.length!==4}>
+        <button className="btn btn-gold btn-lg" style={{width:"100%",marginTop:"1rem"}} onClick={joinPin} disabled={busy||pinInput.length!==4}>
           {busy?"Checking…":"Join Game →"}
         </button>
       </div>
@@ -457,7 +547,8 @@ function PlayerApp(){
             </div>
           );})}
         </div>
-        <p style={{color:"#555",fontSize:".8rem"}}>PIN: <strong style={{color:"#f59e0b",letterSpacing:2}}>{pin}</strong></p>
+        <p style={{color:"#555",fontSize:".8rem",marginBottom:"1rem"}}>PIN: <strong style={{color:"#f59e0b",letterSpacing:2}}>{pin}</strong></p>
+        <button className="btn btn-outline" style={{fontSize:".75rem"}} onClick={function(){clearPlayerSession();setScreen("pin");setPinInput("");}}>Leave Game</button>
       </div>
     </div>
   );
@@ -663,8 +754,8 @@ function HostApp(){
           <p style={{color:"#555",fontSize:".85rem",textTransform:"uppercase",letterSpacing:2,marginBottom:".3rem"}}>Game PIN</p>
           <div className="pin-display">{pin}</div>
           <p className="pin-sub" style={{marginTop:".6rem"}}>Scan to join</p>
-          <QRBlock url={baseUrl+"#player"} size={160}/>
-          <p style={{color:"#444",fontSize:".72rem",marginTop:".5rem"}}>or visit <span style={{color:"#f59e0b"}}>{baseUrl}</span> with <span style={{color:"#f59e0b"}}>#player</span></p>
+          <QRBlock url={baseUrl+"#player?pin="+pin} size={160}/>
+          <p style={{color:"#444",fontSize:".72rem",marginTop:".5rem"}}>or visit <span style={{color:"#f59e0b"}}>{baseUrl}#player</span> and enter PIN <span style={{color:"#f59e0b"}}>{pin}</span></p>
         </div>
         <div style={{width:"100%",maxWidth:480}}>
           <p style={{color:"#555",fontSize:".78rem",textTransform:"uppercase",letterSpacing:1,marginBottom:".8rem",textAlign:"center"}}>Directors in the room ({directors.length}/8)</p>
@@ -899,7 +990,7 @@ function HostApp(){
 /* ══════════ ROUTER ══════════════════════════════════ */
 function App(){
   const hash=window.location.hash;
-  const isPlayer=hash==="#player"||hash==="#join";
+  const isPlayer=hash.startsWith("#player")||hash==="#join";
   return isPlayer?<PlayerApp/>:<HostApp/>;
 }
 
