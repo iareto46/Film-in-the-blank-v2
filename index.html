@@ -725,6 +725,8 @@ function HostApp(){
     setWatchingTeam(null);
     setAnnouncing(true);
   };
+
+  const confirmDispute=async()=>{
     if(!disputeState)return;
     await awardPoints(disputeState.teamId,disputeState.cards.filter(Boolean).length);
     setDisputeState(null);
