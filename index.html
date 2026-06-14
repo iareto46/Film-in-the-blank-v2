@@ -150,6 +150,14 @@ function dbSet(p,v){return _db.ref(p).set(v);}
 function dbUpdate(p,v){return _db.ref(p).update(v);}
 function dbSub(p,cb){var r=_db.ref(p);r.on('value',function(s){cb(s.exists()?s.val():null);});return function(){r.off();};}
 function dbPush(p,v){return _db.ref(p).push(v);}
+
+// Wrap dbGet with a timeout so a Firebase hang never freezes the UI
+function dbGetSafe(p){
+  return Promise.race([
+    dbGet(p),
+    new Promise(function(_,reject){setTimeout(function(){reject(new Error("timeout"));},8000);})
+  ]);
+}
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -364,43 +372,43 @@ function PlayerApp(){
   // On mount: try to restore session or auto-fill PIN from URL
   useEffect(()=>{
     (async function(){
-      // 1. Try to restore from localStorage
-      const session=loadPlayerSession();
-      if(session){
-        const g=await dbGet("games/"+session.pin);
-        if(g&&(g.status==="lobby"||g.status==="started")){
-          // Verify our teamId still exists in the game
-          if(g.teams&&g.teams[session.teamId]){
-            setPin(session.pin);
-            setTeamId(session.teamId);
-            setTeamName(session.teamName);
-            setTeamColor(session.teamColor);
-            setGame(g);
-            setScreen(g.status==="started"?"game":"lobby");
-            subscribeGame(session.pin);
-            return;
+      try{
+        // 1. Try to restore from localStorage
+        const session=loadPlayerSession();
+        if(session){
+          const g=await dbGetSafe("games/"+session.pin);
+          if(g&&(g.status==="lobby"||g.status==="started")){
+            if(g.teams&&g.teams[session.teamId]){
+              setPin(session.pin);
+              setTeamId(session.teamId);
+              setTeamName(session.teamName);
+              setTeamColor(session.teamColor);
+              setGame(g);
+              setScreen(g.status==="started"?"game":"lobby");
+              subscribeGame(session.pin);
+              return;
+            }
           }
+          clearPlayerSession();
         }
-        // Session stale — clear it
-        clearPlayerSession();
-      }
-      // 2. Check for PIN in QR URL
-      const urlPin=getPinFromUrl();
-      if(urlPin){
-        setPinInput(urlPin);
-        // Auto-validate and skip to join screen
-        const g=await dbGet("games/"+urlPin);
-        if(g&&g.status==="lobby"){
-          const dirs=g.teams?Object.values(g.teams):[];
-          if(dirs.length<8){
-            setPin(urlPin);
-            setGame(g);
-            setScreen("join");
-            return;
+        // 2. Check for PIN in QR URL
+        const urlPin=getPinFromUrl();
+        if(urlPin){
+          setPinInput(urlPin);
+          const g=await dbGetSafe("games/"+urlPin);
+          if(g&&g.status==="lobby"){
+            const dirs=g.teams?Object.values(g.teams):[];
+            if(dirs.length<8){
+              setPin(urlPin);
+              setGame(g);
+              setScreen("join");
+              return;
+            }
           }
+          setPinInput(urlPin);
         }
-        // Game full or not found — fall through to PIN screen with value pre-filled
-        setPinInput(urlPin);
+      }catch(e){
+        console.warn("Startup error:",e);
       }
       setScreen("pin");
     })();
@@ -436,7 +444,7 @@ function PlayerApp(){
     const p=pinInput.trim();
     if(p.length!==4||isNaN(Number(p))){setError("Enter the 4-digit PIN from the host screen.");return;}
     setBusy(true);
-    const g=await dbGet("games/"+p);
+    const g=await dbGetSafe("games/"+p);
     if(!g){setError("Game not found. Check the PIN and try again.");setBusy(false);return;}
     if(g.status!=="lobby"){setError("This game has already started.");setBusy(false);return;}
     const dirs=g.teams?Object.values(g.teams):[];
@@ -451,7 +459,7 @@ function PlayerApp(){
     setError("");
     if(!teamName.trim()){setError("Please enter a director name.");return;}
     if(teamName.trim().length>20){setError("Name must be 20 characters or less.");return;}
-    const g=await dbGet("games/"+pin);
+    const g=await dbGetSafe("games/"+pin);
     const existing=g&&g.teams?Object.values(g.teams):[];
     if(existing.find(function(t){return t.color===teamColor;})){setError("That color is taken! Pick another.");return;}
     if(existing.find(function(t){return t.name.toLowerCase()===teamName.trim().toLowerCase();})){setError("That name is taken!");return;}
@@ -640,25 +648,31 @@ function HostApp(){
 
   useEffect(()=>{
     (async function(){
-      let savedPin=localStorage.getItem("fitb_host_pin");
-      if(savedPin){
-        const g=await dbGet("games/"+savedPin);
-        if(g){
-          pinRef.current=savedPin;
-          setPin(savedPin);
-          setLoading(false);
-          subscribeGame(savedPin);
-          return;
+      try{
+        let savedPin=localStorage.getItem("fitb_host_pin");
+        if(savedPin){
+          const g=await dbGetSafe("games/"+savedPin);
+          if(g){
+            pinRef.current=savedPin;
+            setPin(savedPin);
+            setLoading(false);
+            subscribeGame(savedPin);
+            return;
+          }
         }
+        const newPin=genPin();
+        const rounds=generateRounds();
+        await dbSet("games/"+newPin,{pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds:rounds,teams:{}});
+        localStorage.setItem("fitb_host_pin",newPin);
+        pinRef.current=newPin;
+        setPin(newPin);
+        setLoading(false);
+        subscribeGame(newPin);
+      }catch(e){
+        console.warn("Host startup error:",e);
+        // If Firebase fails, still unblock the UI
+        setLoading(false);
       }
-      const newPin=genPin();
-      const rounds=generateRounds();
-      await dbSet("games/"+newPin,{pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds:rounds,teams:{}});
-      localStorage.setItem("fitb_host_pin",newPin);
-      pinRef.current=newPin;
-      setPin(newPin);
-      setLoading(false);
-      subscribeGame(newPin);
     })();
   },[]);
 
