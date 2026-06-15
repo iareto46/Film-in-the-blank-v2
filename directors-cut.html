@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Director's Cut — Film In The Blank</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-height:100vh;}
+.host{min-height:100vh;display:flex;flex-direction:column;background:#0a0a0a;}
+.host-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid #222;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:2px;color:#fff;}
+.logo span{color:#f59e0b;}
+.logo-sub{font-size:.75rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2px;color:#f59e0b;text-transform:uppercase;display:block;line-height:1;}
+.logo a{color:inherit;text-decoration:none;}
+.score-bar{display:flex;gap:2rem;align-items:center;}
+.score-chip{padding:.4rem 1.2rem;border-radius:999px;font-weight:600;font-size:1.1rem;}
+.score-chip.red{background:#b91c1c;color:#fff;}
+.score-chip.blue{background:#1d4ed8;color:#fff;}
+.round-badge{background:#222;color:#aaa;padding:.3rem .8rem;border-radius:6px;font-size:.85rem;}
+.main-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:2rem;}
+.cards-grid{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+.game-card{background:#161616;border:1.5px solid #333;border-radius:16px;padding:1.5rem 1.2rem;width:160px;text-align:center;position:relative;}
+.card-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#f59e0b;line-height:1;}
+.card-text{font-size:.95rem;color:#ddd;margin-top:.3rem;line-height:1.3;}
+.submissions-row{display:flex;gap:2rem;justify-content:center;width:100%;max-width:900px;}
+.sub-box{flex:1;background:#111;border-radius:14px;padding:1.2rem 1.5rem;border:1.5px solid #222;}
+.sub-box h3{font-size:.8rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.6rem;}
+.sub-box h3.red{color:#f87171;}
+.sub-box h3.blue{color:#60a5fa;}
+.sub-status{font-size:.9rem;color:#666;font-style:italic;}
+.sub-scene{font-size:.95rem;color:#eee;}
+.sub-link{font-size:.75rem;color:#666;word-break:break-all;margin-top:.3rem;}
+.sub-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem;}
+.sub-tag{padding:.2rem .7rem;border-radius:999px;font-size:.75rem;font-weight:500;}
+.sub-tag.red{background:#450a0a;color:#fca5a5;}
+.sub-tag.blue{background:#1e3a8a;color:#93c5fd;}
+.btn{padding:.6rem 1.4rem;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.9rem;transition:opacity .15s;}
+.btn:hover{opacity:.85;}
+.btn-gold{background:#f59e0b;color:#000;}
+.btn-green{background:#16a34a;color:#fff;}
+.btn-red{background:#dc2626;color:#fff;}
+.btn-gray{background:#333;color:#eee;}
+.btn-outline{background:transparent;border:1.5px solid #444;color:#eee;}
+.action-row{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;justify-content:center;}
+.video-area{width:100%;max-width:800px;}
+.video-area iframe{width:100%;aspect-ratio:16/9;border-radius:12px;border:none;}
+.review-label{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;}
+.review-label.red{color:#f87171;}
+.review-label.blue{color:#60a5fa;}
+.dispute-cards{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;}
+.dispute-card{padding:.6rem 1rem;border-radius:10px;cursor:pointer;font-size:.85rem;font-weight:500;transition:all .15s;user-select:none;}
+.dispute-card.on{background:#16a34a;color:#fff;border:1.5px solid #16a34a;}
+.dispute-card.off{background:#1a1a1a;color:#888;border:1.5px solid #333;text-decoration:line-through;}
+.coin{font-size:3rem;display:block;text-align:center;}
+.winner-screen{text-align:center;}
+.winner-title{font-family:'Bebas Neue',sans-serif;font-size:5rem;letter-spacing:4px;}
+.winner-title.red{color:#f87171;}
+.winner-title.blue{color:#60a5fa;}
+.winner-title.tie{color:#f59e0b;}
+.final-scores{display:flex;gap:3rem;justify-content:center;margin:1.5rem 0;}
+.final-score{text-align:center;}
+.final-score-num{font-family:'Bebas Neue',sans-serif;font-size:4rem;}
+.final-score-num.red{color:#f87171;}
+.final-score-num.blue{color:#60a5fa;}
+.final-score-label{font-size:.85rem;color:#777;text-transform:uppercase;letter-spacing:1px;}
+.qr-placeholder{background:#fff;border-radius:8px;padding:8px;display:inline-block;}
+.player{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2rem 1.2rem;background:#0a0a0a;}
+.player-header{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;margin-bottom:1.5rem;}
+.player-card{background:#111;border-radius:16px;padding:1.5rem;border:1.5px solid #222;width:100%;max-width:420px;}
+.player-cards-list{display:flex;flex-direction:column;gap:.6rem;margin:1rem 0;}
+.player-card-item{display:flex;align-items:center;gap:.8rem;padding:.7rem 1rem;background:#1a1a1a;border-radius:10px;cursor:pointer;border:1.5px solid transparent;transition:all .15s;}
+.player-card-item.selected-red{background:#450a0a;border-color:#f87171;}
+.player-card-item.selected-blue{background:#1e3a8a;border-color:#60a5fa;}
+.player-card-num{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:#f59e0b;width:24px;text-align:center;}
+.player-card-text{font-size:.9rem;color:#ddd;}
+.input-group{margin:.8rem 0;}
+.input-group label{font-size:.8rem;text-transform:uppercase;letter-spacing:1px;color:#777;display:block;margin-bottom:.4rem;}
+.input-group input{width:100%;background:#1a1a1a;border:1.5px solid #333;border-radius:8px;color:#eee;font-family:'DM Sans',sans-serif;font-size:.9rem;padding:.7rem .9rem;outline:none;}
+.input-group input:focus{border-color:#555;}
+.submitted-msg{text-align:center;padding:2rem;}
+.submitted-msg .big{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:2px;}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid #444;border-top-color:#f59e0b;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;}
+.sync-dot.live{background:#16a34a;animation:pulse 1.5s infinite;}
+.sync-dot.waiting{background:#f59e0b;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.scored-badge{display:inline-block;padding:.15rem .6rem;border-radius:999px;font-size:.75rem;font-weight:600;background:#14532d;color:#86efac;margin-left:.5rem;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
+
+const CARD_POOL = [
+  "Comedy","Drama","Horror","Action","Romance","Animated","Sci-Fi","Documentary","Musical","Thriller",
+  "With Brad Pitt","With Meryl Streep","With Tom Hanks","With Leonardo DiCaprio","With Cate Blanchett",
+  "With Denzel Washington","With Jennifer Lawrence","With Morgan Freeman","With Scarlett Johansson","With Will Smith",
+  "Has a car chase","Has a wedding","Has a funeral","Has a dance scene","Has a courtroom scene",
+  "Has a heist","Has a chase on foot","Has a montage","Has a dream sequence","Has a party",
+  "Has a lawnmower","Has a dog","Has a gun","Has a cake","Has a ladder",
+  "Has a phone call","Has a mirror","Has a briefcase","Has a sword","Has a newspaper",
+  "Takes place outside","Takes place at night","Takes place in winter","Takes place in a city","Takes place in space",
+  "Takes place at school","Takes place at a party","Takes place on a boat","Takes place in a hospital","Takes place in the past",
+  "1990s film","2000s film","2010s film","Before 1990","Based on a true story",
+  "Won an Oscar","Directed by a woman","Foreign language film","A sequel","A remake",
+];
+
+const STORAGE_KEY = "fitb:state";
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function pick5(){return shuffle(CARD_POOL).slice(0,5);}
+
+function generateRounds(){
+  return Array.from({length:5},(_,i)=>({
+    round:i+1,
+    cards:pick5(),
+    submissions:{red:null,blue:null},
+    scores:{red:0,blue:0},
+    scored:{red:false,blue:false},
+  }));
+}
+
+// --- Storage: uses localStorage for local file preview, window.storage when in claude.ai ---
+async function loadState(){
+  try{
+    if(window.storage){
+      const r=await window.storage.get(STORAGE_KEY,true);
+      return r?JSON.parse(r.value):null;
+    } else {
+      const s=localStorage.getItem(STORAGE_KEY);
+      return s?JSON.parse(s):null;
+    }
+  } catch{return null;}
+}
+async function saveState(state){
+  try{
+    if(window.storage){
+      await window.storage.set(STORAGE_KEY,JSON.stringify(state),true);
+    } else {
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    }
+  } catch(e){console.error("Storage error:",e);}
+}
+
+const COLORS={
+  red:{bg:"#b91c1c",border:"#fca5a5",name:"Team Red"},
+  blue:{bg:"#1d4ed8",border:"#93c5fd",name:"Team Blue"},
+};
+
+function extractYouTubeId(url){
+  try{const u=new URL(url);if(u.hostname.includes("youtu.be"))return u.pathname.slice(1).split("?")[0];return u.searchParams.get("v");}
+  catch{return null;}
+}
+function isYouTubeUrl(url){return /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(url);}
+
+function QRCode({url,size=120}){
+  const src=`https://chart.googleapis.com/chart?cht=qr&chs=${size}x${size}&chl=${encodeURIComponent(url)}&choe=UTF-8`;
+  return <div className="qr-placeholder"><img src={src} width={size} height={size} alt="QR Code" style={{display:"block"}}/></div>;
+}
+
+function CoinFlip({onClose}){
+  const [result,setResult]=useState(null);
+  const [flipping,setFlipping]=useState(false);
+  const flip=()=>{setFlipping(true);setResult(null);setTimeout(()=>{setResult(Math.random()<.5?"HEADS":"TAILS");setFlipping(false);},700);};
+  return(
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.85)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999}}>
+      <div style={{background:"#111",border:"1.5px solid #333",borderRadius:20,padding:"2.5rem 3rem",textAlign:"center",maxWidth:340}}>
+        <p style={{color:"#aaa",fontSize:".85rem",textTransform:"uppercase",letterSpacing:2,marginBottom:"1rem"}}>Coin Flip</p>
+        {flipping&&<span className="coin">🪙</span>}
+        {result&&<div><span className="coin">🪙</span><p style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.5rem",color:"#f59e0b",letterSpacing:3}}>{result}</p></div>}
+        {!result&&!flipping&&<div style={{height:80,display:"flex",alignItems:"center",justifyContent:"center",color:"#555"}}>Press flip to decide!</div>}
+        <div style={{display:"flex",gap:"1rem",justifyContent:"center",marginTop:"1.5rem"}}>
+          <button className="btn btn-gold" onClick={flip}>Flip!</button>
+          <button className="btn btn-gray" onClick={onClose}>Close</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PlayerPage({team}){
+  const color=COLORS[team];
+  const [gameState,setGameState]=useState(null);
+  const [loading,setLoading]=useState(true);
+  const [link,setLink]=useState("");
+  const [scene,setScene]=useState("");
+  const [selected,setSelected]=useState([]);
+  const [submitted,setSubmitted]=useState(false);
+  const [error,setError]=useState("");
+  const [syncing,setSyncing]=useState(false);
+
+  useEffect(()=>{
+    let alive=true;
+    const poll=async()=>{const s=await loadState();if(alive){setGameState(s);setLoading(false);}};
+    poll();
+    const id=setInterval(poll,2000);
+    return()=>{alive=false;clearInterval(id);};
+  },[]);
+
+  if(loading) return <div className="player"><div className="player-header" style={{color:color.bg}}><span className="spinner"/>Loading…</div></div>;
+  if(!gameState) return <div className="player"><div className="player-header" style={{color:color.bg}}>Waiting for host…</div><p style={{color:"#666",fontSize:".9rem"}}>The host hasn't started the game yet.</p></div>;
+
+  const round=gameState.rounds[gameState.currentRound];
+  const alreadySubmitted=round.submissions[team]!==null;
+  const toggleCard=(i)=>setSelected(s=>s.includes(i)?s.filter(x=>x!==i):[...s,i]);
+
+  const submit=async()=>{
+    setError("");
+    if(!link.trim()){setError("Please paste a YouTube link.");return;}
+    if(!isYouTubeUrl(link.trim())){setError("Only YouTube links are allowed!");return;}
+    if(!extractYouTubeId(link.trim())){setError("Couldn't parse a YouTube video ID from that link.");return;}
+    if(selected.length===0){setError("Select at least one card your scene covers.");return;}
+    setSyncing(true);
+    const fresh=await loadState();
+    if(!fresh){setError("Couldn't reach game state. Try again.");setSyncing(false);return;}
+    fresh.rounds[fresh.currentRound].submissions[team]={link:link.trim(),scene:scene.trim()||"Untitled scene",cards:selected};
+    await saveState(fresh);
+    setSyncing(false);
+    setSubmitted(true);
+  };
+
+  if(alreadySubmitted||submitted) return(
+    <div className="player">
+      <div className="submitted-msg">
+        <div className="big" style={{color:color.bg}}>Submitted!</div>
+        <p style={{color:"#777",marginTop:".5rem"}}>Waiting for the host screen…</p>
+      </div>
+    </div>
+  );
+
+  return(
+    <div className="player">
+      <div className="player-header" style={{color:color.bg}}>{color.name}</div>
+      <div className="player-card">
+        <p style={{fontSize:".85rem",color:"#777",marginBottom:".5rem"}}>Round {gameState.currentRound+1} · Select the cards your scene covers</p>
+        <div className="player-cards-list">
+          {round.cards.map((c,i)=>(
+            <div key={i} className={`player-card-item ${selected.includes(i)?"selected-"+team:""}`} onClick={()=>toggleCard(i)}>
+              <span className="player-card-num">{i+1}</span>
+              <span className="player-card-text">{c}</span>
+              {selected.includes(i)&&<span style={{marginLeft:"auto",color:team==="red"?"#f87171":"#60a5fa"}}>✓</span>}
+            </div>
+          ))}
+        </div>
+        <div className="input-group">
+          <label>YouTube Link</label>
+          <input value={link} onChange={e=>setLink(e.target.value)} placeholder="https://youtube.com/watch?v=…"/>
+        </div>
+        <div className="input-group">
+          <label>Scene Description (optional)</label>
+          <input value={scene} onChange={e=>setScene(e.target.value)} placeholder="e.g. The lawnmower scene in Signs"/>
+        </div>
+        {error&&<p style={{color:"#f87171",fontSize:".85rem",marginBottom:".5rem"}}>{error}</p>}
+        <button className="btn" style={{background:color.bg,color:"#fff",width:"100%",marginTop:".5rem"}} onClick={submit} disabled={syncing}>
+          {syncing?<><span className="spinner"/>Submitting…</>:"Submit Scene"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function HostScreen(){
+  const [gameState,setGameState]=useState(null);
+  const [initializing,setInitializing]=useState(true);
+  const [showCoin,setShowCoin]=useState(false);
+  const [disputeCards,setDisputeCards]=useState(null);
+  const [watchingTeam,setWatchingTeam]=useState(null);
+  const stateRef=useRef(null);
+
+  useEffect(()=>{
+    (async()=>{
+      let s=await loadState();
+      if(!s){
+        const rounds=generateRounds();
+        s={rounds,currentRound:0,totalScores:{red:0,blue:0},started:true};
+        await saveState(s);
+      }
+      s.rounds=s.rounds.map(r=>({...r,scored:r.scored||{red:false,blue:false}}));
+      stateRef.current=s;
+      setGameState(s);
+      setInitializing(false);
+    })();
+  },[]);
+
+  useEffect(()=>{
+    if(!gameState) return;
+    let alive=true;
+    const poll=async()=>{
+      const fresh=await loadState();
+      if(!alive||!fresh) return;
+      const cur=fresh.currentRound;
+      const prevSub=stateRef.current?.rounds[cur]?.submissions;
+      const newSub=fresh.rounds[cur]?.submissions;
+      if(JSON.stringify(prevSub)!==JSON.stringify(newSub)){stateRef.current=fresh;setGameState({...fresh});}
+    };
+    const id=setInterval(poll,1500);
+    return()=>{alive=false;clearInterval(id);};
+  },[gameState?.currentRound]);
+
+  const update=useCallback(async(fn)=>{
+    const next=fn(JSON.parse(JSON.stringify(stateRef.current)));
+    stateRef.current=next;
+    await saveState(next);
+    setGameState({...next});
+  },[]);
+
+  if(initializing) return(
+    <div className="host">
+      <div className="host-header"><a href="index.html" style={{textDecoration:"none",color:"inherit"}}><div className="logo">Film <span>In</span> The Blank<small className="logo-sub">Director's Cut</small></div></a></div>
+      <div className="main-area"><span className="spinner"/> Setting up game…</div>
+    </div>
+  );
+
+  const round=gameState.rounds[gameState.currentRound];
+  const bothSubmitted=round.submissions.red&&round.submissions.blue;
+  const baseUrl=window.location.href.split("#")[0];
+  const roundDone=round.scored.red&&round.scored.blue;
+  const gameOver=gameState.currentRound>=4&&roundDone;
+
+  const awardPoints=async(team,pts)=>{
+    await update(s=>{
+      s.rounds[s.currentRound].scores[team]=pts;
+      s.rounds[s.currentRound].scored[team]=true;
+      s.totalScores[team]+=pts;
+      return s;
+    });
+  };
+
+  const startDispute=(team)=>{
+    setDisputeCards({team,cards:round.submissions[team].cards.map(()=>true)});
+    setWatchingTeam(null);
+  };
+
+  const confirmDispute=async()=>{
+    if(!disputeCards) return;
+    const{team,cards}=disputeCards;
+    await awardPoints(team,cards.filter(Boolean).length);
+    setDisputeCards(null);
+  };
+
+  const nextRound=async()=>{
+    await update(s=>{s.currentRound+=1;return s;});
+    setDisputeCards(null);
+    setWatchingTeam(null);
+  };
+
+  const resetGame=async()=>{
+    const rounds=generateRounds();
+    const fresh={rounds,currentRound:0,totalScores:{red:0,blue:0},started:true};
+    stateRef.current=fresh;
+    await saveState(fresh);
+    setGameState({...fresh});
+    setDisputeCards(null);
+    setWatchingTeam(null);
+  };
+
+  const getYTEmbed=(url)=>{const id=extractYouTubeId(url);return id?`https://www.youtube.com/embed/${id}?autoplay=1`:null;};
+
+  if(gameOver){
+    const{red,blue}=gameState.totalScores;
+    const winner=red>blue?"red":blue>red?"blue":"tie";
+    return(
+      <div className="host">
+        <div className="host-header">
+          <a href="index.html" style={{textDecoration:"none",color:"inherit"}}><div className="logo">Film <span>In</span> The Blank<small className="logo-sub">Director's Cut</small></div></a>
+          <button className="btn btn-gold" onClick={resetGame}>New Game</button>
+        </div>
+        <div className="main-area winner-screen">
+          <div className={`winner-title ${winner}`}>{winner==="tie"?"It's a Tie!":`${COLORS[winner].name} Wins!`}</div>
+          <div className="final-scores">
+            {["red","blue"].map(t=>(
+              <div className="final-score" key={t}>
+                <div className={`final-score-num ${t}`}>{gameState.totalScores[t]}</div>
+                <div className="final-score-label">{COLORS[t].name}</div>
+              </div>
+            ))}
+          </div>
+          <button className="btn btn-gold" onClick={resetGame} style={{marginTop:"1rem"}}>Play Again</button>
+        </div>
+      </div>
+    );
+  }
+
+  return(
+    <div className="host">
+      {showCoin&&<CoinFlip onClose={()=>setShowCoin(false)}/>}
+      <div className="host-header">
+        <a href="index.html" style={{textDecoration:"none",color:"inherit"}}><div className="logo">Film <span>In</span> The Blank<small className="logo-sub">Director's Cut</small></div></a>
+        <div className="score-bar">
+          <span className="score-chip red">🔴 {gameState.totalScores.red} pts</span>
+          <span className="round-badge">Round {gameState.currentRound+1} / 5</span>
+          <span className="score-chip blue">🔵 {gameState.totalScores.blue} pts</span>
+        </div>
+        <div style={{display:"flex",gap:".5rem",alignItems:"center"}}>
+          <span style={{fontSize:".7rem",color:"#16a34a"}}><span className="sync-dot live"/>LIVE</span>
+          <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>Reset</button>
+        </div>
+      </div>
+
+      <div className="main-area">
+        <div className="cards-grid">
+          {round.cards.map((c,i)=>(
+            <div className="game-card" key={i}>
+              <div className="card-num">{i+1}</div>
+              <div className="card-text">{c}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="submissions-row">
+          {["red","blue"].map(team=>{
+            const sub=round.submissions[team];
+            return(
+              <div className="sub-box" key={team} style={{borderColor:sub?COLORS[team].border:"#222"}}>
+                <h3 className={team}>
+                  {COLORS[team].name} {sub?"✓":""}
+                  {round.scored[team]&&<span className="scored-badge">+{round.scores[team]} pts</span>}
+                </h3>
+                {sub?(
+                  <>
+                    <div className="sub-scene">{sub.scene}</div>
+                    <div className="sub-link">{sub.link}</div>
+                    <div className="sub-tags">
+                      {sub.cards.map(ci=><span key={ci} className={`sub-tag ${team}`}>{round.cards[ci]}</span>)}
+                    </div>
+                  </>
+                ):(
+                  <div className="sub-status"><span className="sync-dot waiting"/>Waiting for submission…</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {!bothSubmitted&&(
+          <div style={{display:"flex",gap:"3rem",alignItems:"center"}}>
+            {["red","blue"].map(team=>(
+              <div key={team} style={{textAlign:"center"}}>
+                <QRCode url={`${baseUrl}#${team}`} size={120}/>
+                <p style={{fontSize:".75rem",color:"#666",marginTop:".4rem"}}>{COLORS[team].name}</p>
+                <p style={{fontSize:".65rem",color:"#444"}}>{baseUrl}#{team}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {bothSubmitted&&!roundDone&&(
+          <>
+            {watchingTeam?(
+              <div className="video-area">
+                <div className={`review-label ${watchingTeam}`} style={{marginBottom:".8rem",textAlign:"center"}}>
+                  Now watching: {COLORS[watchingTeam].name}
+                </div>
+                <iframe src={getYTEmbed(round.submissions[watchingTeam].link)} title="Scene" allowFullScreen allow="autoplay"/>
+                <div className="action-row" style={{marginTop:"1rem"}}>
+                  {!round.scored[watchingTeam]?(
+                    <>
+                      <button className="btn btn-green" onClick={()=>awardPoints(watchingTeam,round.submissions[watchingTeam].cards.length)}>
+                        ✓ Grant Full Points ({round.submissions[watchingTeam].cards.length})
+                      </button>
+                      <button className="btn btn-red" onClick={()=>startDispute(watchingTeam)}>Dispute</button>
+                      <button className="btn btn-outline" onClick={()=>setShowCoin(true)}>🪙 Coin Flip</button>
+                    </>
+                  ):(
+                    <p style={{color:"#16a34a",fontWeight:600}}>+{round.scores[watchingTeam]} pts awarded to {COLORS[watchingTeam].name}</p>
+                  )}
+                </div>
+              </div>
+            ):(
+              <div className="action-row">
+                <p style={{color:"#888"}}>Both teams submitted! Play each video:</p>
+                {["red","blue"].map(team=>(
+                  <button key={team} className="btn" style={{background:COLORS[team].bg,color:"#fff"}} onClick={()=>setWatchingTeam(team)}>
+                    {round.scored[team]?"✓ ":""} ▶ {COLORS[team].name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {disputeCards&&(
+          <div style={{background:"#111",border:"1.5px solid #333",borderRadius:14,padding:"1.5rem",maxWidth:600,width:"100%"}}>
+            <p style={{color:"#aaa",fontSize:".85rem",marginBottom:"1rem",textAlign:"center"}}>
+              Toggle cards to remove points for <strong style={{color:COLORS[disputeCards.team].bg}}>{COLORS[disputeCards.team].name}</strong>
+            </p>
+            <div className="dispute-cards">
+              {round.submissions[disputeCards.team].cards.map((ci,idx)=>(
+                <div
+                  key={idx}
+                  className={`dispute-card ${disputeCards.cards[idx]?"on":"off"}`}
+                  onClick={()=>setDisputeCards(d=>{const cards=[...d.cards];cards[idx]=!cards[idx];return{...d,cards};})}
+                >
+                  {round.cards[ci]}
+                </div>
+              ))}
+            </div>
+            <div className="action-row" style={{marginTop:"1rem"}}>
+              <button className="btn btn-green" onClick={confirmDispute}>Confirm ({disputeCards.cards.filter(Boolean).length} pts)</button>
+              <button className="btn btn-outline" onClick={()=>setShowCoin(true)}>🪙 Coin Flip</button>
+              <button className="btn btn-gray" onClick={()=>setDisputeCards(null)}>Cancel</button>
+            </div>
+          </div>
+        )}
+
+        {roundDone&&!gameOver&&(
+          <div className="action-row">
+            <div style={{textAlign:"center"}}>
+              <p style={{color:"#888",marginBottom:"1rem"}}>
+                Round scores: 🔴 +{round.scores.red} · 🔵 +{round.scores.blue}
+              </p>
+              <button className="btn btn-gold" onClick={nextRound}>Next Round →</button>
+            </div>
+          </div>
+        )}
+
+        {bothSubmitted&&!roundDone&&(round.scored.red||round.scored.blue)&&(
+          <p style={{color:"#666",fontSize:".85rem"}}>
+            Still need to judge: {!round.scored.red?COLORS.red.name:""}{!round.scored.red&&!round.scored.blue?" & ":""}{!round.scored.blue?COLORS.blue.name:""}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function App(){
+  const [hash,setHash]=useState(window.location.hash);
+  useEffect(()=>{
+    const onHash=()=>setHash(window.location.hash);
+    window.addEventListener("hashchange",onHash);
+    return()=>window.removeEventListener("hashchange",onHash);
+  },[]);
+  if(hash==="#red") return <PlayerPage team="red"/>;
+  if(hash==="#blue") return <PlayerPage team="blue"/>;
+  return <HostScreen/>;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
