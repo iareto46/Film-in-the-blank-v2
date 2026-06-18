@@ -12,7 +12,7 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid #222;flex-shrink:0;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:#fff;text-decoration:none;}
 .logo span{color:#f59e0b;}
-.logo-sub{font-size:.8rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2px;color:#f59e0b;text-transform:uppercase;display:block;line-height:1;}
+.logo-sub{font-size:.75rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2px;color:#f59e0b;text-transform:uppercase;display:block;line-height:1;}
 .main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1.8rem;}
 .btn{padding:.6rem 1.4rem;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.9rem;transition:opacity .15s;}
 .btn:hover{opacity:.85;}
@@ -47,9 +47,13 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .announce-title span{color:#f59e0b;}
 .featuring-label{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:#777;margin:.5rem 0;}
 .divider{width:60px;height:2px;background:linear-gradient(90deg,transparent,#f59e0b,transparent);margin:.5rem auto;}
-.big-card{background:#161616;border:2px solid #f59e0b;border-radius:20px;padding:2rem 3rem;text-align:center;display:inline-block;opacity:0;transform:scale(.9);transition:opacity .5s,transform .5s;}
-.big-card.visible{opacity:1;transform:scale(1);}
-.big-card-text{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:4px;color:#f59e0b;line-height:1;}
+.big-cards-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin:1rem 0;min-height:90px;align-items:center;}
+.big-card{background:#161616;border:2px solid #444;border-radius:18px;padding:1rem 1.6rem;text-align:center;opacity:0;transform:scale(.85) translateY(10px);transition:opacity .5s ease,transform .5s ease;}
+.big-card.visible{opacity:1;transform:scale(1) translateY(0);}
+.big-card.scene-type{border-color:#f59e0b;}
+.big-card-text{font-family:'Bebas Neue',sans-serif;letter-spacing:2px;color:#ddd;line-height:1;font-size:1.8rem;}
+.big-card.scene-type .big-card-text{color:#f59e0b;font-size:2.4rem;}
+.big-card-label{font-size:.62rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-top:.3rem;}
 .are-label{font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:#f59e0b;margin-top:.5rem;opacity:0;transition:opacity .6s;}
 .are-label.visible{opacity:1;}
 .subs-grid{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;width:100%;max-width:960px;}
@@ -59,7 +63,6 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .scored-badge{display:inline-block;padding:.1rem .5rem;border-radius:999px;font-size:.7rem;font-weight:600;background:#14532d;color:#86efac;margin-left:.5rem;}
 .score-chips{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
 .score-chip{padding:.3rem .9rem;border-radius:999px;font-weight:600;font-size:.88rem;color:#fff;}
-.round-badge{background:#222;color:#aaa;padding:.25rem .7rem;border-radius:6px;font-size:.8rem;}
 .video-area{width:100%;max-width:800px;}
 .video-area iframe{width:100%;aspect-ratio:16/9;border-radius:12px;border:none;}
 .review-label{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;text-align:center;margin-bottom:.8rem;}
@@ -82,9 +85,9 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:999;}
 .modal{background:#111;border:1.5px solid #333;border-radius:20px;padding:2.5rem 3rem;text-align:center;max-width:360px;width:90%;}
 .player-page{min-height:100vh;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.2rem;}
-.player-logo{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:2px;color:#fff;margin-bottom:1.5rem;text-align:center;}
+.player-logo{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:2px;color:#fff;margin-bottom:.3rem;text-align:center;}
 .player-logo span{color:#f59e0b;}
-.player-sub{font-family:'DM Sans',sans-serif;font-size:.8rem;color:#f59e0b;text-transform:uppercase;letter-spacing:2px;display:block;text-align:center;margin-top:-.5rem;margin-bottom:1.5rem;}
+.player-sub{font-size:.75rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2px;color:#f59e0b;text-transform:uppercase;display:block;text-align:center;margin-bottom:1.5rem;}
 .color-picker{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.5rem 0;}
 .color-swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s;}
 .color-swatch.selected{border-color:#fff;transform:scale(1.15);}
@@ -94,13 +97,18 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .vote-btn:hover:not(:disabled){border-color:#444;}
 .vote-btn.selected{border-color:#f59e0b;background:rgba(245,158,11,.1);color:#f59e0b;}
 .vote-btn:disabled{opacity:.6;cursor:not-allowed;}
-.scene-card{background:#161616;border:1.5px solid #333;border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.8rem;}
-.scene-num{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#f59e0b;width:30px;text-align:center;flex-shrink:0;}
-.scene-text{font-size:.9rem;color:#ddd;line-height:1.3;}
-.category-grid{display:flex;flex-direction:column;gap:.5rem;width:100%;max-width:560px;max-height:300px;overflow-y:auto;}
+.category-grid{display:flex;flex-direction:column;gap:.5rem;width:100%;max-width:560px;max-height:260px;overflow-y:auto;}
 .category-btn{padding:.6rem 1rem;border-radius:8px;border:1.5px solid #222;background:#111;color:#ddd;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;text-align:left;transition:all .15s;}
 .category-btn:hover{border-color:#f59e0b;color:#f59e0b;}
 .waiting-vote{text-align:center;padding:2rem;}
+.picker-section{width:100%;max-width:560px;text-align:center;}
+.picker-heading{font-family:'Playfair Display',serif;font-style:italic;color:#888;font-size:.95rem;margin-bottom:.6rem;}
+.chosen-cards-row{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0;min-height:50px;}
+.chosen-card-chip{padding:.4rem .9rem;border-radius:999px;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:.4rem;}
+.chosen-card-chip.scene-type{background:rgba(245,158,11,.15);border:1.5px solid #f59e0b;color:#f59e0b;}
+.chosen-card-chip.descriptor{background:#1a1a1a;border:1.5px solid #333;color:#ccc;}
+.chosen-card-chip button{background:none;border:none;color:inherit;cursor:pointer;font-size:.9rem;opacity:.6;padding:0;}
+.chosen-card-chip button:hover{opacity:1;}
 </style>
 </head>
 <body>
@@ -132,15 +140,19 @@ function dbPush(p,v){return _db.ref(p).push(v);}
 <script type="text/babel">
 const {useState,useEffect,useRef,useCallback}=React;
 
-const SCENE_CATEGORIES=[
-  "Fight Scene","Car Chase","Heist","Shootout","Escape Scene","Explosion Scene",
-  "Sword Fight","Martial Arts Scene","Pursuit Scene","Battle Scene",
-  "Crying Scene","Reunion Scene","Breakup Scene","Death Scene","Confession Scene",
-  "Apology Scene","Rage Scene","Celebration Scene","Farewell Scene","Plot Twist Reveal",
-  "Slapstick Scene","Awkward Scene","Mistaken Identity Scene","Drunk Scene","Prank Scene",
-  "Courtroom Scene","Speech Scene","Negotiation Scene","Confrontation Scene","Betrayal Scene",
-  "Redemption Scene","First Kiss Scene","Love Declaration Scene","Wedding Scene","Jealousy Scene",
-  "Chase Scene","Hiding Scene","Cliffhanger Scene","Jump Scare Scene","Standoff Scene",
+/* Pool A — Scene Types (always Card 1) */
+const SCENE_TYPES=[
+  "Fight Scene","Kissing Scene","Entrance","Car Chase","Heist","Shootout","Escape Scene",
+  "Death Scene","Confession Scene","Breakup Scene","Reunion Scene","Dance Scene",
+  "Villain Monologue","Training Scene","Makeover Scene","Slow Clap Scene","Standoff",
+  "Betrayal Scene","Wedding Scene","Farewell Scene","Plot Twist Reveal","Drinking Scene",
+];
+
+/* Pool B — Descriptors (optional Cards 2 & 3) — smaller, casual */
+const DESCRIPTORS=[
+  "Animated","Dramatic","Comedic","Slow Motion","Over-the-Top","One-on-One",
+  "Group","Musical","Silent","Wordless","Underwater","In the Rain",
+  "Black & White","Set in Space","Set at Night","With a Twist","Awkward","Epic",
 ];
 
 const PALETTE=[
@@ -152,16 +164,24 @@ const PALETTE=[
 
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 function genPin(){return String(Math.floor(1000+Math.random()*9000));}
-function generateRounds(){return Array.from({length:5},(_,i)=>({round:i+1,category:null,submissions:{},votes:{},scores:{},scored:false}));}
 function hex2rgba(hex,a){try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}catch(e){return hex;}}
 function extractYouTubeId(url){try{const u=new URL(url);if(u.hostname.includes("youtu.be"))return u.pathname.slice(1).split("?")[0];return u.searchParams.get("v");}catch(e){return null;}}
 function isYouTubeUrl(url){return /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(url);}
+function freshRound(){return {cards:[],submissions:{},votes:{},voteCounts:{},roundScores:{},scored:false,votingOpen:false,categoryLocked:false};}
 
 const PLAYER_KEY="fitb_dc_session";
 function saveSession(pin,teamId,name,color){try{localStorage.setItem(PLAYER_KEY,JSON.stringify({pin,teamId,name,color,savedAt:Date.now()}));}catch(e){}}
 function loadSession(){try{const s=localStorage.getItem(PLAYER_KEY);if(!s)return null;const d=JSON.parse(s);if(Date.now()-d.savedAt>12*60*60*1000){localStorage.removeItem(PLAYER_KEY);return null;}return d;}catch(e){return null;}}
 function clearSession(){try{localStorage.removeItem(PLAYER_KEY);}catch(e){}}
 function getPinFromUrl(){const m=window.location.hash.match(/[?&]pin=(\d{4})/);return m?m[1]:null;}
+
+function categoryPhrase(cards){
+  // cards[0] is always scene type, rest are descriptors. Descriptors read first, scene type last.
+  if(!cards||cards.length===0)return"";
+  const sceneType=cards[0];
+  const descriptors=cards.slice(1);
+  return descriptors.concat([sceneType]).join(" ");
+}
 
 function QRBlock({url,size}){
   const sz=size||160;
@@ -194,26 +214,37 @@ function CoinFlip({onClose}){
   );
 }
 
-function CardAnnouncement({category,onDone}){
-  const [vis,setVis]=useState(false);
+/* Card-by-card reveal: descriptors first, scene type last, then "...are" */
+function CardAnnouncement({cards,onDone}){
+  const orderedCards=cards.slice(1).concat([cards[0]]); // descriptors first, scene type last
+  const [revealed,setRevealed]=useState([]);
   const [showAre,setShowAre]=useState(false);
   useEffect(()=>{
-    const t1=setTimeout(()=>setVis(true),800);
-    const t2=setTimeout(()=>setShowAre(true),1800);
-    const t3=setTimeout(()=>onDone&&onDone(),3000);
-    return()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);};
+    const timers=[];
+    orderedCards.forEach(function(_,i){
+      timers.push(setTimeout(()=>setRevealed(function(r){return r.includes(i)?r:[...r,i];}),(i+1)*900));
+    });
+    timers.push(setTimeout(()=>setShowAre(true),(orderedCards.length+1)*900));
+    timers.push(setTimeout(()=>onDone&&onDone(),(orderedCards.length+2)*900+500));
+    return()=>timers.forEach(clearTimeout);
   },[]);
   return(
     <div className="announce-wrap">
-      <div className="curtain-label">🎬 Round Announcement</div>
+      <div className="curtain-label">🎬 The Category Is</div>
       <div className="divider"/>
       <div className="announce-title">The nominees for</div>
       <div className="announce-title">Best <span>Movie Scene</span></div>
       <div className="featuring-label">featuring…</div>
-      <div style={{margin:"1.2rem 0"}}>
-        <div className={"big-card"+(vis?" visible":"")}>
-          <div className="big-card-text">{category}</div>
-        </div>
+      <div className="big-cards-row">
+        {orderedCards.map(function(c,i){
+          const isSceneType=i===orderedCards.length-1;
+          return(
+            <div key={i} className={"big-card"+(isSceneType?" scene-type":"")+(revealed.includes(i)?" visible":"")}>
+              <div className="big-card-text">{c}</div>
+              <div className="big-card-label">{isSceneType?"Scene Type":"Descriptor"}</div>
+            </div>
+          );
+        })}
       </div>
       <div className={"are-label"+(showAre?" visible":"")}>…are</div>
       {showAre&&<div style={{marginTop:"1rem"}}><button className="btn btn-outline" onClick={onDone} style={{fontSize:".75rem"}}>Skip →</button></div>}
@@ -221,7 +252,7 @@ function CardAnnouncement({category,onDone}){
   );
 }
 
-function WinnerReveal({winners,allDirectors,totalScores,onPlayAgain}){
+function WinnerReveal({winners,allDirectors,scores,onPlayAgain}){
   const [step,setStep]=useState(0);
   useEffect(()=>{
     const t1=setTimeout(()=>setStep(1),1800);
@@ -244,12 +275,12 @@ function WinnerReveal({winners,allDirectors,totalScores,onPlayAgain}){
           <div className="final-scores">
             {allDirectors.map(function(d){return(
               <div key={d.id} className="final-score">
-                <div className="final-score-num" style={{color:d.color}}>{totalScores[d.id]||0}</div>
+                <div className="final-score-num" style={{color:d.color}}>{scores[d.id]||0}</div>
                 <div className="final-score-label">{d.name}</div>
               </div>
             );})}
           </div>
-          <button className="btn btn-gold btn-lg" onClick={onPlayAgain} style={{marginTop:"1rem"}}>Play Again</button>
+          <button className="btn btn-gold btn-lg" onClick={onPlayAgain} style={{marginTop:"1rem"}}>New Game</button>
         </>
       )}
     </div>
@@ -274,7 +305,6 @@ function PlayerApp(){
   const [syncing,setSyncing]=useState(false);
   const [myVote,setMyVote]=useState(null);
   const [voteSubmitted,setVoteSubmitted]=useState(false);
-  const roundRef=useRef(null);
   const unsubRef=useRef(null);
 
   function subscribeGame(p){
@@ -321,15 +351,6 @@ function PlayerApp(){
     return()=>{if(unsubRef.current)unsubRef.current();};
   },[pin,teamId]);
 
-  useEffect(()=>{
-    if(!game)return;
-    const r=game.currentRound;
-    if(roundRef.current!==null&&roundRef.current!==r){
-      setSubmitted(false);setLink("");setScene("");setSubmitError("");setMyVote(null);setVoteSubmitted(false);
-    }
-    roundRef.current=r;
-  },[game&&game.currentRound]);
-
   const joinPin=async()=>{
     setError("");
     const p=pinInput.trim();
@@ -371,7 +392,7 @@ function PlayerApp(){
     if(!extractYouTubeId(link.trim())){setSubmitError("Couldn't parse a video ID.");return;}
     setSyncing(true);
     try{
-      await dbSet("games_choice/"+pin+"/rounds/"+game.currentRound+"/submissions/"+teamId,{
+      await dbSet("games_choice/"+pin+"/round/submissions/"+teamId,{
         link:link.trim(),scene:scene.trim()||"Untitled scene",
         teamName:teamName,teamColor:teamColor,
       });
@@ -384,12 +405,10 @@ function PlayerApp(){
     if(voteSubmitted)return;
     setMyVote(votedForId);
     setVoteSubmitted(true);
-    try{
-      await dbSet("games_choice/"+pin+"/rounds/"+game.currentRound+"/votes/"+teamId,votedForId);
-    }catch(e){console.warn("vote error",e);}
+    try{await dbSet("games_choice/"+pin+"/round/votes/"+teamId,votedForId);}catch(e){console.warn(e);}
   };
 
-  if(screen==="loading")return <div className="player-page"><div className="player-logo">Film <span>In</span> The Blank</div><span className="spinner"/></div>;
+  if(screen==="loading")return <div className="player-page"><div className="player-logo">Film <span>In</span> The Blank</div><span className="player-sub">Director's Choice</span><span className="spinner"/></div>;
 
   if(screen==="pin")return(
     <div className="player-page">
@@ -456,18 +475,23 @@ function PlayerApp(){
   );
 
   if(screen==="game"&&game){
-    const round=game.rounds&&game.rounds[game.currentRound];
-    if(!round)return <div className="player-page"><span className="spinner"/>Loading round…</div>;
+    const round=game.round||freshRound();
     const myTeam=game.teams&&game.teams[teamId];
     const myColor=(myTeam&&myTeam.color)||teamColor||"#f59e0b";
     const alreadySubmitted=round.submissions&&round.submissions[teamId]!=null;
     const votingOpen=round.votingOpen;
     const directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
-    const allVoted=round.votes&&directors.every(function(d){return round.votes[d.id]!=null;});
 
-    // Voting phase
+    if(!round.cards||round.cards.length===0)return(
+      <div className="player-page">
+        <div className="player-logo">Film <span>In</span> The Blank</div>
+        <span className="player-sub">Director's Choice</span>
+        <p style={{color:"#666",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>The host is choosing this round's category…</p>
+      </div>
+    );
+
     if(votingOpen){
-      if(voteSubmitted||round.votes&&round.votes[teamId])return(
+      if(voteSubmitted||(round.votes&&round.votes[teamId]))return(
         <div className="player-page">
           <div style={{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:2,marginBottom:"1rem"}}>{myTeam?myTeam.name:"Your Director"}</div>
           <div className="waiting-vote">
@@ -481,7 +505,7 @@ function PlayerApp(){
           <div style={{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.4rem",letterSpacing:2,marginBottom:".5rem"}}>{myTeam?myTeam.name:"Your Director"}</div>
           <div className="card-surface">
             <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",fontSize:".9rem",color:"#888",textAlign:"center",marginBottom:"1rem"}}>
-              Vote for your favorite <strong style={{color:"#f5f5f5",fontStyle:"normal"}}>{round.category}</strong>
+              Vote for your favorite <strong style={{color:"#f5f5f5",fontStyle:"normal"}}>{categoryPhrase(round.cards)}</strong>
             </div>
             {directors.filter(function(d){return d.id!==teamId&&round.submissions&&round.submissions[d.id];}).map(function(d){
               const sub=round.submissions[d.id];
@@ -503,7 +527,6 @@ function PlayerApp(){
       );
     }
 
-    // Submission phase
     if(alreadySubmitted||submitted)return(
       <div className="player-page">
         <div style={{textAlign:"center",padding:"2rem"}}>
@@ -519,7 +542,7 @@ function PlayerApp(){
         <div style={{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.6rem",letterSpacing:2,marginBottom:".3rem"}}>{myTeam?myTeam.name:"Your Director"}</div>
         <div className="card-surface">
           <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",fontSize:".95rem",color:"#888",marginBottom:".8rem",textAlign:"center"}}>
-            Submit your favorite <strong style={{color:"#f5f5f5",fontStyle:"normal"}}>{round.category||"scene"}</strong>
+            Submit your favorite <strong style={{color:"#f5f5f5",fontStyle:"normal"}}>{categoryPhrase(round.cards)}</strong>
           </div>
           <div className="input-group">
             <label className="input-label">YouTube Link</label>
@@ -549,7 +572,7 @@ function HostApp(){
   const [showCoin,setShowCoin]=useState(false);
   const [announcing,setAnnouncing]=useState(false);
   const [watchingId,setWatchingId]=useState(null);
-  const [showCategoryPicker,setShowCategoryPicker]=useState(false);
+  const [pendingCards,setPendingCards]=useState([]); // cards being picked before locking in
   const [categoryFilter,setCategoryFilter]=useState("");
   const pinRef=useRef(null);
 
@@ -569,8 +592,7 @@ function HostApp(){
           if(g){pinRef.current=savedPin;setPin(savedPin);setLoading(false);subscribeGame(savedPin);return;}
         }
         const newPin=genPin();
-        const rounds=generateRounds();
-        await dbSet("games_choice/"+newPin,{pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds:rounds,teams:{}});
+        await dbSet("games_choice/"+newPin,{pin:newPin,status:"lobby",totalScores:{},teams:{},round:freshRound()});
         localStorage.setItem("fitb_choice_host_pin",newPin);
         pinRef.current=newPin;setPin(newPin);setLoading(false);subscribeGame(newPin);
       }catch(e){console.warn(e);setLoading(false);}
@@ -579,93 +601,93 @@ function HostApp(){
 
   const resetGame=async()=>{
     const newPin=genPin();
-    const rounds=generateRounds();
-    await dbSet("games_choice/"+newPin,{pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds:rounds,teams:{}});
+    await dbSet("games_choice/"+newPin,{pin:newPin,status:"lobby",totalScores:{},teams:{},round:freshRound()});
     localStorage.setItem("fitb_choice_host_pin",newPin);
-    pinRef.current=newPin;setPin(newPin);setAnnouncing(false);setWatchingId(null);setShowCategoryPicker(false);
+    pinRef.current=newPin;setPin(newPin);setAnnouncing(false);setWatchingId(null);setPendingCards([]);
     subscribeGame(newPin);
   };
 
-  const startGame=async()=>{
-    await dbUpdate("games_choice/"+pinRef.current,{status:"started",currentRound:0});
-    setShowCategoryPicker(true);
+  const newGameSameLobby=async()=>{
+    // Keep same directors & PIN, reset scores and round — fresh game
+    await dbUpdate("games_choice/"+pinRef.current,{status:"lobby",totalScores:{},round:freshRound()});
+    setAnnouncing(false);setWatchingId(null);setPendingCards([]);
   };
 
-  const pickCategory=async(cat)=>{
-    await dbUpdate("games_choice/"+pinRef.current+"/rounds/"+game.currentRound,{category:cat});
-    setShowCategoryPicker(false);
+  const startGame=async()=>{
+    await dbUpdate("games_choice/"+pinRef.current,{status:"started"});
+    setPendingCards([]);
+  };
+
+  const addSceneType=(type)=>{
+    setPendingCards([type]); // always replaces — card 1 is always scene type
+  };
+  const randomSceneType=()=>{
+    addSceneType(shuffle(SCENE_TYPES)[0]);
+  };
+  const addDescriptor=(desc)=>{
+    setPendingCards(function(pc){
+      if(pc.length>=3)return pc;
+      if(pc.includes(desc))return pc;
+      return [...pc,desc];
+    });
+  };
+  const randomDescriptor=()=>{
+    if(pendingCards.length>=3)return;
+    const avail=DESCRIPTORS.filter(function(d){return !pendingCards.includes(d);});
+    addDescriptor(shuffle(avail)[0]);
+  };
+  const removeCard=(idx)=>{
+    setPendingCards(function(pc){
+      if(idx===0)return []; // removing scene type clears everything
+      return pc.filter(function(_,i){return i!==idx;});
+    });
+  };
+
+  const lockInAndAnnounce=async()=>{
+    if(pendingCards.length===0)return;
+    await dbUpdate("games_choice/"+pinRef.current+"/round",{cards:pendingCards});
     setAnnouncing(true);
   };
 
-  const randomCategory=async()=>{
-    const used=(game.rounds||[]).map(function(r){return r.category;}).filter(Boolean);
-    const available=SCENE_CATEGORIES.filter(function(c){return !used.includes(c);});
-    const cat=shuffle(available)[0]||shuffle(SCENE_CATEGORIES)[0];
-    await pickCategory(cat);
-  };
-
   const openVoting=async()=>{
-    await dbUpdate("games_choice/"+pinRef.current+"/rounds/"+game.currentRound,{votingOpen:true});
+    await dbUpdate("games_choice/"+pinRef.current+"/round",{votingOpen:true});
     setWatchingId(null);
   };
 
   const closeVotingAndScore=async()=>{
-    const cur=game.currentRound;
-    const round=game.rounds[cur];
+    const round=game.round||freshRound();
     const directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
     const votes=round.votes||{};
-    // Count votes per director
     const voteCounts={};
     directors.forEach(function(d){voteCounts[d.id]=0;});
-    Object.values(votes).forEach(function(votedForId){
-      if(voteCounts[votedForId]!==undefined)voteCounts[votedForId]++;
-    });
-    // Find winner(s)
-    const maxVotes=Math.max(...Object.values(voteCounts));
-    // Award pts: 1pt per vote + 1 bonus for winning
+    Object.values(votes).forEach(function(votedForId){if(voteCounts[votedForId]!==undefined)voteCounts[votedForId]++;});
+    const maxVotes=Math.max.apply(null,Object.values(voteCounts).length?Object.values(voteCounts):[0]);
     const newScores={};
     directors.forEach(function(d){
       const vpts=voteCounts[d.id]||0;
       const bonus=maxVotes>0&&voteCounts[d.id]===maxVotes?1:0;
       newScores[d.id]=vpts+bonus;
     });
-    // Update total scores
-    const totalUpdate={};
-    directors.forEach(function(d){
-      totalUpdate[d.id]=(game.totalScores&&game.totalScores[d.id]||0)+newScores[d.id];
-    });
-    await dbUpdate("games_choice/"+pinRef.current+"/rounds/"+cur,{votingOpen:false,voteCounts:voteCounts,roundScores:newScores,scored:true});
-    await dbUpdate("games_choice/"+pinRef.current+"/totalScores",totalUpdate);
-  };
-
-  const nextRound=async()=>{
-    const next=game.currentRound+1;
-    await dbUpdate("games_choice/"+pinRef.current,{currentRound:next});
-    setWatchingId(null);setAnnouncing(false);
-    setShowCategoryPicker(true);
+    await dbUpdate("games_choice/"+pinRef.current+"/round",{votingOpen:false,voteCounts:voteCounts,roundScores:newScores,scored:true});
+    await dbUpdate("games_choice/"+pinRef.current+"/totalScores",newScores);
   };
 
   if(loading)return(
     <div className="page">
-      <div className="header">
-        <a href="index.html" className="logo">Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
-      </div>
+      <div className="header"><a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a></div>
       <div className="main"><span className="spinner"/>Setting up…</div>
     </div>
   );
   if(!game)return(
     <div className="page">
-      <div className="header">
-        <a href="index.html" className="logo">Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
-      </div>
+      <div className="header"><a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a></div>
       <div className="main"><span className="spinner"/>Connecting…</div>
     </div>
   );
 
   const directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
   const baseUrl=window.location.href.split("?")[0].replace(/#.*/,"");
-  const cur=game.currentRound;
-  const round=game.rounds&&game.rounds[cur];
+  const round=game.round||freshRound();
   const totalScores=game.totalScores||{};
 
   // LOBBY
@@ -673,7 +695,7 @@ function HostApp(){
     <div className="page">
       <div className="header">
         <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
-        <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>New Game</button>
+        <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>New PIN</button>
       </div>
       <div className="main">
         <div style={{textAlign:"center"}}>
@@ -705,9 +727,92 @@ function HostApp(){
     </div>
   );
 
-  // GAME OVER
-  const gameOver=cur>=4&&round&&round.scored;
-  if(gameOver){
+  // CATEGORY PICKER (no cards locked in yet)
+  if(!round.cards||round.cards.length===0)return(
+    <div className="page">
+      <div className="header">
+        <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
+        <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>New PIN</button>
+      </div>
+      <div className="main">
+        <div style={{textAlign:"center"}}>
+          <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",color:"#aaa",fontSize:"1rem",marginBottom:".3rem"}}>Build this round's category</div>
+          <div className="divider"/>
+        </div>
+
+        {/* Chosen cards preview */}
+        <div className="chosen-cards-row">
+          {pendingCards.length===0&&<p style={{color:"#444",fontSize:".85rem",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>Pick a scene type to begin…</p>}
+          {pendingCards.map(function(c,i){return(
+            <div key={i} className={"chosen-card-chip "+(i===0?"scene-type":"descriptor")}>
+              {c}<button onClick={function(){removeCard(i);}}>✕</button>
+            </div>
+          );})}
+        </div>
+        {pendingCards.length>0&&(
+          <p style={{color:"#666",fontFamily:'Playfair Display, serif',fontStyle:"italic",fontSize:".95rem",marginTop:"-.8rem"}}>
+            Reads as: <strong style={{color:"#f59e0b",fontStyle:"normal"}}>{categoryPhrase(pendingCards)}</strong>
+          </p>
+        )}
+
+        {/* Step 1: scene type */}
+        {pendingCards.length===0&&(
+          <div className="picker-section">
+            <div className="picker-heading">Step 1 — Pick a Scene Type</div>
+            <div className="row" style={{marginBottom:".8rem"}}>
+              <button className="btn btn-gold" onClick={randomSceneType}>🎲 Random Scene Type</button>
+            </div>
+            <input className="input-field" placeholder="Search scene types…" value={categoryFilter} onChange={function(e){setCategoryFilter(e.target.value);}}/>
+            <div className="category-grid" style={{marginTop:".6rem"}}>
+              {SCENE_TYPES.filter(function(c){return c.toLowerCase().includes(categoryFilter.toLowerCase());}).map(function(c){return(
+                <button key={c} className="category-btn" onClick={function(){addSceneType(c);setCategoryFilter("");}}>{c}</button>
+              );})}
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: optional descriptors + start */}
+        {pendingCards.length>0&&(
+          <div className="picker-section">
+            <div className="picker-heading">
+              {pendingCards.length<3?"Optionally add a descriptor (up to 3 cards total), or start the round":"Maximum 3 cards reached"}
+            </div>
+            {pendingCards.length<3&&(
+              <>
+                <div className="row" style={{marginBottom:".8rem"}}>
+                  <button className="btn btn-outline" onClick={randomDescriptor}>🎲 Random Descriptor</button>
+                </div>
+                <div className="category-grid" style={{maxHeight:180}}>
+                  {DESCRIPTORS.filter(function(d){return !pendingCards.includes(d);}).map(function(d){return(
+                    <button key={d} className="category-btn" onClick={function(){addDescriptor(d);}}>{d}</button>
+                  );})}
+                </div>
+              </>
+            )}
+            <div className="row" style={{marginTop:"1.2rem"}}>
+              <button className="btn btn-gold btn-lg" onClick={lockInAndAnnounce}>🎬 Start Round →</button>
+              <button className="btn btn-gray" onClick={function(){setPendingCards([]);}}>Start Over</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  // ANNOUNCEMENT
+  if(announcing)return(
+    <div className="page">
+      <div className="header">
+        <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
+      </div>
+      <div className="main">
+        <CardAnnouncement cards={round.cards} onDone={function(){setAnnouncing(false);}}/>
+      </div>
+    </div>
+  );
+
+  // GAME OVER / WINNER (after this round is scored)
+  if(round.scored){
     const sorted=[...directors].sort(function(a,b){return (totalScores[b.id]||0)-(totalScores[a.id]||0);});
     const topScore=totalScores[sorted[0]&&sorted[0].id]||0;
     const winners=sorted.filter(function(d){return (totalScores[d.id]||0)===topScore;});
@@ -715,71 +820,20 @@ function HostApp(){
       <div className="page">
         <div className="header">
           <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
-          <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem",visibility:"hidden"}}>New Game</button>
         </div>
         <div className="main">
-          <WinnerReveal winners={winners} allDirectors={sorted} totalScores={totalScores} onPlayAgain={resetGame}/>
+          <WinnerReveal winners={winners} allDirectors={sorted} scores={totalScores} onPlayAgain={newGameSameLobby}/>
         </div>
       </div>
     );
   }
 
-  // CATEGORY PICKER
-  if(showCategoryPicker)return(
-    <div className="page">
-      <div className="header">
-        <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
-        <span className="round-badge">Round {cur+1}/5</span>
-      </div>
-      <div className="main">
-        <div style={{textAlign:"center"}}>
-          <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",color:"#aaa",fontSize:"1rem",marginBottom:".5rem"}}>Pick this round's scene category</div>
-          <div className="divider"/>
-        </div>
-        <div className="row">
-          <button className="btn btn-gold btn-lg" onClick={randomCategory}>🎲 Random Category</button>
-          <span style={{color:"#555",fontSize:".85rem"}}>or pick one below</span>
-        </div>
-        <input
-          className="input-field"
-          style={{maxWidth:480}}
-          placeholder="Search categories…"
-          value={categoryFilter}
-          onChange={function(e){setCategoryFilter(e.target.value);}}
-        />
-        <div className="category-grid">
-          {SCENE_CATEGORIES.filter(function(c){return c.toLowerCase().includes(categoryFilter.toLowerCase());}).map(function(c){return(
-            <button key={c} className="category-btn" onClick={function(){pickCategory(c);}}>{c}</button>
-          );})}
-        </div>
-      </div>
-    </div>
-  );
-
-  // ANNOUNCEMENT
-  if(announcing&&round&&round.category)return(
-    <div className="page">
-      <div className="header">
-        <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
-        <span className="round-badge">Round {cur+1}/5</span>
-      </div>
-      <div className="main">
-        <CardAnnouncement category={round.category} onDone={function(){setAnnouncing(false);}}/>
-      </div>
-    </div>
-  );
-
-  if(!round)return <div className="page"><div className="main"><span className="spinner"/></div></div>;
-
   const submissions=round.submissions||{};
   const votes=round.votes||{};
-  const voteCounts=round.voteCounts||{};
-  const roundScores=round.roundScores||{};
   const anySubmitted=directors.some(function(d){return submissions[d.id]!=null;});
-  const allSubmitted=directors.every(function(d){return submissions[d.id]!=null;});
+  const allSubmitted=directors.length>0&&directors.every(function(d){return submissions[d.id]!=null;});
   const allVoted=directors.length>0&&directors.every(function(d){return votes[d.id]!=null;});
   const votingOpen=round.votingOpen;
-  const roundScored=round.scored;
 
   function getYTEmbed(url){var id=extractYouTubeId(url);return id?"https://www.youtube.com/embed/"+id+"?autoplay=1":null;}
 
@@ -790,7 +844,6 @@ function HostApp(){
         <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
         <div className="score-chips">
           {directors.map(function(d){return <span key={d.id} className="score-chip" style={{background:d.color}}>{d.name}: {totalScores[d.id]||0} pts</span>;})}
-          <span className="round-badge">Round {cur+1}/5</span>
         </div>
         <div style={{display:"flex",gap:".5rem",alignItems:"center"}}>
           <span style={{fontSize:".68rem",color:"#16a34a"}}><span className="dot-live"/>LIVE</span>
@@ -801,11 +854,16 @@ function HostApp(){
       <div className="main">
         {/* Category display */}
         <div className="announce-wrap" style={{marginBottom:"-.5rem"}}>
-          <div className="curtain-label">🎬 Round {cur+1} — The nominees for <span style={{fontFamily:"'Bebas Neue',sans-serif",fontStyle:"normal",color:"#f59e0b",letterSpacing:1}}>Best Movie Scene</span> featuring</div>
-          <div style={{margin:".6rem 0",textAlign:"center"}}>
-            <div className="big-card visible" style={{padding:".8rem 2rem",display:"inline-flex"}}>
-              <div className="big-card-text" style={{fontSize:"2rem"}}>{round.category}</div>
-            </div>
+          <div className="curtain-label">🎬 The nominees for <span style={{fontFamily:"'Bebas Neue',sans-serif",fontStyle:"normal",color:"#f59e0b",letterSpacing:1}}>Best Movie Scene</span> featuring</div>
+          <div className="big-cards-row" style={{marginTop:".4rem"}}>
+            {round.cards.slice(1).concat([round.cards[0]]).map(function(c,i,arr){
+              const isSceneType=i===arr.length-1;
+              return(
+                <div key={i} className={"big-card visible"+(isSceneType?" scene-type":"")} style={{padding:".7rem 1.2rem"}}>
+                  <div className="big-card-text" style={{fontSize:isSceneType?"1.6rem":"1.2rem"}}>{c}</div>
+                </div>
+              );
+            })}
           </div>
           <div className="are-label visible">…are</div>
         </div>
@@ -816,10 +874,7 @@ function HostApp(){
             const sub=submissions[d.id];
             return(
               <div key={d.id} className="sub-box" style={{borderColor:sub?hex2rgba(d.color,.5):"#222"}}>
-                <div className="sub-title" style={{color:d.color}}>
-                  {d.name} {sub?"✓":""}
-                  {roundScored&&<span className="scored-badge">+{roundScores[d.id]||0} pts</span>}
-                </div>
+                <div className="sub-title" style={{color:d.color}}>{d.name} {sub?"✓":""}</div>
                 {sub
                   ?<div style={{fontSize:".82rem",color:"#aaa",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>Nomination received</div>
                   :<div className="sub-waiting">Awaiting nomination…</div>
@@ -838,7 +893,7 @@ function HostApp(){
         )}
 
         {/* Screening phase */}
-        {anySubmitted&&!votingOpen&&!roundScored&&(
+        {anySubmitted&&!votingOpen&&(
           watchingId?(function(){
             const d=directors.find(function(x){return x.id===watchingId;});
             const sub=submissions[watchingId];
@@ -864,18 +919,14 @@ function HostApp(){
                   <button key={d.id} className="btn" style={{background:d.color,color:"#fff"}} onClick={function(){setWatchingId(d.id);}}>▶ {d.name}</button>
                 );})}
               </div>
-              {anySubmitted&&(
-                <button className="btn btn-gold" style={{marginTop:"1rem"}} onClick={openVoting}>Open Voting →</button>
-              )}
-              {!allSubmitted&&(
-                <button className="btn btn-gray" style={{marginTop:".5rem",fontSize:".78rem"}} onClick={openVoting}>Skip & Open Voting →</button>
-              )}
+              {anySubmitted&&<button className="btn btn-gold" style={{marginTop:"1rem"}} onClick={openVoting}>Open Voting →</button>}
+              {!allSubmitted&&<button className="btn btn-gray" style={{marginTop:".5rem",fontSize:".78rem"}} onClick={openVoting}>Skip & Open Voting →</button>}
             </div>
           )
         )}
 
         {/* Voting phase */}
-        {votingOpen&&!roundScored&&(
+        {votingOpen&&(
           <div style={{textAlign:"center",width:"100%",maxWidth:560}}>
             <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",color:"#aaa",marginBottom:"1rem"}}>
               Voting is open — directors are casting their votes on their phones…
@@ -893,39 +944,8 @@ function HostApp(){
                 );
               })}
             </div>
-            {allVoted&&(
-              <button className="btn btn-gold btn-lg" onClick={closeVotingAndScore}>Reveal Results →</button>
-            )}
-            {!allVoted&&(
-              <button className="btn btn-gray" style={{fontSize:".78rem"}} onClick={closeVotingAndScore}>Close Voting Early →</button>
-            )}
-          </div>
-        )}
-
-        {/* Vote results */}
-        {roundScored&&(
-          <div style={{width:"100%",maxWidth:500}}>
-            <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",color:"#aaa",textAlign:"center",marginBottom:"1rem"}}>The votes are in…</div>
-            <div className="vote-results">
-              {[...directors].sort(function(a,b){return (voteCounts[b.id]||0)-(voteCounts[a.id]||0);}).map(function(d){
-                const total=Math.max(...directors.map(function(x){return voteCounts[x.id]||0;}),1);
-                const pct=Math.round(((voteCounts[d.id]||0)/total)*100);
-                return(
-                  <div key={d.id} className="vote-result-row">
-                    <div style={{width:12,height:12,borderRadius:"50%",background:d.color,flexShrink:0}}/>
-                    <div style={{fontSize:".82rem",fontWeight:600,color:d.color,minWidth:100}}>{d.name}</div>
-                    <div className="vote-bar-wrap">
-                      <div className="vote-bar" style={{width:pct+"%",background:d.color}}/>
-                    </div>
-                    <div style={{fontSize:".78rem",color:"#888",minWidth:50,textAlign:"right"}}>{voteCounts[d.id]||0} vote{(voteCounts[d.id]||0)!==1?"s":""} +{roundScores[d.id]||0}pts</div>
-                  </div>
-                );
-              })}
-            </div>
-            {cur<4
-              ?<div style={{textAlign:"center",marginTop:"1.5rem"}}><button className="btn btn-gold btn-lg" onClick={nextRound}>Next Round →</button></div>
-              :<div style={{textAlign:"center",marginTop:"1.5rem"}}><button className="btn btn-gold btn-lg" onClick={function(){setGame(function(g){return Object.assign({},g,{currentRound:5});});}}>See Final Results →</button></div>
-            }
+            {allVoted&&<button className="btn btn-gold btn-lg" onClick={closeVotingAndScore}>Reveal Results →</button>}
+            {!allVoted&&<button className="btn btn-gray" style={{fontSize:".78rem"}} onClick={closeVotingAndScore}>Close Voting Early →</button>}
           </div>
         )}
       </div>
