@@ -252,7 +252,7 @@ function CardAnnouncement({cards,onDone}){
   );
 }
 
-function WinnerReveal({winners,allDirectors,scores,onPlayAgain}){
+function WinnerReveal({winners,allDirectors,scores,onNewRound,onNewGame}){
   const [step,setStep]=useState(0);
   useEffect(()=>{
     const t1=setTimeout(()=>setStep(1),1800);
@@ -280,7 +280,11 @@ function WinnerReveal({winners,allDirectors,scores,onPlayAgain}){
               </div>
             );})}
           </div>
-          <button className="btn btn-gold btn-lg" onClick={onPlayAgain} style={{marginTop:"1rem"}}>New Game</button>
+          <div className="row" style={{marginTop:"1.2rem"}}>
+            <button className="btn btn-gold btn-lg" onClick={onNewRound}>🎬 New Round</button>
+            <button className="btn btn-outline" onClick={onNewGame}>New Game (New PIN)</button>
+          </div>
+          <p style={{color:"#555",fontSize:".75rem",marginTop:".6rem"}}>New Round keeps the same directors · New Game starts a fresh lobby</p>
         </>
       )}
     </div>
@@ -599,7 +603,7 @@ function HostApp(){
     })();
   },[]);
 
-  const resetGame=async()=>{
+  const newGame=async()=>{
     const newPin=genPin();
     await dbSet("games_choice/"+newPin,{pin:newPin,status:"lobby",totalScores:{},teams:{},round:freshRound()});
     localStorage.setItem("fitb_choice_host_pin",newPin);
@@ -607,9 +611,9 @@ function HostApp(){
     subscribeGame(newPin);
   };
 
-  const newGameSameLobby=async()=>{
-    // Keep same directors & PIN, reset scores and round — fresh game
-    await dbUpdate("games_choice/"+pinRef.current,{status:"lobby",totalScores:{},round:freshRound()});
+  const newRound=async()=>{
+    // Keep same directors & PIN, reset only the round + scores — go straight to category picker
+    await dbUpdate("games_choice/"+pinRef.current,{status:"started",totalScores:{},round:freshRound()});
     setAnnouncing(false);setWatchingId(null);setPendingCards([]);
   };
 
@@ -695,7 +699,7 @@ function HostApp(){
     <div className="page">
       <div className="header">
         <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
-        <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>New PIN</button>
+        <button className="btn btn-outline" onClick={newGame} style={{fontSize:".75rem"}}>New PIN</button>
       </div>
       <div className="main">
         <div style={{textAlign:"center"}}>
@@ -732,7 +736,7 @@ function HostApp(){
     <div className="page">
       <div className="header">
         <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
-        <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>New PIN</button>
+        <button className="btn btn-outline" onClick={newGame} style={{fontSize:".75rem"}}>New PIN</button>
       </div>
       <div className="main">
         <div style={{textAlign:"center"}}>
@@ -822,7 +826,7 @@ function HostApp(){
           <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Choice</small></a>
         </div>
         <div className="main">
-          <WinnerReveal winners={winners} allDirectors={sorted} scores={totalScores} onPlayAgain={newGameSameLobby}/>
+          <WinnerReveal winners={winners} allDirectors={sorted} scores={totalScores} onNewRound={newRound} onNewGame={newGame}/>
         </div>
       </div>
     );
@@ -847,7 +851,7 @@ function HostApp(){
         </div>
         <div style={{display:"flex",gap:".5rem",alignItems:"center"}}>
           <span style={{fontSize:".68rem",color:"#16a34a"}}><span className="dot-live"/>LIVE</span>
-          <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>Reset</button>
+          <button className="btn btn-outline" onClick={newGame} style={{fontSize:".75rem"}}>Reset</button>
         </div>
       </div>
 
