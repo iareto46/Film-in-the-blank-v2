@@ -132,21 +132,69 @@ function dbPush(p,v){return _db.ref(p).push(v);}
 <script type="text/babel">
 const {useState,useEffect,useRef,useCallback}=React;
 
-const CARD_POOL=[
-  "Comedy","Drama","Horror","Action","Romance","Animated","Sci-Fi","Documentary","Musical","Thriller",
-  "With Brad Pitt","With Meryl Streep","With Tom Hanks","With Leonardo DiCaprio","With Cate Blanchett",
-  "With Denzel Washington","With Jennifer Lawrence","With Morgan Freeman","With Scarlett Johansson","With Will Smith",
-  "Has a car chase","Has a wedding","Has a funeral","Has a dance scene","Has a courtroom scene",
-  "Has a heist","Has a chase on foot","Has a montage","Has a dream sequence","Has a party",
-  "Has a lawnmower","Has a dog","Has a gun","Has a cake","Has a ladder",
-  "Has a phone call","Has a mirror","Has a briefcase","Has a sword","Has a newspaper",
-  "Takes place outside","Takes place at night","Takes place in winter","Takes place in a city","Takes place in space",
-  "Takes place at school","Takes place at a party","Takes place on a boat","Takes place in a hospital","Takes place in the past",
-  "1990s film","2000s film","2010s film","Before 1990","Based on a true story",
-  "Won an Award","Directed by a woman","Foreign language film","A sequel","A remake",
-];
+const CARD_CATEGORIES={
+  "Genre":[
+    "Comedy","Drama","Horror","Action","Romance","Animated",
+    "Sci-Fi","Documentary","Musical","Thriller",
+  ],
+  "Setting":[
+    "Takes place in the forest","Takes place at night","Takes place in winter",
+    "Takes place in a city","Takes place in space","Takes place at school",
+    "Takes place in a kitchen","Takes place on a boat","Takes place in a hospital",
+    "Takes place in a car","Takes place on another planet","Takes place in the past",
+    "Takes place in an office","Takes place in a restaurant",
+  ],
+  "Scene Type":[
+    "Has a car chase","Has a wedding","Has a funeral","Has a dance scene",
+    "Has a courtroom scene","Has a heist","Has a chase on foot","Has a montage",
+    "Has a dream sequence","Has a party","Has a fight","Has a monologue",
+    "Has an epic entrance","Has a plot twist","Has a standoff",
+  ],
+  "Actor/Actress":[
+    "With Brad Pitt","With Meryl Streep","With Tom Hanks","With Leonardo DiCaprio",
+    "With Cate Blanchett","With Denzel Washington","With Jennifer Lawrence",
+    "With Morgan Freeman","With Scarlett Johansson","With Will Smith",
+    "With Matt Damon","With Margot Robbie","With Zoe Saldana","With Dwayne Johnson",
+    "With Robin Williams","With Daniel Day-Lewis","With Sandra Bullock",
+    "With Adam Sandler","With Natalie Portman","With Nicole Kidman","With Tom Cruise",
+  ],
+  "Objects":[
+    "Has a lawnmower","Has a dog","Has a gun","Has a cake","Has a ladder",
+    "Has a phone call","Has a mirror","Has a briefcase","Has a sword","Has a newspaper",
+    "Has a talking animal","Has a unique weapon","Has a baby","Has a mask",
+  ],
+  "Miscellaneous":[
+    "Breaks the fourth wall","Is a Disney Channel Original Movie","Is a Christmas film",
+    "Is part of a musical","Has a famous quote","Is in black and white","Has no dialogue",
+    "Directed by Steven Spielberg","Directed by Christopher Nolan",
+    "Directed by Quentin Tarantino","Directed by James Cameron","Directed by Martin Scorsese",
+  ],
+};
 
-const PALETTE=[
+const CATEGORY_NAMES=Object.keys(CARD_CATEGORIES);
+
+function generateRounds(){
+  // Pre-shuffle each category's cards independently
+  const pools={};
+  CATEGORY_NAMES.forEach(function(cat){
+    pools[cat]=shuffle([...CARD_CATEGORIES[cat]]);
+  });
+  // Track how many cards we've used from each category
+  const used={};
+  CATEGORY_NAMES.forEach(function(cat){used[cat]=0;});
+
+  return Array.from({length:5},(_,i)=>{
+    // Pick 5 of 6 categories for this round (one sits out)
+    const roundCats=shuffle([...CATEGORY_NAMES]).slice(0,5);
+    const cards=roundCats.map(function(cat){
+      const card=pools[cat][used[cat]%pools[cat].length];
+      used[cat]++;
+      return card;
+    });
+    return {round:i+1,cards,submissions:{},scores:{},scored:{}};
+  });
+}
+
   {hex:"#e53935",name:"Red"},{hex:"#1e88e5",name:"Blue"},{hex:"#43a047",name:"Green"},
   {hex:"#fb8c00",name:"Orange"},{hex:"#8e24aa",name:"Purple"},{hex:"#e91e63",name:"Pink"},
   {hex:"#00acc1",name:"Teal"},{hex:"#fdd835",name:"Yellow"},{hex:"#6d4c41",name:"Brown"},
@@ -154,7 +202,6 @@ const PALETTE=[
 ];
 
 function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
-function pick5(){return shuffle(CARD_POOL).slice(0,5);}
 function genPin(){return String(Math.floor(1000+Math.random()*9000));}
 function generateRounds(){
   // Shuffle the full pool once and deal 5 cards per round — no repeats across rounds
