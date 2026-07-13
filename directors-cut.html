@@ -736,6 +736,9 @@ function HostApp(){
           if(!d||!sub)return null;
           return h('div',{className:'video-area'},
             h('div',{className:'review-label',style:{color:d.color}},'Now screening: '+d.name),
+            h('div',{style:{display:'flex',flexWrap:'wrap',gap:'.4rem',justifyContent:'center',marginBottom:'.8rem'}},
+              (sub.cards||[]).map(function(ci){return h('span',{key:ci,style:{padding:'.2rem .7rem',borderRadius:999,fontSize:'.78rem',fontWeight:600,background:hex2rgba(d.color,.15),border:'1.5px solid '+hex2rgba(d.color,.4),color:d.color}},round.cards[ci]);})
+            ),
             h('iframe',{src:getYTEmbed(sub.link),title:'Scene',allowFullScreen:true,allow:'autoplay'}),
             h('div',{className:'row',style:{marginTop:'1rem'}},
               !scored[watchingTeam]?h('div',{className:'row'},
