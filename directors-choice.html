@@ -3,6 +3,699 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Director's Choice — Film In The Blank</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-height:100vh;}
+.page{min-height:100vh;display:flex;flex-direction:column;background:#0a0a0a;}
+.header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid #222;flex-shrink:0;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:#fff;text-decoration:none;}
+.logo span{color:#f59e0b;}
+.logo-sub{font-size:.75rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2px;color:#f59e0b;text-transform:uppercase;display:block;line-height:1;}
+.main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1.8rem;}
+.btn{padding:.6rem 1.4rem;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.9rem;transition:opacity .15s;}
+.btn:hover{opacity:.85;}.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn-gold{background:#f59e0b;color:#000;}.btn-green{background:#16a34a;color:#fff;}
+.btn-red{background:#dc2626;color:#fff;}.btn-gray{background:#333;color:#eee;}
+.btn-outline{background:transparent;border:1.5px solid #444;color:#eee;}
+.btn-lg{font-size:1.1rem;padding:.8rem 2.2rem;border-radius:10px;}
+.row{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;justify-content:center;}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid #444;border-top-color:#f59e0b;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.dot-live{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;background:#16a34a;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.input-field{width:100%;background:#1a1a1a;border:1.5px solid #333;border-radius:8px;color:#eee;font-family:'DM Sans',sans-serif;font-size:.95rem;padding:.7rem .9rem;outline:none;}
+.input-field:focus{border-color:#555;}
+.input-label{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:#777;display:block;margin-bottom:.35rem;}
+.input-group{margin:.6rem 0;width:100%;}
+.card-surface{background:#111;border-radius:16px;padding:1.8rem;border:1.5px solid #222;width:100%;max-width:440px;}
+.error-msg{color:#f87171;font-size:.82rem;margin-top:.3rem;}
+.pin-display{font-family:'Bebas Neue',sans-serif;font-size:6rem;letter-spacing:12px;color:#f59e0b;line-height:1;text-align:center;}
+.pin-sub{font-size:.85rem;color:#555;text-align:center;margin-top:.3rem;letter-spacing:1px;text-transform:uppercase;}
+.directors-grid{display:flex;flex-direction:column;gap:.7rem;width:100%;max-width:560px;}
+.director-row{display:flex;align-items:center;gap:1rem;background:#111;border-radius:12px;padding:.85rem 1.2rem;border:1.5px solid #222;}
+.director-swatch{width:16px;height:16px;border-radius:50%;flex-shrink:0;}
+.director-name{font-weight:600;font-size:1rem;}
+.waiting-directors{color:#555;font-style:italic;font-size:.9rem;text-align:center;}
+.announce-wrap{text-align:center;max-width:700px;width:100%;}
+.curtain-label{font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;color:#aaa;margin-bottom:.5rem;}
+.announce-title{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;letter-spacing:3px;color:#f5f5f5;line-height:1.1;}
+.announce-title span{color:#f59e0b;}
+.featuring-label{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:#777;margin:.5rem 0;}
+.divider{width:60px;height:2px;background:linear-gradient(90deg,transparent,#f59e0b,transparent);margin:.5rem auto;}
+.big-cards-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin:1rem 0;min-height:90px;align-items:center;}
+.big-card{background:#161616;border:2px solid #444;border-radius:18px;padding:1rem 1.6rem;text-align:center;opacity:0;transform:scale(.85) translateY(10px);transition:opacity .5s ease,transform .5s ease;}
+.big-card.visible{opacity:1;transform:scale(1) translateY(0);}
+.big-card.scene-type{border-color:#f59e0b;}
+.big-card-text{font-family:'Bebas Neue',sans-serif;letter-spacing:2px;color:#ddd;line-height:1;font-size:1.8rem;}
+.big-card.scene-type .big-card-text{color:#f59e0b;font-size:2.4rem;}
+.big-card-label{font-size:.62rem;color:#666;text-transform:uppercase;letter-spacing:1px;margin-top:.3rem;}
+.are-label{font-family:'Playfair Display',serif;font-style:italic;font-size:1.4rem;color:#f59e0b;margin-top:.5rem;opacity:0;transition:opacity .6s;}
+.are-label.visible{opacity:1;}
+.subs-grid{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;width:100%;max-width:960px;}
+.sub-box{flex:1;min-width:180px;background:#111;border-radius:14px;padding:1rem 1.2rem;border:1.5px solid #222;}
+.sub-title{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:.5rem;font-weight:600;}
+.sub-waiting{font-size:.85rem;color:#555;font-style:italic;}
+.score-chips{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
+.score-chip{padding:.3rem .9rem;border-radius:999px;font-weight:600;font-size:.88rem;color:#fff;}
+.video-area{width:100%;max-width:800px;}
+.video-area iframe{width:100%;aspect-ratio:16/9;border-radius:12px;border:none;}
+.review-label{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;text-align:center;margin-bottom:.8rem;}
+.vote-results{display:flex;flex-direction:column;gap:.6rem;width:100%;max-width:500px;}
+.vote-result-row{display:flex;align-items:center;gap:.8rem;}
+.vote-bar-wrap{flex:1;background:#1a1a1a;border-radius:4px;height:8px;overflow:hidden;}
+.vote-bar{height:100%;border-radius:4px;transition:width .8s ease;}
+.winner-screen{text-align:center;}
+.winner-envelope{font-family:'Playfair Display',serif;font-style:italic;font-size:1.3rem;color:#aaa;margin-bottom:.5rem;}
+.winner-award{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:3px;color:#f59e0b;margin-bottom:.8rem;}
+.winner-name{font-family:'Bebas Neue',sans-serif;letter-spacing:4px;color:#f59e0b;opacity:0;transform:scale(.8);transition:opacity .8s ease,transform .8s ease;}
+.winner-name.visible{opacity:1;transform:scale(1);}
+.winner-applause{font-size:2rem;margin-top:.8rem;opacity:0;transition:opacity .5s ease .8s;}
+.winner-applause.visible{opacity:1;}
+.final-scores{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin:1.2rem 0;}
+.final-score{text-align:center;}
+.final-score-num{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;}
+.final-score-label{font-size:.8rem;color:#777;text-transform:uppercase;letter-spacing:1px;}
+.coin{font-size:3rem;display:block;text-align:center;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:999;}
+.modal{background:#111;border:1.5px solid #333;border-radius:20px;padding:2.5rem 3rem;text-align:center;max-width:360px;width:90%;}
+.player-page{min-height:100vh;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.2rem;}
+.player-logo{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:2px;color:#fff;margin-bottom:.3rem;text-align:center;}
+.player-logo span{color:#f59e0b;}
+.player-sub{font-size:.75rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2px;color:#f59e0b;text-transform:uppercase;display:block;text-align:center;margin-bottom:1.5rem;}
+.color-picker{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.5rem 0;}
+.color-swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s;}
+.color-swatch.selected{border-color:#fff;transform:scale(1.15);}
+.pin-input{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:8px;text-align:center;background:#1a1a1a;border:2px solid #333;border-radius:12px;color:#f59e0b;width:100%;padding:.6rem;outline:none;}
+.pin-input:focus{border-color:#f59e0b;}
+.vote-btn{padding:.7rem 1rem;border-radius:12px;border:1.5px solid #2a2a2a;background:#161616;color:#eee;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.88rem;text-align:left;display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem;width:100%;transition:all .2s;}
+.vote-btn:hover:not(:disabled){border-color:#444;}
+.vote-btn.selected{border-color:#f59e0b;background:rgba(245,158,11,.1);color:#f59e0b;}
+.vote-btn:disabled{opacity:.6;cursor:not-allowed;}
+.category-grid{display:flex;flex-direction:column;gap:.5rem;width:100%;max-width:560px;max-height:260px;overflow-y:auto;}
+.category-btn{padding:.6rem 1rem;border-radius:8px;border:1.5px solid #222;background:#111;color:#ddd;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;text-align:left;transition:all .15s;}
+.category-btn:hover{border-color:#f59e0b;color:#f59e0b;}
+.waiting-vote{text-align:center;padding:2rem;}
+.picker-section{width:100%;max-width:560px;text-align:center;}
+.picker-heading{font-family:'Playfair Display',serif;font-style:italic;color:#888;font-size:.95rem;margin-bottom:.6rem;}
+.chosen-cards-row{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0;min-height:50px;}
+.chosen-card-chip{padding:.4rem .9rem;border-radius:999px;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:.4rem;}
+.chosen-card-chip.scene-type{background:rgba(245,158,11,.15);border:1.5px solid #f59e0b;color:#f59e0b;}
+.chosen-card-chip.descriptor{background:#1a1a1a;border:1.5px solid #333;color:#ccc;}
+.chosen-card-chip button{background:none;border:none;color:inherit;cursor:pointer;font-size:.9rem;opacity:.6;padding:0;}
+.chosen-card-chip button:hover{opacity:1;}
+</style>
+</head>
+<body>
+<div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0a0a;color:#555;font-family:sans-serif;font-size:1.1rem;">Loading…</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-app-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-database-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyAP0gSeSOYrRWplnClLZ8Y5D9vXcJTpKro",
+  authDomain:"film-in-the-blank.firebaseapp.com",
+  databaseURL:"https://film-in-the-blank-default-rtdb.firebaseio.com",
+  projectId:"film-in-the-blank",
+  storageBucket:"film-in-the-blank.firebasestorage.app",
+  messagingSenderId:"407899539410",
+  appId:"1:407899539410:web:f10ed0ce84fcc0d6cd2a0b"
+});
+var _db=firebase.database();
+function dbGet(p){return Promise.race([_db.ref(p).get().then(function(s){return s.exists()?s.val():null;}),new Promise(function(_,r){setTimeout(function(){r(new Error('timeout'));},8000);})]);}
+function dbSet(p,v){return _db.ref(p).set(v);}
+function dbUpdate(p,v){return _db.ref(p).update(v);}
+function dbSub(p,cb){var r=_db.ref(p);r.on('value',function(s){cb(s.exists()?s.val():null);});return function(){r.off();};}
+function dbPush(p,v){return _db.ref(p).push(v);}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+
+<script>
+(function(){
+'use strict';
+var h=React.createElement;
+var useState=React.useState;
+var useEffect=React.useEffect;
+var useRef=React.useRef;
+var useCallback=React.useCallback;
+
+var SCENE_TYPES=["Fight Scene","Kissing Scene","Entrance","Car Chase","Heist","Shootout","Escape Scene","Death Scene","Confession Scene","Breakup Scene","Reunion Scene","Dance Scene","Villain Monologue","Training Scene","Makeover Scene","Slow Clap Scene","Standoff","Betrayal Scene","Wedding Scene","Farewell Scene","Plot Twist Reveal","Drinking Scene"];
+var DESCRIPTORS=["Animated","Dramatic","Comedic","Slow Motion","Over-the-Top","One-on-One","Group","Musical","Silent","Wordless","Underwater","In the Rain","Black & White","Set in Space","Set at Night","With a Twist","Awkward","Epic"];
+var PALETTE=[{hex:"#e53935",name:"Red"},{hex:"#1e88e5",name:"Blue"},{hex:"#43a047",name:"Green"},{hex:"#fb8c00",name:"Orange"},{hex:"#8e24aa",name:"Purple"},{hex:"#e91e63",name:"Pink"},{hex:"#00acc1",name:"Teal"},{hex:"#fdd835",name:"Yellow"},{hex:"#6d4c41",name:"Brown"},{hex:"#00897b",name:"Mint"},{hex:"#e64a19",name:"Crimson"},{hex:"#5c6bc0",name:"Indigo"}];
+
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
+function genPin(){return String(Math.floor(1000+Math.random()*9000));}
+function hex2rgba(hex,a){try{var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return 'rgba('+r+','+g+','+b+','+a+')';}catch(e){return hex;}}
+function extractYouTubeId(url){try{var u=new URL(url);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1).split('?')[0];return u.searchParams.get('v');}catch(e){return null;}}
+function isYouTubeUrl(url){return /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(url);}
+function freshRound(){return {cards:[],submissions:{},votes:{},voteCounts:{},roundScores:{},scored:false,votingOpen:false};}
+function categoryPhrase(cards){if(!cards||cards.length===0)return '';var sceneType=cards[0];var descriptors=cards.slice(1);return descriptors.concat([sceneType]).join(' ');}
+
+var PLAYER_KEY='fitb_dc_session';
+function saveSession(pin,teamId,name,color){try{localStorage.setItem(PLAYER_KEY,JSON.stringify({pin:pin,teamId:teamId,name:name,color:color,savedAt:Date.now()}));}catch(e){}}
+function loadSession(){try{var s=localStorage.getItem(PLAYER_KEY);if(!s)return null;var d=JSON.parse(s);if(Date.now()-d.savedAt>12*60*60*1000){localStorage.removeItem(PLAYER_KEY);return null;}return d;}catch(e){return null;}}
+function clearSession(){try{localStorage.removeItem(PLAYER_KEY);}catch(e){}}
+function getPinFromUrl(){var m=window.location.hash.match(/[?&]pin=(\d{4})/);return m?m[1]:null;}
+
+function QRBlock(props){
+  var url=props.url,size=props.size||160;
+  var ref=useRef(null);
+  useEffect(function(){
+    if(!ref.current||!window.QRCode)return;
+    ref.current.innerHTML='';
+    new window.QRCode(ref.current,{text:url,width:size,height:size,colorDark:'#000',colorLight:'#fff',correctLevel:window.QRCode.CorrectLevel.M});
+  },[url,size]);
+  return h('div',{style:{display:'inline-block',background:'#fff',borderRadius:12,padding:10,marginTop:'.6rem'}},h('div',{ref:ref}));
+}
+
+function CoinFlip(props){
+  var onClose=props.onClose;
+  var sr=useState(null),result=sr[0],setResult=sr[1];
+  var sf=useState(false),flipping=sf[0],setFlipping=sf[1];
+  function flip(){setFlipping(true);setResult(null);setTimeout(function(){setResult(Math.random()<.5?'HEADS':'TAILS');setFlipping(false);},700);}
+  return h('div',{className:'overlay'},h('div',{className:'modal'},
+    h('p',{style:{color:'#aaa',fontSize:'.8rem',textTransform:'uppercase',letterSpacing:2,marginBottom:'1rem'}},'Coin Flip'),
+    flipping&&h('span',{className:'coin'},'🪙'),
+    result&&h('div',null,h('span',{className:'coin'},'🪙'),h('p',{style:{fontFamily:"'Bebas Neue',sans-serif",fontSize:'2.5rem',color:'#f59e0b',letterSpacing:3}},result)),
+    !result&&!flipping&&h('div',{style:{height:70,display:'flex',alignItems:'center',justifyContent:'center',color:'#555'}},'Press flip!'),
+    h('div',{className:'row',style:{marginTop:'1.2rem'}},
+      h('button',{className:'btn btn-gold',onClick:flip},'Flip!'),
+      h('button',{className:'btn btn-gray',onClick:onClose},'Close'))
+  ));
+}
+
+function CardAnnouncement(props){
+  var cards=props.cards,onDone=props.onDone;
+  var ordered=cards.slice(1).concat([cards[0]]);
+  var sr=useState([]),revealed=sr[0],setRevealed=sr[1];
+  var sa=useState(false),showAre=sa[0],setShowAre=sa[1];
+  useEffect(function(){
+    var timers=[];
+    ordered.forEach(function(_,i){timers.push(setTimeout(function(){setRevealed(function(r){return r.includes(i)?r:r.concat([i]);});},(i+1)*900));});
+    timers.push(setTimeout(function(){setShowAre(true);},(ordered.length+1)*900));
+    timers.push(setTimeout(function(){onDone&&onDone();},(ordered.length+2)*900+500));
+    return function(){timers.forEach(clearTimeout);};
+  },[]);
+  return h('div',{className:'announce-wrap'},
+    h('div',{className:'curtain-label'},'🎬 The Category Is'),
+    h('div',{className:'divider'}),
+    h('div',{className:'announce-title'},'The nominees for'),
+    h('div',{className:'announce-title'},'Best ',h('span',null,'Movie Scene')),
+    h('div',{className:'featuring-label'},'featuring…'),
+    h('div',{className:'big-cards-row'},
+      ordered.map(function(c,i){
+        var isScene=i===ordered.length-1;
+        return h('div',{key:i,className:'big-card'+(isScene?' scene-type':'')+(revealed.includes(i)?' visible':'')},
+          h('div',{className:'big-card-text'},c),
+          h('div',{className:'big-card-label'},isScene?'Scene Type':'Descriptor'));
+      })
+    ),
+    h('div',{className:'are-label'+(showAre?' visible':'')},'…are'),
+    showAre&&h('div',{style:{marginTop:'1rem'}},h('button',{className:'btn btn-outline',onClick:onDone,style:{fontSize:'.75rem'}},'Skip →'))
+  );
+}
+
+function WinnerReveal(props){
+  var winners=props.winners,allDirectors=props.allDirectors,scores=props.scores,onNewRound=props.onNewRound,onNewGame=props.onNewGame;
+  var ss=useState(0),step=ss[0],setStep=ss[1];
+  useEffect(function(){
+    var t1=setTimeout(function(){setStep(1);},1800);
+    var t2=setTimeout(function(){setStep(2);},3400);
+    var t3=setTimeout(function(){setStep(3);},5200);
+    return function(){clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);};
+  },[]);
+  var isTie=winners.length>1;
+  return h('div',{className:'winner-screen'},
+    h('div',{className:'winner-envelope',style:{opacity:step>=1?.25:1,transition:'opacity .8s'}},'— And the award for Best Director is… —'),
+    step>=1&&h('div',{className:'winner-award'},'🏆 Best Director 🏆'),
+    h('div',{className:'winner-name'+(step>=2?' visible':''),style:{fontSize:isTie?'3rem':'4.5rem'}},isTie?winners.map(function(w){return w.name;}).join(' & '):winners[0].name),
+    h('div',{className:'winner-applause'+(step>=2?' visible':'')},'🎬 🎉 🏆'),
+    step>=3&&h('div',null,
+      h('div',{className:'divider',style:{margin:'1.5rem auto'}}),
+      h('div',{className:'final-scores'},allDirectors.map(function(d){return h('div',{key:d.id,className:'final-score'},h('div',{className:'final-score-num',style:{color:d.color}},scores[d.id]||0),h('div',{className:'final-score-label'},d.name));})),
+      h('div',{className:'row',style:{marginTop:'1.2rem'}},
+        h('button',{className:'btn btn-gold btn-lg',onClick:onNewRound},'🎬 New Round'),
+        h('button',{className:'btn btn-outline',onClick:onNewGame},'New Game (New PIN)')
+      ),
+      h('p',{style:{color:'#555',fontSize:'.75rem',marginTop:'.6rem'}},'New Round keeps the same directors · New Game starts a fresh lobby')
+    )
+  );
+}
+
+/* ══ PLAYER ══ */
+function PlayerApp(){
+  var ss=useState('loading');var screen=ss[0],setScreen=ss[1];
+  var sp=useState('');var pin=sp[0],setPin=sp[1];
+  var spi=useState('');var pinInput=spi[0],setPinInput=spi[1];
+  var sg=useState(null);var game=sg[0],setGame=sg[1];
+  var st=useState(null);var teamId=st[0],setTeamId=st[1];
+  var sn=useState('');var teamName=sn[0],setTeamName=sn[1];
+  var sc=useState(PALETTE[0].hex);var teamColor=sc[0],setTeamColor=sc[1];
+  var se=useState('');var error=se[0],setError=se[1];
+  var sb=useState(false);var busy=sb[0],setBusy=sb[1];
+  var sl=useState('');var link=sl[0],setLink=sl[1];
+  var ssc=useState('');var scene=ssc[0],setScene=ssc[1];
+  var ssu=useState(false);var submitted=ssu[0],setSubmitted=ssu[1];
+  var ser=useState('');var submitError=ser[0],setSubmitError=ser[1];
+  var ssy=useState(false);var syncing=ssy[0],setSyncing=ssy[1];
+  var smv=useState(null);var myVote=smv[0],setMyVote=smv[1];
+  var svs=useState(false);var voteSubmitted=svs[0],setVoteSubmitted=svs[1];
+  var unsubRef=useRef(null);
+
+  function subscribeGame(p){
+    if(unsubRef.current)unsubRef.current();
+    unsubRef.current=dbSub('games_choice/'+p,function(g){
+      if(!g)return;
+      setGame(g);
+      if(g.status==='lobby')setScreen('lobby');
+      if(g.status==='started')setScreen('game');
+    });
+  }
+
+  useEffect(function(){
+    (async function(){
+      try{
+        var session=loadSession();
+        if(session){
+          var g=await dbGet('games_choice/'+session.pin);
+          if(g&&(g.status==='lobby'||g.status==='started')&&g.teams&&g.teams[session.teamId]){
+            setPin(session.pin);setTeamId(session.teamId);setTeamName(session.name);setTeamColor(session.color);
+            setGame(g);setScreen(g.status==='started'?'game':'lobby');subscribeGame(session.pin);return;
+          }
+          clearSession();
+        }
+        var urlPin=getPinFromUrl();
+        if(urlPin){
+          setPinInput(urlPin);
+          var g2=await dbGet('games_choice/'+urlPin);
+          if(g2&&g2.status==='lobby'){var dirs=g2.teams?Object.values(g2.teams):[];if(dirs.length<8){setPin(urlPin);setGame(g2);setScreen('join');return;}}
+          setPinInput(urlPin);
+        }
+      }catch(e){console.warn(e);}
+      setScreen('pin');
+    })();
+  },[]);
+
+  useEffect(function(){
+    if(!pin||!teamId)return;
+    subscribeGame(pin);
+    return function(){if(unsubRef.current)unsubRef.current();};
+  },[pin,teamId]);
+
+  async function joinPin(){
+    setError('');
+    var p=pinInput.trim();
+    if(p.length!==4||isNaN(Number(p))){setError('Enter the 4-digit PIN.');return;}
+    setBusy(true);
+    try{
+      var g=await dbGet('games_choice/'+p);
+      if(!g){setError('Game not found.');setBusy(false);return;}
+      if(g.status!=='lobby'){setError('This game has already started.');setBusy(false);return;}
+      var dirs=g.teams?Object.values(g.teams):[];
+      if(dirs.length>=8){setError('Game is full.');setBusy(false);return;}
+      setPin(p);setGame(g);setScreen('join');
+    }catch(e){setError('Could not connect. Try again.');}
+    setBusy(false);
+  }
+
+  async function joinGame(){
+    setError('');
+    if(!teamName.trim()){setError('Please enter a director name.');return;}
+    if(teamName.trim().length>20){setError('Name must be 20 characters or less.');return;}
+    try{
+      var g=await dbGet('games_choice/'+pin);
+      var existing=g&&g.teams?Object.values(g.teams):[];
+      if(existing.find(function(t){return t.color===teamColor;})){setError('That color is taken!');return;}
+      if(existing.find(function(t){return t.name.toLowerCase()===teamName.trim().toLowerCase();})){setError('That name is taken!');return;}
+      setBusy(true);
+      var pushRef=await dbPush('games_choice/'+pin+'/teams',{name:teamName.trim(),color:teamColor});
+      setTeamId(pushRef.key);
+      saveSession(pin,pushRef.key,teamName.trim(),teamColor);
+      setScreen('lobby');
+    }catch(e){setError('Could not connect. Try again.');}
+    setBusy(false);
+  }
+
+  async function submitScene(){
+    setSubmitError('');
+    if(!link.trim()){setSubmitError('Please paste a YouTube link.');return;}
+    if(!isYouTubeUrl(link.trim())){setSubmitError('Only YouTube links are allowed!');return;}
+    if(!extractYouTubeId(link.trim())){setSubmitError("Couldn't parse a video ID.");return;}
+    setSyncing(true);
+    try{
+      await dbSet('games_choice/'+pin+'/round/submissions/'+teamId,{link:link.trim(),scene:scene.trim()||'Untitled scene',teamName:teamName,teamColor:teamColor});
+      setSubmitted(true);
+    }catch(e){setSubmitError('Failed to submit. Try again.');}
+    setSyncing(false);
+  }
+
+  async function submitVote(votedForId){
+    if(voteSubmitted)return;
+    setMyVote(votedForId);setVoteSubmitted(true);
+    try{await dbSet('games_choice/'+pin+'/round/votes/'+teamId,votedForId);}catch(e){console.warn(e);}
+  }
+
+  var logoEl=h('div',null,h('div',{className:'player-logo'},'Film ',h('span',null,'In'),' The Blank'),h('span',{className:'player-sub'},"Director's Choice"));
+
+  if(screen==='loading')return h('div',{className:'player-page'},logoEl,h('span',{className:'spinner'}));
+
+  if(screen==='pin')return h('div',{className:'player-page'},logoEl,
+    h('div',{className:'card-surface'},
+      h('p',{style:{color:'#777',fontSize:'.85rem',marginBottom:'1.2rem',textAlign:'center'}},'Enter the PIN shown on the host screen'),
+      h('input',{className:'pin-input',value:pinInput,onChange:function(e){setPinInput(e.target.value.replace(/\D/g,'').slice(0,4));},placeholder:'0000',maxLength:4,inputMode:'numeric',onKeyDown:function(e){if(e.key==='Enter')joinPin();}}),
+      error&&h('p',{className:'error-msg',style:{textAlign:'center',marginTop:'.5rem'}},error),
+      h('button',{className:'btn btn-gold btn-lg',style:{width:'100%',marginTop:'1rem'},onClick:joinPin,disabled:busy||pinInput.length!==4},busy?'Checking…':'Join Game →')
+    )
+  );
+
+  if(screen==='join')return h('div',{className:'player-page'},logoEl,
+    h('div',{className:'card-surface'},
+      h('p',{style:{color:'#777',fontSize:'.85rem',marginBottom:'1rem',textAlign:'center'}},'Create your director'),
+      h('div',{className:'input-group'},h('label',{className:'input-label'},'Director Name'),h('input',{className:'input-field',value:teamName,onChange:function(e){setTeamName(e.target.value);},placeholder:'e.g. Spielberg Jr.',maxLength:20})),
+      h('div',{className:'input-group'},h('label',{className:'input-label'},'Your Color'),
+        h('div',{className:'color-picker'},PALETTE.map(function(p){
+          var taken=game&&game.teams?Object.values(game.teams).find(function(t){return t.color===p.hex;}):false;
+          return h('div',{key:p.hex,className:'color-swatch'+(teamColor===p.hex?' selected':''),style:{background:p.hex,opacity:taken?.25:1,cursor:taken?'not-allowed':'pointer'},onClick:function(){if(!taken)setTeamColor(p.hex);},title:taken?p.name+' (taken)':p.name});
+        }))
+      ),
+      error&&h('p',{className:'error-msg'},error),
+      h('button',{className:'btn btn-gold btn-lg',style:{width:'100%',marginTop:'1rem'},onClick:joinGame,disabled:busy||!teamName.trim()},busy?'Joining…':'Enter the Room →')
+    )
+  );
+
+  if(screen==='lobby'&&game)return h('div',{className:'player-page'},logoEl,
+    h('div',{className:'card-surface',style:{textAlign:'center'}},
+      h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',color:'#888',fontSize:'.95rem',marginBottom:'.8rem'}},'Welcome to the screening room'),
+      h('p',{style:{color:'#777',fontSize:'.85rem',marginBottom:'1rem'}},'Waiting for the host to call action…'),
+      h('div',{style:{margin:'1rem 0'}},game.teams&&Object.values(game.teams).map(function(t,i){return h('div',{key:i,className:'director-row',style:{borderColor:hex2rgba(t.color,.4)}},h('div',{className:'director-swatch',style:{background:t.color}}),h('span',{className:'director-name',style:{color:t.color}},t.name),t.name===teamName&&h('span',{style:{marginLeft:'auto',fontSize:'.75rem',color:'#16a34a'}},'← You'));})),
+      h('p',{style:{color:'#555',fontSize:'.8rem',marginBottom:'1rem'}},'PIN: ',h('strong',{style:{color:'#f59e0b',letterSpacing:2}},pin)),
+      h('button',{className:'btn btn-outline',style:{fontSize:'.75rem'},onClick:function(){clearSession();setScreen('pin');setPinInput('');}},  'Leave Game')
+    )
+  );
+
+  if(screen==='game'&&game){
+    var round=game.round||freshRound();
+    var myTeam=game.teams&&game.teams[teamId];
+    var myColor=(myTeam&&myTeam.color)||teamColor||'#f59e0b';
+    var alreadySubmitted=round.submissions&&round.submissions[teamId]!=null;
+    var votingOpen=round.votingOpen;
+    var directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
+
+    if(!round.cards||round.cards.length===0)return h('div',{className:'player-page'},logoEl,h('p',{style:{color:'#666',fontFamily:"'Playfair Display',serif",fontStyle:'italic'}},'The host is choosing this round\'s category…'));
+
+    if(votingOpen){
+      if(voteSubmitted||(round.votes&&round.votes[teamId]))return h('div',{className:'player-page'},
+        h('div',{style:{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:'1.4rem',letterSpacing:2,marginBottom:'1rem'}},myTeam?myTeam.name:'Your Director'),
+        h('div',{className:'waiting-vote'},h('div',{style:{fontFamily:"'Bebas Neue',sans-serif",fontSize:'2rem',letterSpacing:2,color:myColor,marginBottom:'.5rem'}},'Vote Cast!'),h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',color:'#666',fontSize:'.9rem'}},'Waiting for all votes to come in…'))
+      );
+      return h('div',{className:'player-page'},
+        h('div',{style:{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:'1.4rem',letterSpacing:2,marginBottom:'.5rem'}},myTeam?myTeam.name:'Your Director'),
+        h('div',{className:'card-surface'},
+          h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',fontSize:'.9rem',color:'#888',textAlign:'center',marginBottom:'1rem'}},'Vote for your favorite ',h('strong',{style:{color:'#f5f5f5',fontStyle:'normal'}},categoryPhrase(round.cards))),
+          directors.filter(function(d){return d.id!==teamId&&round.submissions&&round.submissions[d.id];}).map(function(d){
+            var sub=round.submissions[d.id];
+            return h('button',{key:d.id,className:'vote-btn'+(myVote===d.id?' selected':''),onClick:function(){submitVote(d.id);},disabled:voteSubmitted,style:{borderColor:myVote===d.id?d.color:'',background:myVote===d.id?hex2rgba(d.color,.12):''}},
+              h('div',{style:{width:12,height:12,borderRadius:'50%',background:d.color,flexShrink:0}}),
+              h('div',null,h('div',{style:{fontSize:'.8rem',fontWeight:600,color:myVote===d.id?d.color:'#eee'}},d.name),h('div',{style:{fontSize:'.72rem',color:'#666'}},sub.scene)),
+              myVote===d.id&&h('span',{style:{marginLeft:'auto',color:d.color}},'✓')
+            );
+          }),
+          h('p',{style:{color:'#444',fontSize:'.75rem',textAlign:'center',marginTop:'.5rem'}},"You can't vote for your own submission")
+        )
+      );
+    }
+
+    if(alreadySubmitted||submitted)return h('div',{className:'player-page'},
+      h('div',{style:{textAlign:'center',padding:'2rem'}},
+        h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',fontSize:'1rem',color:'#777',marginBottom:'.5rem'}},'Your nomination has been submitted'),
+        h('div',{style:{fontFamily:"'Bebas Neue',sans-serif",fontSize:'2.5rem',letterSpacing:2,color:myColor}},'Awaiting the Verdict'),
+        h('p',{style:{color:'#555',marginTop:'.5rem',fontSize:'.85rem'}},'The host is screening all nominations…')
+      )
+    );
+
+    return h('div',{className:'player-page'},
+      h('div',{style:{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:'1.6rem',letterSpacing:2,marginBottom:'.3rem'}},myTeam?myTeam.name:'Your Director'),
+      h('div',{className:'card-surface'},
+        h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',fontSize:'.95rem',color:'#888',marginBottom:'.8rem',textAlign:'center'}},'Submit your favorite ',h('strong',{style:{color:'#f5f5f5',fontStyle:'normal'}},categoryPhrase(round.cards))),
+        h('div',{className:'input-group'},h('label',{className:'input-label'},'YouTube Link'),h('input',{className:'input-field',value:link,onChange:function(e){setLink(e.target.value);},placeholder:'https://youtube.com/watch?v=…'})),
+        h('div',{className:'input-group'},h('label',{className:'input-label'},'Scene Description'),h('input',{className:'input-field',value:scene,onChange:function(e){setScene(e.target.value);},placeholder:'e.g. Rocky vs Apollo — Rocky II'})),
+        submitError&&h('p',{className:'error-msg'},submitError),
+        h('button',{className:'btn btn-gold',style:{width:'100%',marginTop:'.6rem',padding:'.7rem'},onClick:submitScene,disabled:syncing},syncing?'Submitting…':'🎬 Submit Nomination')
+      )
+    );
+  }
+
+  return h('div',{className:'player-page'},h('span',{className:'spinner'}));
+}
+
+/* ══ HOST ══ */
+function HostApp(){
+  var sg=useState(null);var game=sg[0],setGame=sg[1];
+  var spi=useState(null);var pin=spi[0],setPin=spi[1];
+  var sl=useState(true);var loading=sl[0],setLoading=sl[1];
+  var sa=useState(false);var announcing=sa[0],setAnnouncing=sa[1];
+  var sw=useState(null);var watchingId=sw[0],setWatchingId=sw[1];
+  var spc=useState([]);var pendingCards=spc[0],setPendingCards=spc[1];
+  var scf=useState('');var categoryFilter=scf[0],setCategoryFilter=scf[1];
+  var ssc=useState(false);var showCoin=ssc[0],setShowCoin=ssc[1];
+  var pinRef=useRef(null);
+
+  var subscribeGame=useCallback(function(p){
+    dbSub('games_choice/'+p,function(fresh){if(!fresh)return;setGame(Object.assign({},fresh));});
+  },[]);
+
+  useEffect(function(){
+    (async function(){
+      try{
+        var savedPin=localStorage.getItem('fitb_choice_host_pin');
+        if(savedPin){var g=await dbGet('games_choice/'+savedPin);if(g){pinRef.current=savedPin;setPin(savedPin);setLoading(false);subscribeGame(savedPin);return;}}
+        var newPin=genPin();
+        await dbSet('games_choice/'+newPin,{pin:newPin,status:'lobby',totalScores:{},teams:{},round:freshRound()});
+        localStorage.setItem('fitb_choice_host_pin',newPin);
+        pinRef.current=newPin;setPin(newPin);setLoading(false);subscribeGame(newPin);
+      }catch(e){console.warn(e);setLoading(false);}
+    })();
+  },[]);
+
+  async function newGame(){
+    var newPin=genPin();
+    await dbSet('games_choice/'+newPin,{pin:newPin,status:'lobby',totalScores:{},teams:{},round:freshRound()});
+    localStorage.setItem('fitb_choice_host_pin',newPin);
+    pinRef.current=newPin;setPin(newPin);setAnnouncing(false);setWatchingId(null);setPendingCards([]);
+    subscribeGame(newPin);
+  }
+
+  async function newRound(){
+    await dbUpdate('games_choice/'+pinRef.current,{status:'started',totalScores:{},round:freshRound()});
+    setAnnouncing(false);setWatchingId(null);setPendingCards([]);
+  }
+
+  async function startGame(){
+    await dbUpdate('games_choice/'+pinRef.current,{status:'started'});
+    setPendingCards([]);
+  }
+
+  function addSceneType(type){setPendingCards([type]);}
+  function randomSceneType(){addSceneType(shuffle(SCENE_TYPES)[0]);}
+  function addDescriptor(desc){setPendingCards(function(pc){if(pc.length>=3||pc.includes(desc))return pc;return pc.concat([desc]);});}
+  function randomDescriptor(){if(pendingCards.length>=3)return;var avail=DESCRIPTORS.filter(function(d){return !pendingCards.includes(d);});addDescriptor(shuffle(avail)[0]);}
+  function removeCard(idx){setPendingCards(function(pc){if(idx===0)return[];return pc.filter(function(_,i){return i!==idx;});});}
+
+  async function lockInAndAnnounce(){
+    if(pendingCards.length===0)return;
+    await dbUpdate('games_choice/'+pinRef.current+'/round',{cards:pendingCards});
+    setAnnouncing(true);
+  }
+
+  async function openVoting(){
+    await dbUpdate('games_choice/'+pinRef.current+'/round',{votingOpen:true});
+    setWatchingId(null);
+  }
+
+  async function closeVotingAndScore(){
+    var round=game.round||freshRound();
+    var directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
+    var votes=round.votes||{};
+    var voteCounts={};
+    directors.forEach(function(d){voteCounts[d.id]=0;});
+    Object.values(votes).forEach(function(vid){if(voteCounts[vid]!==undefined)voteCounts[vid]++;});
+    var maxVotes=Math.max.apply(null,Object.values(voteCounts).length?Object.values(voteCounts):[0]);
+    var newScores={};
+    directors.forEach(function(d){var vpts=voteCounts[d.id]||0;var bonus=maxVotes>0&&voteCounts[d.id]===maxVotes?1:0;newScores[d.id]=vpts+bonus;});
+    await dbUpdate('games_choice/'+pinRef.current+'/round',{votingOpen:false,voteCounts:voteCounts,roundScores:newScores,scored:true});
+    await dbUpdate('games_choice/'+pinRef.current+'/totalScores',newScores);
+  }
+
+  function getYTEmbed(url){var id=extractYouTubeId(url);return id?'https://www.youtube.com/embed/'+id+'?autoplay=1':null;}
+
+  var logoEl=h('a',{href:'index.html',className:'logo',style:{textDecoration:'none'}},'Film ',h('span',null,'In'),' The Blank',h('small',{className:'logo-sub'},"Director's Choice"));
+
+  if(loading)return h('div',{className:'page'},h('div',{className:'header'},logoEl),h('div',{className:'main'},h('span',{className:'spinner'}),' Setting up…'));
+  if(!game)return h('div',{className:'page'},h('div',{className:'header'},logoEl),h('div',{className:'main'},h('span',{className:'spinner'}),' Connecting…'));
+
+  var directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
+  var baseUrl=window.location.href.split('?')[0].replace(/#.*/,'');
+  var round=game.round||freshRound();
+  var totalScores=game.totalScores||{};
+
+  if(game.status==='lobby')return h('div',{className:'page'},
+    h('div',{className:'header'},logoEl,h('button',{className:'btn btn-outline',onClick:newGame,style:{fontSize:'.75rem'}},'New PIN')),
+    h('div',{className:'main'},
+      h('div',{style:{textAlign:'center'}},
+        h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',color:'#777',fontSize:'1rem',marginBottom:'.8rem'}},'Welcome to the screening room'),
+        h('p',{style:{color:'#555',fontSize:'.85rem',textTransform:'uppercase',letterSpacing:2,marginBottom:'.3rem'}},'Game PIN'),
+        h('div',{className:'pin-display'},pin),
+        h('p',{className:'pin-sub',style:{marginTop:'.6rem'}},'Scan to join'),
+        h(QRBlock,{url:baseUrl+'#player?pin='+pin,size:160}),
+        h('p',{style:{color:'#444',fontSize:'.72rem',marginTop:'.5rem'}},'or visit ',h('span',{style:{color:'#f59e0b'}},baseUrl+'#player'),' and enter PIN ',h('span',{style:{color:'#f59e0b'}},pin))
+      ),
+      h('div',{style:{width:'100%',maxWidth:480}},
+        h('p',{style:{color:'#555',fontSize:'.78rem',textTransform:'uppercase',letterSpacing:1,marginBottom:'.8rem',textAlign:'center'}},'Directors in the room ('+directors.length+'/8)'),
+        directors.length===0?h('p',{className:'waiting-directors'},'Waiting for directors to arrive…')
+        :h('div',{className:'directors-grid'},directors.map(function(d){return h('div',{key:d.id,className:'director-row',style:{borderColor:hex2rgba(d.color,.4)}},h('div',{className:'director-swatch',style:{background:d.color}}),h('span',{className:'director-name',style:{color:d.color}},d.name));}))
+      ),
+      h('button',{className:'btn btn-gold btn-lg',onClick:startGame,disabled:directors.length<1,style:{minWidth:220}},directors.length<1?'Waiting for directors…':'🎬 Call Action →')
+    )
+  );
+
+  if(!round.cards||round.cards.length===0)return h('div',{className:'page'},
+    h('div',{className:'header'},logoEl,h('button',{className:'btn btn-outline',onClick:newGame,style:{fontSize:'.75rem'}},'New PIN')),
+    h('div',{className:'main'},
+      h('div',{style:{textAlign:'center'}},h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',color:'#aaa',fontSize:'1rem',marginBottom:'.3rem'}},'Build this round\'s category'),h('div',{className:'divider'})),
+      h('div',{className:'chosen-cards-row'},
+        pendingCards.length===0?h('p',{style:{color:'#444',fontSize:'.85rem',fontFamily:"'Playfair Display',serif",fontStyle:'italic'}},'Pick a scene type to begin…')
+        :pendingCards.map(function(c,i){return h('div',{key:i,className:'chosen-card-chip '+(i===0?'scene-type':'descriptor')},c,h('button',{onClick:function(){removeCard(i);}},'✕'));})
+      ),
+      pendingCards.length>0&&h('p',{style:{color:'#666',fontFamily:"'Playfair Display',serif",fontStyle:'italic',fontSize:'.95rem',marginTop:'-.8rem'}},'Reads as: ',h('strong',{style:{color:'#f59e0b',fontStyle:'normal'}},categoryPhrase(pendingCards))),
+      pendingCards.length===0&&h('div',{className:'picker-section'},
+        h('div',{className:'picker-heading'},'Step 1 — Pick a Scene Type'),
+        h('div',{className:'row',style:{marginBottom:'.8rem'}},h('button',{className:'btn btn-gold',onClick:randomSceneType},'🎲 Random Scene Type')),
+        h('input',{className:'input-field',placeholder:'Search scene types…',value:categoryFilter,onChange:function(e){setCategoryFilter(e.target.value);}}),
+        h('div',{className:'category-grid',style:{marginTop:'.6rem'}},
+          SCENE_TYPES.filter(function(c){return c.toLowerCase().includes(categoryFilter.toLowerCase());}).map(function(c){return h('button',{key:c,className:'category-btn',onClick:function(){addSceneType(c);setCategoryFilter('');}},c);})
+        )
+      ),
+      pendingCards.length>0&&h('div',{className:'picker-section'},
+        h('div',{className:'picker-heading'},pendingCards.length<3?'Optionally add a descriptor, or start the round':'Maximum 3 cards reached'),
+        pendingCards.length<3&&h('div',null,
+          h('div',{className:'row',style:{marginBottom:'.8rem'}},h('button',{className:'btn btn-outline',onClick:randomDescriptor},'🎲 Random Descriptor')),
+          h('div',{className:'category-grid',style:{maxHeight:180}},DESCRIPTORS.filter(function(d){return !pendingCards.includes(d);}).map(function(d){return h('button',{key:d,className:'category-btn',onClick:function(){addDescriptor(d);}},d);}))
+        ),
+        h('div',{className:'row',style:{marginTop:'1.2rem'}},
+          h('button',{className:'btn btn-gold btn-lg',onClick:lockInAndAnnounce},'🎬 Start Round →'),
+          h('button',{className:'btn btn-gray',onClick:function(){setPendingCards([]);}},  'Start Over')
+        )
+      )
+    )
+  );
+
+  if(announcing)return h('div',{className:'page'},
+    h('div',{className:'header'},logoEl),
+    h('div',{className:'main'},h(CardAnnouncement,{cards:round.cards,onDone:function(){setAnnouncing(false);}}))
+  );
+
+  if(round.scored){
+    var sorted=directors.slice().sort(function(a,b){return (totalScores[b.id]||0)-(totalScores[a.id]||0);});
+    var topScore=totalScores[sorted[0]&&sorted[0].id]||0;
+    var winners=sorted.filter(function(d){return (totalScores[d.id]||0)===topScore;});
+    return h('div',{className:'page'},
+      h('div',{className:'header'},logoEl),
+      h('div',{className:'main'},h(WinnerReveal,{winners:winners,allDirectors:sorted,scores:totalScores,onNewRound:newRound,onNewGame:newGame}))
+    );
+  }
+
+  var submissions=round.submissions||{};
+  var votes=round.votes||{};
+  var anySubmitted=directors.some(function(d){return submissions[d.id]!=null;});
+  var allSubmitted=directors.length>0&&directors.every(function(d){return submissions[d.id]!=null;});
+  var allVoted=directors.length>0&&directors.every(function(d){return votes[d.id]!=null;});
+  var votingOpen=round.votingOpen;
+  var voteCounts=round.voteCounts||{};
+  var roundScores=round.roundScores||{};
+
+  return h('div',{className:'page'},
+    showCoin&&h(CoinFlip,{onClose:function(){setShowCoin(false);}}),
+    h('div',{className:'header'},
+      logoEl,
+      h('div',{className:'score-chips'},directors.map(function(d){return h('span',{key:d.id,className:'score-chip',style:{background:d.color}},d.name+': '+(totalScores[d.id]||0)+' pts');})),
+      h('div',{style:{display:'flex',gap:'.5rem',alignItems:'center'}},
+        h('span',{style:{fontSize:'.68rem',color:'#16a34a'}},h('span',{className:'dot-live'}),'LIVE'),
+        h('button',{className:'btn btn-outline',onClick:newGame,style:{fontSize:'.75rem'}},'Reset'))
+    ),
+    h('div',{className:'main'},
+      h('div',{className:'announce-wrap',style:{marginBottom:'-.5rem'}},
+        h('div',{className:'curtain-label'},'🎬 The nominees for ',h('span',{style:{fontFamily:"'Bebas Neue',sans-serif",fontStyle:'normal',color:'#f59e0b',letterSpacing:1}},'Best Movie Scene'),' featuring'),
+        h('div',{className:'big-cards-row',style:{marginTop:'.4rem'}},
+          round.cards.slice(1).concat([round.cards[0]]).map(function(c,i,arr){
+            var isScene=i===arr.length-1;
+            return h('div',{key:i,className:'big-card visible'+(isScene?' scene-type':''),style:{padding:'.7rem 1.2rem'}},h('div',{className:'big-card-text',style:{fontSize:isScene?'1.6rem':'1.2rem'}},c));
+          })
+        ),
+        h('div',{className:'are-label visible'},'…are')
+      ),
+      h('div',{className:'subs-grid'},directors.map(function(d){
+        var sub=submissions[d.id];
+        return h('div',{key:d.id,className:'sub-box',style:{borderColor:sub?hex2rgba(d.color,.5):'#222'}},
+          h('div',{className:'sub-title',style:{color:d.color}},d.name,' ',sub?'✓':''),
+          sub?h('div',{style:{fontSize:'.82rem',color:'#aaa',fontFamily:"'Playfair Display',serif",fontStyle:'italic'}},'Nomination received')
+             :h('div',{className:'sub-waiting'},'Awaiting nomination…')
+        );
+      })),
+      !anySubmitted&&h('div',{style:{textAlign:'center'}},h('p',{style:{color:'#333',fontSize:'.72rem',marginBottom:'.2rem'}},'PIN'),h('p',{style:{fontFamily:"'Bebas Neue',sans-serif",fontSize:'2rem',color:'#f59e0b',letterSpacing:6}},pin)),
+      anySubmitted&&!votingOpen&&(
+        watchingId?(function(){
+          var d=directors.find(function(x){return x.id===watchingId;});
+          var sub=submissions[watchingId];
+          if(!sub||!d)return null;
+          return h('div',{className:'video-area'},
+            h('div',{className:'review-label',style:{color:d.color}},'Now screening: '+d.name),
+            h('div',{style:{color:'#666',fontSize:'.8rem',fontFamily:"'Playfair Display',serif",fontStyle:'italic',textAlign:'center',marginBottom:'.6rem'}},sub.scene),
+            h('iframe',{src:getYTEmbed(sub.link),title:'Scene',allowFullScreen:true,allow:'autoplay'}),
+            h('div',{className:'row',style:{marginTop:'1rem'}},
+              h('button',{className:'btn btn-gray',onClick:function(){setWatchingId(null);}},'← Back'),
+              allSubmitted&&h('button',{className:'btn btn-gold',onClick:openVoting},'Open Voting →')
+            )
+          );
+        })():h('div',{style:{textAlign:'center'}},
+          h('p',{style:{color:'#888',fontFamily:"'Playfair Display',serif",fontStyle:'italic',marginBottom:'.8rem'}},allSubmitted?'All nominations in!':'Some nominations in.',' Screen each director\'s scene:'),
+          h('div',{className:'row'},directors.filter(function(d){return submissions[d.id];}).map(function(d){return h('button',{key:d.id,className:'btn',style:{background:d.color,color:'#fff'},onClick:function(){setWatchingId(d.id);}},'▶ '+d.name);})),
+          anySubmitted&&h('button',{className:'btn btn-gold',style:{marginTop:'1rem'},onClick:openVoting},'Open Voting →'),
+          !allSubmitted&&h('button',{className:'btn btn-gray',style:{marginTop:'.5rem',fontSize:'.78rem'},onClick:openVoting},'Skip & Open Voting →')
+        )
+      ),
+      votingOpen&&h('div',{style:{textAlign:'center',width:'100%',maxWidth:560}},
+        h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',color:'#aaa',marginBottom:'1rem'}},'Voting is open — directors are casting their votes on their phones…'),
+        h('div',{style:{display:'flex',gap:'1rem',justifyContent:'center',flexWrap:'wrap',marginBottom:'1.2rem'}},
+          directors.map(function(d){return h('div',{key:d.id,style:{textAlign:'center'}},
+            h('div',{style:{width:12,height:12,borderRadius:'50%',background:votes[d.id]!=null?'#16a34a':'#333',margin:'0 auto .3rem'}}),
+            h('div',{style:{fontSize:'.75rem',color:votes[d.id]!=null?'#16a34a':'#555'}},d.name)
+          );})
+        ),
+        allVoted?h('button',{className:'btn btn-gold btn-lg',onClick:closeVotingAndScore},'Reveal Results →')
+               :h('button',{className:'btn btn-gray',style:{fontSize:'.78rem'},onClick:closeVotingAndScore},'Close Voting Early →')
+      )
+    )
+  );
+}
+
+function App(){
+  var hash=window.location.hash;
+  var isPlayer=hash.startsWith('#player')||hash==='#join';
+  return isPlayer?h(PlayerApp,null):h(HostApp,null);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App,null));
+})();
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Director's Cut — Film In The Blank</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap');
