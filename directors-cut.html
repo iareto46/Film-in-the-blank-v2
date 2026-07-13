@@ -15,12 +15,9 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .logo-sub{font-size:.75rem;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2px;color:#f59e0b;text-transform:uppercase;display:block;line-height:1;}
 .main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:1.8rem;}
 .btn{padding:.6rem 1.4rem;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.9rem;transition:opacity .15s;}
-.btn:hover{opacity:.85;}
-.btn:disabled{opacity:.4;cursor:not-allowed;}
-.btn-gold{background:#f59e0b;color:#000;}
-.btn-green{background:#16a34a;color:#fff;}
-.btn-red{background:#dc2626;color:#fff;}
-.btn-gray{background:#333;color:#eee;}
+.btn:hover{opacity:.85;}.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn-gold{background:#f59e0b;color:#000;}.btn-green{background:#16a34a;color:#fff;}
+.btn-red{background:#dc2626;color:#fff;}.btn-gray{background:#333;color:#eee;}
 .btn-outline{background:transparent;border:1.5px solid #444;color:#eee;}
 .btn-lg{font-size:1.1rem;padding:.8rem 2.2rem;border-radius:10px;}
 .row{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;justify-content:center;}
@@ -94,17 +91,18 @@ body{background:#0a0a0a;color:#f5f5f5;font-family:'DM Sans',sans-serif;min-heigh
 .player-card-text{font-size:.88rem;color:#ddd;}
 .pin-input{font-family:'Bebas Neue',sans-serif;font-size:3rem;letter-spacing:8px;text-align:center;background:#1a1a1a;border:2px solid #333;border-radius:12px;color:#f59e0b;width:100%;padding:.6rem;outline:none;}
 .pin-input:focus{border-color:#f59e0b;}
+.nomination-header{font-family:'Playfair Display',serif;font-style:italic;font-size:.95rem;color:#888;margin-bottom:.8rem;text-align:center;line-height:1.5;}
+.nomination-cards{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-bottom:1rem;}
+.nomination-card-tag{padding:.25rem .7rem;border-radius:999px;font-size:.78rem;font-weight:600;background:#1a1a1a;border:1px solid #333;color:#f59e0b;}
 .timer-bar-wrap{width:100%;max-width:500px;background:#1a1a1a;border-radius:6px;height:10px;overflow:hidden;margin:.3rem 0;}
 .timer-bar{height:100%;border-radius:6px;transition:width 1s linear,background .5s;}
 .timer-display{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:3px;text-align:center;line-height:1;}
-.timer-alert{background:rgba(220,38,38,.12);border:1.5px solid #dc2626;border-radius:12px;padding:.7rem 1.5rem;text-align:center;}
-.timer-alert-text{font-family:'Playfair Display',serif;font-style:italic;font-size:.9rem;color:#f87171;}
-.nomination-cards{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-bottom:1rem;}
-.nomination-card-tag{padding:.25rem .7rem;border-radius:999px;font-size:.78rem;font-weight:600;background:#1a1a1a;border:1px solid #333;color:#f59e0b;}
+.timer-alert{border-radius:12px;padding:.7rem 1.5rem;text-align:center;margin-bottom:.5rem;}
+.timer-alert-text{font-family:'Playfair Display',serif;font-style:italic;font-size:.9rem;}
 </style>
 </head>
 <body>
-<div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0a0a;color:#555;">Loading…</div></div>
+<div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0a0a;color:#555;font-family:sans-serif;font-size:1.1rem;">Loading…</div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-app-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/firebase@10.12.0/firebase-database-compat.js"></script>
@@ -128,861 +126,664 @@ function dbPush(p,v){return _db.ref(p).push(v);}
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js"></script>
-<script type="text/babel">
-const {useState,useEffect,useRef,useCallback}=React;
 
-const CARD_CATEGORIES={
-  "Genre":[
-    "Comedy","Drama","Horror","Action","Romance","Animated",
-    "Sci-Fi","Documentary","Musical","Thriller",
-  ],
-  "Setting":[
-    "Takes place in the forest","Takes place at night","Takes place in winter",
-    "Takes place in a city","Takes place in space","Takes place at school",
-    "Takes place in a kitchen","Takes place on a boat","Takes place in a hospital",
-    "Takes place in a car","Takes place on another planet","Takes place in the past",
-    "Takes place in an office","Takes place in a restaurant",
-  ],
-  "Scene Type":[
-    "Has a car chase","Has a wedding","Has a funeral","Has a dance scene",
-    "Has a courtroom scene","Has a heist","Has a chase on foot","Has a montage",
-    "Has a dream sequence","Has a party","Has a fight","Has a monologue",
-    "Has an epic entrance","Has a plot twist","Has a standoff",
-  ],
-  "Actor/Actress":[
-    "With Brad Pitt","With Meryl Streep","With Tom Hanks","With Leonardo DiCaprio",
-    "With Cate Blanchett","With Denzel Washington","With Jennifer Lawrence",
-    "With Morgan Freeman","With Scarlett Johansson","With Will Smith",
-    "With Matt Damon","With Margot Robbie","With Zoe Saldana","With Dwayne Johnson",
-    "With Robin Williams","With Daniel Day-Lewis","With Sandra Bullock",
-    "With Adam Sandler","With Natalie Portman","With Nicole Kidman","With Tom Cruise",
-  ],
-  "Objects":[
-    "Has a lawnmower","Has a dog","Has a gun","Has a cake","Has a ladder",
-    "Has a phone call","Has a mirror","Has a briefcase","Has a sword","Has a newspaper",
-    "Has a talking animal","Has a unique weapon","Has a baby","Has a mask",
-  ],
-  "Miscellaneous":[
-    "Breaks the fourth wall","Is a Disney Channel Original Movie","Is a Christmas film",
-    "Is part of a musical","Has a famous quote","Is in black and white","Has no dialogue",
-    "Directed by Steven Spielberg","Directed by Christopher Nolan",
-    "Directed by Quentin Tarantino","Directed by James Cameron","Directed by Martin Scorsese",
-  ],
+<script>
+(function(){
+'use strict';
+var h=React.createElement;
+var useState=React.useState;
+var useEffect=React.useEffect;
+var useRef=React.useRef;
+var useCallback=React.useCallback;
+
+var CARD_CATEGORIES={
+  "Genre":["Comedy","Drama","Horror","Action","Romance","Animated","Sci-Fi","Documentary","Musical","Thriller"],
+  "Setting":["Takes place in the forest","Takes place at night","Takes place in winter","Takes place in a city","Takes place in space","Takes place at school","Takes place in a kitchen","Takes place on a boat","Takes place in a hospital","Takes place in a car","Takes place on another planet","Takes place in the past","Takes place in an office","Takes place in a restaurant"],
+  "Scene Type":["Has a car chase","Has a wedding","Has a funeral","Has a dance scene","Has a courtroom scene","Has a heist","Has a chase on foot","Has a montage","Has a dream sequence","Has a party","Has a fight","Has a monologue","Has an epic entrance","Has a plot twist","Has a standoff"],
+  "Actor/Actress":["With Brad Pitt","With Meryl Streep","With Tom Hanks","With Leonardo DiCaprio","With Cate Blanchett","With Denzel Washington","With Jennifer Lawrence","With Morgan Freeman","With Scarlett Johansson","With Will Smith","With Matt Damon","With Margot Robbie","With Zoe Saldana","With Dwayne Johnson","With Robin Williams","With Daniel Day-Lewis","With Sandra Bullock","With Adam Sandler","With Natalie Portman","With Nicole Kidman","With Tom Cruise"],
+  "Objects":["Has a lawnmower","Has a dog","Has a gun","Has a cake","Has a ladder","Has a phone call","Has a mirror","Has a briefcase","Has a sword","Has a newspaper","Has a talking animal","Has a unique weapon","Has a baby","Has a mask"],
+  "Miscellaneous":["Breaks the fourth wall","Is a Disney Channel Original Movie","Is a Christmas film","Is part of a musical","Has a famous quote","Is in black and white","Has no dialogue","Directed by Steven Spielberg","Directed by Christopher Nolan","Directed by Quentin Tarantino","Directed by James Cameron","Directed by Martin Scorsese"]
 };
+var CATEGORY_NAMES=Object.keys(CARD_CATEGORIES);
 
-const CATEGORY_NAMES=Object.keys(CARD_CATEGORIES);
-
-function generateRounds(){
-  // Pre-shuffle each category's cards independently
-  const pools={};
-  CATEGORY_NAMES.forEach(function(cat){
-    pools[cat]=shuffle([...CARD_CATEGORIES[cat]]);
-  });
-  // Track how many cards we've used from each category
-  const used={};
-  CATEGORY_NAMES.forEach(function(cat){used[cat]=0;});
-
-  return Array.from({length:5},(_,i)=>{
-    // Pick 5 of 6 categories for this round (one sits out)
-    const roundCats=shuffle([...CATEGORY_NAMES]).slice(0,5);
-    const cards=roundCats.map(function(cat){
-      const card=pools[cat][used[cat]%pools[cat].length];
-      used[cat]++;
-      return card;
-    });
-    return {round:i+1,cards,submissions:{},scores:{},scored:{}};
-  });
-}
-
-const PALETTE=[
+var PALETTE=[
   {hex:"#e53935",name:"Red"},{hex:"#1e88e5",name:"Blue"},{hex:"#43a047",name:"Green"},
   {hex:"#fb8c00",name:"Orange"},{hex:"#8e24aa",name:"Purple"},{hex:"#e91e63",name:"Pink"},
   {hex:"#00acc1",name:"Teal"},{hex:"#fdd835",name:"Yellow"},{hex:"#6d4c41",name:"Brown"},
-  {hex:"#00897b",name:"Mint"},{hex:"#e64a19",name:"Crimson"},{hex:"#5c6bc0",name:"Indigo"},
+  {hex:"#00897b",name:"Mint"},{hex:"#e64a19",name:"Crimson"},{hex:"#5c6bc0",name:"Indigo"}
 ];
 
-function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+var ROUND_SECONDS=120;
+
+function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
 function genPin(){return String(Math.floor(1000+Math.random()*9000));}
-function hex2rgba(hex,a){try{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}catch(e){return hex;}}
-function extractYouTubeId(url){try{const u=new URL(url);if(u.hostname.includes("youtu.be"))return u.pathname.slice(1).split("?")[0];return u.searchParams.get("v");}catch(e){return null;}}
+function hex2rgba(hex,a){try{var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return 'rgba('+r+','+g+','+b+','+a+')';}catch(e){return hex;}}
+function extractYouTubeId(url){try{var u=new URL(url);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1).split('?')[0];return u.searchParams.get('v');}catch(e){return null;}}
 function isYouTubeUrl(url){return /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(url);}
 
-const PLAYER_KEY="fitb_cut_session";
-function saveSession(pin,teamId,name,color){try{localStorage.setItem(PLAYER_KEY,JSON.stringify({pin,teamId,name,color,savedAt:Date.now()}));}catch(e){}}
-function loadSession(){try{const s=localStorage.getItem(PLAYER_KEY);if(!s)return null;const d=JSON.parse(s);if(Date.now()-d.savedAt>12*60*60*1000){localStorage.removeItem(PLAYER_KEY);return null;}return d;}catch(e){return null;}}
+function generateRounds(){
+  var pools={};
+  CATEGORY_NAMES.forEach(function(cat){pools[cat]=shuffle(CARD_CATEGORIES[cat].slice());});
+  var used={};
+  CATEGORY_NAMES.forEach(function(cat){used[cat]=0;});
+  return Array.from({length:5},function(_,i){
+    var roundCats=shuffle(CATEGORY_NAMES.slice()).slice(0,5);
+    var cards=roundCats.map(function(cat){
+      var card=pools[cat][used[cat]%pools[cat].length];
+      used[cat]++;
+      return card;
+    });
+    return {round:i+1,cards:cards,submissions:{},scores:{},scored:{}};
+  });
+}
+
+var PLAYER_KEY='fitb_cut_session';
+function saveSession(pin,teamId,name,color){try{localStorage.setItem(PLAYER_KEY,JSON.stringify({pin:pin,teamId:teamId,name:name,color:color,savedAt:Date.now()}));}catch(e){}}
+function loadSession(){try{var s=localStorage.getItem(PLAYER_KEY);if(!s)return null;var d=JSON.parse(s);if(Date.now()-d.savedAt>12*60*60*1000){localStorage.removeItem(PLAYER_KEY);return null;}return d;}catch(e){return null;}}
 function clearSession(){try{localStorage.removeItem(PLAYER_KEY);}catch(e){}}
-function getPinFromUrl(){const m=window.location.hash.match(/[?&]pin=(\d{4})/);return m?m[1]:null;}
+function getPinFromUrl(){var m=window.location.hash.match(/[?&]pin=(\d{4})/);return m?m[1]:null;}
 
-function QRBlock({url,size}){
-  const sz=size||160;
-  const ref=useRef(null);
-  useEffect(()=>{
+function QRBlock(props){
+  var url=props.url,size=props.size||160;
+  var ref=useRef(null);
+  useEffect(function(){
     if(!ref.current||!window.QRCode)return;
-    ref.current.innerHTML="";
-    new window.QRCode(ref.current,{text:url,width:sz,height:sz,colorDark:"#000",colorLight:"#fff",correctLevel:window.QRCode.CorrectLevel.M});
-  },[url,sz]);
-  return <div style={{display:"inline-block",background:"#fff",borderRadius:12,padding:10,marginTop:".6rem"}}><div ref={ref}/></div>;
+    ref.current.innerHTML='';
+    new window.QRCode(ref.current,{text:url,width:size,height:size,colorDark:'#000',colorLight:'#fff',correctLevel:window.QRCode.CorrectLevel.M});
+  },[url,size]);
+  return h('div',{style:{display:'inline-block',background:'#fff',borderRadius:12,padding:10,marginTop:'.6rem'}},h('div',{ref:ref}));
 }
 
-const ROUND_SECONDS=120; // 2 minutes
-
-function Timer({startedAt}){
-  const [secsLeft,setSecsLeft]=useState(ROUND_SECONDS);
-
-  useEffect(()=>{
+function Timer(props){
+  var startedAt=props.startedAt;
+  var sr=useState(ROUND_SECONDS);
+  var secsLeft=sr[0],setSecsLeft=sr[1];
+  useEffect(function(){
     if(!startedAt)return;
-    const tick=()=>{
-      const elapsed=Math.floor((Date.now()-startedAt)/1000);
-      const left=Math.max(0,ROUND_SECONDS-elapsed);
-      setSecsLeft(left);
-    };
+    function tick(){var elapsed=Math.floor((Date.now()-startedAt)/1000);setSecsLeft(Math.max(0,ROUND_SECONDS-elapsed));}
     tick();
-    const id=setInterval(tick,500);
-    return()=>clearInterval(id);
+    var id=setInterval(tick,500);
+    return function(){clearInterval(id);};
   },[startedAt]);
-
-  const mins=Math.floor(secsLeft/60);
-  const secs=secsLeft%60;
-  const pct=(secsLeft/ROUND_SECONDS)*100;
-  const isWarning=secsLeft<=30;
-  const isUrgent=secsLeft<=10;
-  const color=isUrgent?"#dc2626":isWarning?"#f59e0b":"#16a34a";
-  const timeStr=mins+":"+(secs<10?"0":"")+secs;
-
-  return(
-    <div style={{width:"100%",maxWidth:500,textAlign:"center"}}>
-      {isWarning&&(
-        <div className="timer-alert" style={{borderColor:isUrgent?"#dc2626":"#f59e0b",background:isUrgent?"rgba(220,38,38,.12)":"rgba(245,158,11,.1)",marginBottom:".5rem"}}>
-          <div className="timer-alert-text" style={{color:isUrgent?"#f87171":"#f59e0b"}}>
-            {isUrgent?"⚠️ Time is almost up!":"⏱ 30 seconds remaining!"}
-          </div>
-        </div>
-      )}
-      <div className="timer-display" style={{color}}>{timeStr}</div>
-      <div className="timer-bar-wrap">
-        <div className="timer-bar" style={{width:pct+"%",background:color}}/>
-      </div>
-    </div>
+  var mins=Math.floor(secsLeft/60);
+  var secs=secsLeft%60;
+  var pct=(secsLeft/ROUND_SECONDS)*100;
+  var isWarning=secsLeft<=30,isUrgent=secsLeft<=10;
+  var color=isUrgent?'#dc2626':isWarning?'#f59e0b':'#16a34a';
+  var timeStr=mins+':'+(secs<10?'0':'')+secs;
+  return h('div',{style:{width:'100%',maxWidth:500,textAlign:'center'}},
+    isWarning&&h('div',{className:'timer-alert',style:{borderColor:isUrgent?'#dc2626':'#f59e0b',background:isUrgent?'rgba(220,38,38,.12)':'rgba(245,158,11,.1)',border:'1.5px solid'}},
+      h('div',{className:'timer-alert-text',style:{color:isUrgent?'#f87171':'#f59e0b'}},isUrgent?'⚠️ Time is almost up!':'⏱ 30 seconds remaining!')),
+    h('div',{className:'timer-display',style:{color:color}},timeStr),
+    h('div',{className:'timer-bar-wrap'},h('div',{className:'timer-bar',style:{width:pct+'%',background:color}}))
   );
 }
 
-function CoinFlip({onClose}){
-  const [result,setResult]=useState(null);
-  const [flipping,setFlipping]=useState(false);
-  const flip=()=>{setFlipping(true);setResult(null);setTimeout(()=>{setResult(Math.random()<.5?"HEADS":"TAILS");setFlipping(false);},700);};
-  return(
-    <div className="overlay">
-      <div className="modal">
-        <p style={{color:"#aaa",fontSize:".8rem",textTransform:"uppercase",letterSpacing:2,marginBottom:"1rem"}}>Coin Flip</p>
-        {flipping&&<span className="coin">🪙</span>}
-        {result&&<div><span className="coin">🪙</span><p style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.5rem",color:"#f59e0b",letterSpacing:3}}>{result}</p></div>}
-        {!result&&!flipping&&<div style={{height:70,display:"flex",alignItems:"center",justifyContent:"center",color:"#555"}}>Press flip!</div>}
-        <div className="row" style={{marginTop:"1.2rem"}}>
-          <button className="btn btn-gold" onClick={flip}>Flip!</button>
-          <button className="btn btn-gray" onClick={onClose}>Close</button>
-        </div>
-      </div>
-    </div>
+function CoinFlip(props){
+  var onClose=props.onClose;
+  var sr=useState(null),result=sr[0],setResult=sr[1];
+  var sf=useState(false),flipping=sf[0],setFlipping=sf[1];
+  function flip(){setFlipping(true);setResult(null);setTimeout(function(){setResult(Math.random()<.5?'HEADS':'TAILS');setFlipping(false);},700);}
+  return h('div',{className:'overlay'},
+    h('div',{className:'modal'},
+      h('p',{style:{color:'#aaa',fontSize:'.8rem',textTransform:'uppercase',letterSpacing:2,marginBottom:'1rem'}},'Coin Flip'),
+      flipping&&h('span',{className:'coin'},'🪙'),
+      result&&h('div',null,h('span',{className:'coin'},'🪙'),h('p',{style:{fontFamily:"'Bebas Neue',sans-serif",fontSize:'2.5rem',color:'#f59e0b',letterSpacing:3}},result)),
+      !result&&!flipping&&h('div',{style:{height:70,display:'flex',alignItems:'center',justifyContent:'center',color:'#555'}},'Press flip!'),
+      h('div',{className:'row',style:{marginTop:'1.2rem'}},
+        h('button',{className:'btn btn-gold',onClick:flip},'Flip!'),
+        h('button',{className:'btn btn-gray',onClick:onClose},'Close')
+      )
+    )
   );
 }
 
-function CardAnnouncement({cards,onDone}){
-  const [revealed,setRevealed]=useState([]);
-  const [showAre,setShowAre]=useState(false);
-  useEffect(()=>{
-    const timers=[];
-    cards.forEach(function(_,i){timers.push(setTimeout(()=>setRevealed(function(r){return r.includes(i)?r:[...r,i];}),(i+1)*900));});
-    timers.push(setTimeout(()=>setShowAre(true),(cards.length+1)*900));
-    timers.push(setTimeout(()=>onDone&&onDone(),(cards.length+2)*900+400));
-    return()=>timers.forEach(clearTimeout);
+function CardAnnouncement(props){
+  var cards=props.cards,onDone=props.onDone;
+  var sr=useState([]),revealed=sr[0],setRevealed=sr[1];
+  var sa=useState(false),showAre=sa[0],setShowAre=sa[1];
+  useEffect(function(){
+    var timers=[];
+    cards.forEach(function(_,i){timers.push(setTimeout(function(){setRevealed(function(r){return r.includes(i)?r:r.concat([i]);});},(i+1)*900));});
+    timers.push(setTimeout(function(){setShowAre(true);},(cards.length+1)*900));
+    timers.push(setTimeout(function(){onDone&&onDone();},(cards.length+2)*900+400));
+    return function(){timers.forEach(clearTimeout);};
   },[]);
-  return(
-    <div className="announce-wrap">
-      <div className="curtain-label">🎬 Round Announcement</div>
-      <div className="divider"/>
-      <div className="announce-title">The Nominees for</div>
-      <div className="announce-title">Best <span>Movie Scene</span></div>
-      <div className="featuring-label">featuring…</div>
-      <div className="cards-reveal">
-        {cards.map(function(c,i){return(
-          <div key={i} className={"reveal-card"+(revealed.includes(i)?" visible":"")}>
-            <span className="reveal-card-num">{i+1}</span>
-            <span>{c}</span>
-          </div>
-        );})}
-      </div>
-      <div className={"are-label"+(showAre?" visible":"")}>…are</div>
-      {showAre&&<div style={{marginTop:"1rem"}}><button className="btn btn-outline" onClick={onDone} style={{fontSize:".75rem"}}>Skip →</button></div>}
-    </div>
+  return h('div',{className:'announce-wrap'},
+    h('div',{className:'curtain-label'},'🎬 Round Announcement'),
+    h('div',{className:'divider'}),
+    h('div',{className:'announce-title'},'The Nominees for'),
+    h('div',{className:'announce-title'},h('span',null,'Best Movie Scene')),
+    h('div',{className:'featuring-label'},'featuring…'),
+    h('div',{className:'cards-reveal'},
+      cards.map(function(c,i){return h('div',{key:i,className:'reveal-card'+(revealed.includes(i)?' visible':'')},
+        h('span',{className:'reveal-card-num'},i+1),h('span',null,c));})
+    ),
+    h('div',{className:'are-label'+(showAre?' visible':'')},'…are'),
+    showAre&&h('div',{style:{marginTop:'1rem'}},h('button',{className:'btn btn-outline',onClick:onDone,style:{fontSize:'.75rem'}},'Skip →'))
   );
 }
 
-function WinnerReveal({winners,allDirectors,totalScores,onPlayAgain}){
-  const [step,setStep]=useState(0);
-  useEffect(()=>{
-    const t1=setTimeout(()=>setStep(1),1800);
-    const t2=setTimeout(()=>setStep(2),3400);
-    const t3=setTimeout(()=>setStep(3),5200);
-    return()=>{clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);};
+function WinnerReveal(props){
+  var winners=props.winners,allDirectors=props.allDirectors,totalScores=props.totalScores,onPlayAgain=props.onPlayAgain;
+  var ss=useState(0),step=ss[0],setStep=ss[1];
+  useEffect(function(){
+    var t1=setTimeout(function(){setStep(1);},1800);
+    var t2=setTimeout(function(){setStep(2);},3400);
+    var t3=setTimeout(function(){setStep(3);},5200);
+    return function(){clearTimeout(t1);clearTimeout(t2);clearTimeout(t3);};
   },[]);
-  const isTie=winners.length>1;
-  return(
-    <div className="winner-screen">
-      <div className="winner-envelope" style={{opacity:step>=1?.25:1,transition:"opacity .8s"}}>— And the award for Best Director is… —</div>
-      {step>=1&&<div className="winner-award">🏆 Best Director 🏆</div>}
-      <div className={"winner-name"+(step>=2?" visible":"")} style={{fontSize:isTie?"3rem":"4.5rem"}}>
-        {isTie?winners.map(function(w){return w.name;}).join(" & "):winners[0].name}
-      </div>
-      <div className={"winner-applause"+(step>=2?" visible":"")}>🎬 🎉 🏆</div>
-      {step>=3&&(
-        <>
-          <div className="divider" style={{margin:"1.5rem auto"}}/>
-          <div className="final-scores">
-            {allDirectors.map(function(d){return(
-              <div key={d.id} className="final-score">
-                <div className="final-score-num" style={{color:d.color}}>{totalScores[d.id]||0}</div>
-                <div className="final-score-label">{d.name}</div>
-              </div>
-            );})}
-          </div>
-          <button className="btn btn-gold btn-lg" onClick={onPlayAgain} style={{marginTop:"1rem"}}>Play Again</button>
-        </>
-      )}
-    </div>
+  var isTie=winners.length>1;
+  return h('div',{className:'winner-screen'},
+    h('div',{className:'winner-envelope',style:{opacity:step>=1?.25:1,transition:'opacity .8s'}},'— And the award for Best Director is… —'),
+    step>=1&&h('div',{className:'winner-award'},'🏆 Best Director 🏆'),
+    h('div',{className:'winner-name'+(step>=2?' visible':''),style:{fontSize:isTie?'3rem':'4.5rem'}},
+      isTie?winners.map(function(w){return w.name;}).join(' & '):winners[0].name),
+    h('div',{className:'winner-applause'+(step>=2?' visible':'')},'🎬 🎉 🏆'),
+    step>=3&&h('div',null,
+      h('div',{className:'divider',style:{margin:'1.5rem auto'}}),
+      h('div',{className:'final-scores'},
+        allDirectors.map(function(d){return h('div',{key:d.id,className:'final-score'},
+          h('div',{className:'final-score-num',style:{color:d.color}},totalScores[d.id]||0),
+          h('div',{className:'final-score-label'},d.name));})
+      ),
+      h('button',{className:'btn btn-gold btn-lg',onClick:onPlayAgain,style:{marginTop:'1rem'}},'Play Again')
+    )
   );
 }
 
 /* ══ PLAYER ══ */
 function PlayerApp(){
-  const [screen,setScreen]=useState("loading");
-  const [pin,setPin]=useState("");
-  const [pinInput,setPinInput]=useState("");
-  const [game,setGame]=useState(null);
-  const [teamId,setTeamId]=useState(null);
-  const [teamName,setTeamName]=useState("");
-  const [teamColor,setTeamColor]=useState(PALETTE[0].hex);
-  const [error,setError]=useState("");
-  const [busy,setBusy]=useState(false);
-  const [link,setLink]=useState("");
-  const [scene,setScene]=useState("");
-  const [selected,setSelected]=useState([]);
-  const [submitted,setSubmitted]=useState(false);
-  const [submitError,setSubmitError]=useState("");
-  const [syncing,setSyncing]=useState(false);
-  const roundRef=useRef(null);
-  const unsubRef=useRef(null);
+  var ss=useState('loading');var screen=ss[0],setScreen=ss[1];
+  var sp=useState('');var pin=sp[0],setPin=sp[1];
+  var spi=useState('');var pinInput=spi[0],setPinInput=spi[1];
+  var sg=useState(null);var game=sg[0],setGame=sg[1];
+  var st=useState(null);var teamId=st[0],setTeamId=st[1];
+  var sn=useState('');var teamName=sn[0],setTeamName=sn[1];
+  var sc=useState(PALETTE[0].hex);var teamColor=sc[0],setTeamColor=sc[1];
+  var se=useState('');var error=se[0],setError=se[1];
+  var sb=useState(false);var busy=sb[0],setBusy=sb[1];
+  var sl=useState('');var link=sl[0],setLink=sl[1];
+  var ssc=useState('');var scene=ssc[0],setScene=ssc[1];
+  var ssel=useState([]);var selected=ssel[0],setSelected=ssel[1];
+  var ssu=useState(false);var submitted=ssu[0],setSubmitted=ssu[1];
+  var ser=useState('');var submitError=ser[0],setSubmitError=ser[1];
+  var ssy=useState(false);var syncing=ssy[0],setSyncing=ssy[1];
+  var roundRef=useRef(null);
+  var unsubRef=useRef(null);
 
   function subscribeGame(p){
     if(unsubRef.current)unsubRef.current();
-    unsubRef.current=dbSub("games/"+p,function(g){
-      if(!g||g.terminated){
-        // Host reset the game — clear session and send player back to PIN screen
-        clearSession();
-        setScreen("pin");
-        setPinInput("");
-        setPin("");
-        setTeamId(null);
-        setGame(null);
-        return;
-      }
+    unsubRef.current=dbSub('games/'+p,function(g){
+      if(!g||g.terminated){clearSession();setScreen('pin');setPinInput('');setPin('');setTeamId(null);setGame(null);return;}
       setGame(g);
-      if(g.status==="started")setScreen("game");
-      if(g.status==="lobby")setScreen("lobby");
+      if(g.status==='started')setScreen('game');
+      if(g.status==='lobby')setScreen('lobby');
     });
   }
 
-  useEffect(()=>{
+  useEffect(function(){
     (async function(){
       try{
-        const session=loadSession();
+        var session=loadSession();
         if(session){
-          const g=await dbGet("games/"+session.pin);
-          if(g&&(g.status==="lobby"||g.status==="started")&&g.teams&&g.teams[session.teamId]){
+          var g=await dbGet('games/'+session.pin);
+          if(g&&!g.terminated&&(g.status==='lobby'||g.status==='started')&&g.teams&&g.teams[session.teamId]){
             setPin(session.pin);setTeamId(session.teamId);setTeamName(session.name);setTeamColor(session.color);
-            setGame(g);setScreen(g.status==="started"?"game":"lobby");
-            subscribeGame(session.pin);return;
+            setGame(g);setScreen(g.status==='started'?'game':'lobby');subscribeGame(session.pin);return;
           }
           clearSession();
         }
-        const urlPin=getPinFromUrl();
+        var urlPin=getPinFromUrl();
         if(urlPin){
           setPinInput(urlPin);
-          const g=await dbGet("games/"+urlPin);
-          if(g&&g.status==="lobby"){
-            const dirs=g.teams?Object.values(g.teams):[];
-            if(dirs.length<8){setPin(urlPin);setGame(g);setScreen("join");return;}
+          var g2=await dbGet('games/'+urlPin);
+          if(g2&&g2.status==='lobby'){
+            var dirs=g2.teams?Object.values(g2.teams):[];
+            if(dirs.length<8){setPin(urlPin);setGame(g2);setScreen('join');return;}
           }
           setPinInput(urlPin);
         }
       }catch(e){console.warn(e);}
-      setScreen("pin");
+      setScreen('pin');
     })();
   },[]);
 
-  useEffect(()=>{
+  useEffect(function(){
     if(!pin||!teamId)return;
     subscribeGame(pin);
-    return()=>{if(unsubRef.current)unsubRef.current();};
+    return function(){if(unsubRef.current)unsubRef.current();};
   },[pin,teamId]);
 
-  useEffect(()=>{
+  useEffect(function(){
     if(!game)return;
-    const r=game.currentRound;
+    var r=game.currentRound;
     if(roundRef.current!==null&&roundRef.current!==r){
-      setSubmitted(false);setSelected([]);setLink("");setScene("");setSubmitError("");
+      setSubmitted(false);setSelected([]);setLink('');setScene('');setSubmitError('');
     }
     roundRef.current=r;
   },[game&&game.currentRound]);
 
-  const joinPin=async()=>{
-    setError("");
-    const p=pinInput.trim();
-    if(p.length!==4||isNaN(Number(p))){setError("Enter the 4-digit PIN.");return;}
+  async function joinPin(){
+    setError('');
+    var p=pinInput.trim();
+    if(p.length!==4||isNaN(Number(p))){setError('Enter the 4-digit PIN.');return;}
     setBusy(true);
     try{
-      const g=await dbGet("games/"+p);
-      if(!g){setError("Game not found. Check the PIN and try again.");setBusy(false);return;}
-      if(g.status!=="lobby"){setError("This game has already started.");setBusy(false);return;}
-      const dirs=g.teams?Object.values(g.teams):[];
-      if(dirs.length>=8){setError("This game is full (8 directors max).");setBusy(false);return;}
-      setPin(p);setGame(g);setScreen("join");
-    }catch(e){setError("Could not connect. Try again.");}
+      var g=await dbGet('games/'+p);
+      if(!g){setError('Game not found.');setBusy(false);return;}
+      if(g.status!=='lobby'){setError('This game has already started.');setBusy(false);return;}
+      var dirs=g.teams?Object.values(g.teams):[];
+      if(dirs.length>=8){setError('Game is full.');setBusy(false);return;}
+      setPin(p);setGame(g);setScreen('join');
+    }catch(e){setError('Could not connect. Try again.');}
     setBusy(false);
-  };
+  }
 
-  const joinGame=async()=>{
-    setError("");
-    if(!teamName.trim()){setError("Please enter a director name.");return;}
-    if(teamName.trim().length>20){setError("Name must be 20 characters or less.");return;}
+  async function joinGame(){
+    setError('');
+    if(!teamName.trim()){setError('Please enter a director name.');return;}
+    if(teamName.trim().length>20){setError('Name must be 20 characters or less.');return;}
     try{
-      const g=await dbGet("games/"+pin);
-      const existing=g&&g.teams?Object.values(g.teams):[];
-      if(existing.find(function(t){return t.color===teamColor;})){setError("That color is taken! Pick another.");return;}
-      if(existing.find(function(t){return t.name.toLowerCase()===teamName.trim().toLowerCase();})){setError("That name is taken!");return;}
+      var g=await dbGet('games/'+pin);
+      var existing=g&&g.teams?Object.values(g.teams):[];
+      if(existing.find(function(t){return t.color===teamColor;})){setError('That color is taken!');return;}
+      if(existing.find(function(t){return t.name.toLowerCase()===teamName.trim().toLowerCase();})){setError('That name is taken!');return;}
       setBusy(true);
-      const pushRef=await dbPush("games/"+pin+"/teams",{name:teamName.trim(),color:teamColor,score:0});
+      var pushRef=await dbPush('games/'+pin+'/teams',{name:teamName.trim(),color:teamColor,score:0});
       setTeamId(pushRef.key);
       saveSession(pin,pushRef.key,teamName.trim(),teamColor);
-      setScreen("lobby");
-    }catch(e){setError("Could not connect. Try again.");}
+      setScreen('lobby');
+    }catch(e){setError('Could not connect. Try again.');}
     setBusy(false);
-  };
+  }
 
-  const submitScene=async()=>{
-    setSubmitError("");
-    if(!link.trim()){setSubmitError("Please paste a YouTube link.");return;}
-    if(!isYouTubeUrl(link.trim())){setSubmitError("Only YouTube links are allowed!");return;}
+  async function submitScene(){
+    setSubmitError('');
+    if(!link.trim()){setSubmitError('Please paste a YouTube link.');return;}
+    if(!isYouTubeUrl(link.trim())){setSubmitError('Only YouTube links are allowed!');return;}
     if(!extractYouTubeId(link.trim())){setSubmitError("Couldn't parse a video ID.");return;}
-    if(selected.length===0){setSubmitError("Select at least one card.");return;}
+    if(selected.length===0){setSubmitError('Select at least one card.');return;}
     setSyncing(true);
     try{
-      await dbSet("games/"+pin+"/rounds/"+game.currentRound+"/submissions/"+teamId,{
-        link:link.trim(),scene:scene.trim()||"Untitled scene",cards:selected,
-        teamName:teamName,teamColor:teamColor,
+      await dbSet('games/'+pin+'/rounds/'+game.currentRound+'/submissions/'+teamId,{
+        link:link.trim(),scene:scene.trim()||'Untitled scene',cards:selected,teamName:teamName,teamColor:teamColor
       });
       setSubmitted(true);
-    }catch(e){setSubmitError("Failed to submit. Try again.");}
+    }catch(e){setSubmitError('Failed to submit. Try again.');}
     setSyncing(false);
-  };
+  }
 
-  if(screen==="loading")return <div className="player-page"><div className="player-logo">Film <span>In</span> The Blank</div><span className="player-sub">Director's Cut</span><span className="spinner"/></div>;
-
-  if(screen==="pin")return(
-    <div className="player-page">
-      <div className="player-logo">Film <span>In</span> The Blank</div>
-      <span className="player-sub">Director's Cut</span>
-      <div className="card-surface">
-        <p style={{color:"#777",fontSize:".85rem",marginBottom:"1.2rem",textAlign:"center"}}>Enter the PIN shown on the host screen</p>
-        <input className="pin-input" value={pinInput} onChange={function(e){setPinInput(e.target.value.replace(/\D/g,"").slice(0,4));}} placeholder="0000" maxLength={4} inputMode="numeric" onKeyDown={function(e){if(e.key==="Enter")joinPin();}}/>
-        {error&&<p className="error-msg" style={{textAlign:"center",marginTop:".5rem"}}>{error}</p>}
-        <button className="btn btn-gold btn-lg" style={{width:"100%",marginTop:"1rem"}} onClick={joinPin} disabled={busy||pinInput.length!==4}>
-          {busy?"Checking…":"Join Game →"}
-        </button>
-      </div>
-    </div>
+  if(screen==='loading')return h('div',{className:'player-page'},
+    h('div',{className:'player-logo'},'Film ',h('span',null,'In'),' The Blank'),
+    h('span',{className:'player-sub'},"Director's Cut"),
+    h('span',{className:'spinner'})
   );
 
-  if(screen==="join")return(
-    <div className="player-page">
-      <div className="player-logo">Film <span>In</span> The Blank</div>
-      <span className="player-sub">Director's Cut</span>
-      <div className="card-surface">
-        <p style={{color:"#777",fontSize:".85rem",marginBottom:"1rem",textAlign:"center"}}>Create your director</p>
-        <div className="input-group">
-          <label className="input-label">Director Name</label>
-          <input className="input-field" value={teamName} onChange={function(e){setTeamName(e.target.value);}} placeholder="e.g. Spielberg Jr." maxLength={20}/>
-        </div>
-        <div className="input-group">
-          <label className="input-label">Your Color</label>
-          <div className="color-picker">
-            {PALETTE.map(function(p){
-              const taken=game&&game.teams?Object.values(game.teams).find(function(t){return t.color===p.hex;}):false;
-              return <div key={p.hex} className={"color-swatch"+(teamColor===p.hex?" selected":"")} style={{background:p.hex,opacity:taken?.25:1,cursor:taken?"not-allowed":"pointer"}} onClick={function(){if(!taken)setTeamColor(p.hex);}} title={taken?p.name+" (taken)":p.name}/>;
-            })}
-          </div>
-        </div>
-        {error&&<p className="error-msg">{error}</p>}
-        <button className="btn btn-gold btn-lg" style={{width:"100%",marginTop:"1rem"}} onClick={joinGame} disabled={busy||!teamName.trim()}>
-          {busy?"Joining…":"Enter the Room →"}
-        </button>
-      </div>
-    </div>
+  if(screen==='pin')return h('div',{className:'player-page'},
+    h('div',{className:'player-logo'},'Film ',h('span',null,'In'),' The Blank'),
+    h('span',{className:'player-sub'},"Director's Cut"),
+    h('div',{className:'card-surface'},
+      h('p',{style:{color:'#777',fontSize:'.85rem',marginBottom:'1.2rem',textAlign:'center'}},'Enter the PIN shown on the host screen'),
+      h('input',{className:'pin-input',value:pinInput,onChange:function(e){setPinInput(e.target.value.replace(/\D/g,'').slice(0,4));},placeholder:'0000',maxLength:4,inputMode:'numeric',onKeyDown:function(e){if(e.key==='Enter')joinPin();}}),
+      error&&h('p',{className:'error-msg',style:{textAlign:'center',marginTop:'.5rem'}},error),
+      h('button',{className:'btn btn-gold btn-lg',style:{width:'100%',marginTop:'1rem'},onClick:joinPin,disabled:busy||pinInput.length!==4},busy?'Checking…':'Join Game →')
+    )
   );
 
-  if(screen==="lobby"&&game)return(
-    <div className="player-page">
-      <div className="player-logo">Film <span>In</span> The Blank</div>
-      <span className="player-sub">Director's Cut</span>
-      <div className="card-surface" style={{textAlign:"center"}}>
-        <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",color:"#888",fontSize:".95rem",marginBottom:".8rem"}}>Welcome to the screening room</div>
-        <p style={{color:"#777",fontSize:".85rem",marginBottom:"1rem"}}>Waiting for the host to call action…</p>
-        <div style={{margin:"1rem 0"}}>
-          {game.teams&&Object.values(game.teams).map(function(t,i){return(
-            <div key={i} className="director-row" style={{borderColor:hex2rgba(t.color,.4)}}>
-              <div className="director-swatch" style={{background:t.color}}/>
-              <span className="director-name" style={{color:t.color}}>{t.name}</span>
-              {t.name===teamName&&<span style={{marginLeft:"auto",fontSize:".75rem",color:"#16a34a"}}>← You</span>}
-            </div>
-          );})}
-        </div>
-        <p style={{color:"#555",fontSize:".8rem",marginBottom:"1rem"}}>PIN: <strong style={{color:"#f59e0b",letterSpacing:2}}>{pin}</strong></p>
-        <button className="btn btn-outline" style={{fontSize:".75rem"}} onClick={function(){clearSession();setScreen("pin");setPinInput("");}}>Leave Game</button>
-      </div>
-    </div>
+  if(screen==='join')return h('div',{className:'player-page'},
+    h('div',{className:'player-logo'},'Film ',h('span',null,'In'),' The Blank'),
+    h('span',{className:'player-sub'},"Director's Cut"),
+    h('div',{className:'card-surface'},
+      h('p',{style:{color:'#777',fontSize:'.85rem',marginBottom:'1rem',textAlign:'center'}},'Create your director'),
+      h('div',{className:'input-group'},
+        h('label',{className:'input-label'},'Director Name'),
+        h('input',{className:'input-field',value:teamName,onChange:function(e){setTeamName(e.target.value);},placeholder:'e.g. Spielberg Jr.',maxLength:20})
+      ),
+      h('div',{className:'input-group'},
+        h('label',{className:'input-label'},'Your Color'),
+        h('div',{className:'color-picker'},
+          PALETTE.map(function(p){
+            var taken=game&&game.teams?Object.values(game.teams).find(function(t){return t.color===p.hex;}):false;
+            return h('div',{key:p.hex,className:'color-swatch'+(teamColor===p.hex?' selected':''),style:{background:p.hex,opacity:taken?.25:1,cursor:taken?'not-allowed':'pointer'},onClick:function(){if(!taken)setTeamColor(p.hex);},title:taken?p.name+' (taken)':p.name});
+          })
+        )
+      ),
+      error&&h('p',{className:'error-msg'},error),
+      h('button',{className:'btn btn-gold btn-lg',style:{width:'100%',marginTop:'1rem'},onClick:joinGame,disabled:busy||!teamName.trim()},busy?'Joining…':'Enter the Room →')
+    )
   );
 
-  if(screen==="game"&&game){
-    const round=game.rounds&&game.rounds[game.currentRound];
-    if(!round)return <div className="player-page"><span className="spinner"/>Loading round…</div>;
-    const myTeam=game.teams&&game.teams[teamId];
-    const myColor=(myTeam&&myTeam.color)||teamColor||"#f59e0b";
-    const alreadySubmitted=round.submissions&&round.submissions[teamId]!=null;
+  if(screen==='lobby'&&game)return h('div',{className:'player-page'},
+    h('div',{className:'player-logo'},'Film ',h('span',null,'In'),' The Blank'),
+    h('span',{className:'player-sub'},"Director's Cut"),
+    h('div',{className:'card-surface',style:{textAlign:'center'}},
+      h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',color:'#888',fontSize:'.95rem',marginBottom:'.8rem'}},'Welcome to the screening room'),
+      h('p',{style:{color:'#777',fontSize:'.85rem',marginBottom:'1rem'}},'Waiting for the host to call action…'),
+      h('div',{style:{margin:'1rem 0'}},
+        game.teams&&Object.values(game.teams).map(function(t,i){return h('div',{key:i,className:'director-row',style:{borderColor:hex2rgba(t.color,.4)}},
+          h('div',{className:'director-swatch',style:{background:t.color}}),
+          h('span',{className:'director-name',style:{color:t.color}},t.name),
+          t.name===teamName&&h('span',{style:{marginLeft:'auto',fontSize:'.75rem',color:'#16a34a'}},'← You')
+        );})),
+      h('p',{style:{color:'#555',fontSize:'.8rem',marginBottom:'1rem'}},'PIN: ',h('strong',{style:{color:'#f59e0b',letterSpacing:2}},pin)),
+      h('button',{className:'btn btn-outline',style:{fontSize:'.75rem'},onClick:function(){clearSession();setScreen('pin');setPinInput('');}},  'Leave Game')
+    )
+  );
 
-    if(alreadySubmitted||submitted)return(
-      <div className="player-page">
-        <div style={{textAlign:"center",padding:"2rem"}}>
-          <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",fontSize:"1rem",color:"#777",marginBottom:".5rem"}}>Your nomination has been submitted</div>
-          <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2.5rem",letterSpacing:2,color:myColor}}>Awaiting the Verdict</div>
-          <p style={{color:"#555",marginTop:".5rem",fontSize:".85rem"}}>The host is reviewing all nominations…</p>
-          <div style={{marginTop:"1.5rem"}}>
-            <p style={{color:"#555",fontSize:".78rem",marginBottom:".5rem"}}>Your nominated cards:</p>
-            <div style={{display:"flex",flexWrap:"wrap",gap:".3rem",justifyContent:"center"}}>
-              {selected.map(function(i){return <span key={i} className="nomination-card-tag" style={{background:hex2rgba(myColor,.2),color:myColor,borderColor:hex2rgba(myColor,.3)}}>{round.cards[i]}</span>;})}
-            </div>
-          </div>
-        </div>
-      </div>
+  if(screen==='game'&&game){
+    var round=game.rounds&&game.rounds[game.currentRound];
+    if(!round)return h('div',{className:'player-page'},h('span',{className:'spinner'}));
+    var myTeam=game.teams&&game.teams[teamId];
+    var myColor=(myTeam&&myTeam.color)||teamColor||'#f59e0b';
+    var alreadySubmitted=round.submissions&&round.submissions[teamId]!=null;
+
+    if(alreadySubmitted||submitted)return h('div',{className:'player-page'},
+      h('div',{style:{textAlign:'center',padding:'2rem'}},
+        h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',fontSize:'1rem',color:'#777',marginBottom:'.5rem'}},'Your nomination has been submitted'),
+        h('div',{style:{fontFamily:"'Bebas Neue',sans-serif",fontSize:'2.5rem',letterSpacing:2,color:myColor}},'Awaiting the Verdict'),
+        h('p',{style:{color:'#555',marginTop:'.5rem',fontSize:'.85rem'}},'The host is reviewing all nominations…'),
+        h('div',{style:{marginTop:'1.5rem'}},
+          h('p',{style:{color:'#555',fontSize:'.78rem',marginBottom:'.5rem'}},'Your nominated cards:'),
+          h('div',{className:'nomination-cards'},
+            selected.map(function(i){return h('span',{key:i,className:'nomination-card-tag',style:{background:hex2rgba(myColor,.2),color:myColor,borderColor:hex2rgba(myColor,.3)}},round.cards[i]);}))
+        )
+      )
     );
 
-    return(
-      <div className="player-page">
-        <div style={{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:"1.6rem",letterSpacing:2,marginBottom:".3rem"}}>{myTeam?myTeam.name:"Your Director"}</div>
-        <div className="card-surface">
-          <div className="nomination-header">
-            Submit your nomination for<br/>
-            <strong style={{color:"#f5f5f5"}}>Best Movie Scene</strong> featuring:
-          </div>
-          <div className="nomination-cards">
-            {round.cards.map(function(c,i){return <span key={i} className="nomination-card-tag">{c}</span>;})}
-          </div>
-          <p style={{fontSize:".78rem",color:"#555",marginBottom:".6rem"}}>Tap the cards your scene covers:</p>
-          {round.cards.map(function(c,i){
-            const sel=selected.includes(i);
-            return(
-              <div key={i} className="player-card-item" onClick={function(){setSelected(function(s){return s.includes(i)?s.filter(function(x){return x!==i;}):[...s,i];});}} style={{background:sel?hex2rgba(myColor,.15):"#1a1a1a",borderColor:sel?myColor:"transparent"}}>
-                <span className="player-card-num">{i+1}</span>
-                <span className="player-card-text">{c}</span>
-                {sel&&<span style={{marginLeft:"auto",color:myColor}}>✓</span>}
-              </div>
-            );
-          })}
-          <div className="input-group" style={{marginTop:".5rem"}}>
-            <label className="input-label">YouTube Link</label>
-            <input className="input-field" value={link} onChange={function(e){setLink(e.target.value);}} placeholder="https://youtube.com/watch?v=…"/>
-          </div>
-          <div className="input-group">
-            <label className="input-label">Scene Description (optional)</label>
-            <input className="input-field" value={scene} onChange={function(e){setScene(e.target.value);}} placeholder="e.g. The cerulean sweater speech"/>
-          </div>
-          {submitError&&<p className="error-msg">{submitError}</p>}
-          <button className="btn btn-gold" style={{width:"100%",marginTop:".6rem",padding:".7rem"}} onClick={submitScene} disabled={syncing}>
-            {syncing?"Submitting Nomination…":"🎬 Submit Nomination"}
-          </button>
-        </div>
-      </div>
+    return h('div',{className:'player-page'},
+      h('div',{style:{color:myColor,fontFamily:"'Bebas Neue',sans-serif",fontSize:'1.6rem',letterSpacing:2,marginBottom:'.3rem'}},myTeam?myTeam.name:'Your Director'),
+      h('div',{className:'card-surface'},
+        h('div',{className:'nomination-header'},'Submit your nomination for ',h('strong',{style:{color:'#f5f5f5'}},'Best Movie Scene'),' featuring:'),
+        h('div',{className:'nomination-cards'},round.cards.map(function(c,i){return h('span',{key:i,className:'nomination-card-tag'},c);})),
+        h('p',{style:{fontSize:'.78rem',color:'#555',marginBottom:'.6rem'}},'Tap the cards your scene covers:'),
+        round.cards.map(function(c,i){
+          var sel=selected.includes(i);
+          return h('div',{key:i,className:'player-card-item',onClick:function(){setSelected(function(s){return s.includes(i)?s.filter(function(x){return x!==i;}):[].concat(s,[i]);});},style:{background:sel?hex2rgba(myColor,.15):'#1a1a1a',borderColor:sel?myColor:'transparent'}},
+            h('span',{className:'player-card-num'},i+1),
+            h('span',{className:'player-card-text'},c),
+            sel&&h('span',{style:{marginLeft:'auto',color:myColor}},'✓')
+          );
+        }),
+        h('div',{className:'input-group',style:{marginTop:'.5rem'}},
+          h('label',{className:'input-label'},'YouTube Link'),
+          h('input',{className:'input-field',value:link,onChange:function(e){setLink(e.target.value);},placeholder:'https://youtube.com/watch?v=…'})
+        ),
+        h('div',{className:'input-group'},
+          h('label',{className:'input-label'},'Scene Description (optional)'),
+          h('input',{className:'input-field',value:scene,onChange:function(e){setScene(e.target.value);},placeholder:'e.g. The cerulean sweater speech'})
+        ),
+        submitError&&h('p',{className:'error-msg'},submitError),
+        h('button',{className:'btn btn-gold',style:{width:'100%',marginTop:'.6rem',padding:'.7rem'},onClick:submitScene,disabled:syncing},syncing?'Submitting Nomination…':'🎬 Submit Nomination')
+      )
     );
   }
 
-  return <div className="player-page"><span className="spinner"/>Connecting…</div>;
+  return h('div',{className:'player-page'},h('span',{className:'spinner'}));
 }
 
 /* ══ HOST ══ */
 function HostApp(){
-  const [game,setGame]=useState(null);
-  const [pin,setPin]=useState(null);
-  const [loading,setLoading]=useState(true);
-  const [showCoin,setShowCoin]=useState(false);
-  const [disputeState,setDisputeState]=useState(null);
-  const [watchingTeam,setWatchingTeam]=useState(null);
-  const [announcing,setAnnouncing]=useState(false);
-  const pinRef=useRef(null);
+  var sg=useState(null);var game=sg[0],setGame=sg[1];
+  var spi=useState(null);var pin=spi[0],setPin=spi[1];
+  var sl=useState(true);var loading=sl[0],setLoading=sl[1];
+  var sc=useState(false);var showCoin=sc[0],setShowCoin=sc[1];
+  var sd=useState(null);var disputeState=sd[0],setDisputeState=sd[1];
+  var sw=useState(null);var watchingTeam=sw[0],setWatchingTeam=sw[1];
+  var sa=useState(false);var announcing=sa[0],setAnnouncing=sa[1];
+  var pinRef=useRef(null);
 
-  const subscribeGame=useCallback(function(p){
-    dbSub("games/"+p,function(fresh){
+  var subscribeGame=useCallback(function(p){
+    dbSub('games/'+p,function(fresh){
       if(!fresh)return;
-      setGame(function(){return Object.assign({},fresh);});
+      setGame(Object.assign({},fresh));
     });
   },[]);
 
-  useEffect(()=>{
+  useEffect(function(){
     (async function(){
       try{
-        let savedPin=localStorage.getItem("fitb_cut_host_pin");
+        var savedPin=localStorage.getItem('fitb_cut_host_pin');
         if(savedPin){
-          const g=await dbGet("games/"+savedPin);
-          if(g){pinRef.current=savedPin;setPin(savedPin);setLoading(false);subscribeGame(savedPin);return;}
+          var g=await dbGet('games/'+savedPin);
+          if(g&&!g.terminated){pinRef.current=savedPin;setPin(savedPin);setLoading(false);subscribeGame(savedPin);return;}
         }
-        const newPin=genPin();
-        const rounds=generateRounds();
-        await dbSet("games/"+newPin,{pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds:rounds,teams:{}});
-        localStorage.setItem("fitb_cut_host_pin",newPin);
+        var newPin=genPin();
+        var rounds=generateRounds();
+        await dbSet('games/'+newPin,{pin:newPin,status:'lobby',currentRound:0,totalScores:{},rounds:rounds,teams:{}});
+        localStorage.setItem('fitb_cut_host_pin',newPin);
         pinRef.current=newPin;setPin(newPin);setLoading(false);subscribeGame(newPin);
       }catch(e){console.warn(e);setLoading(false);}
     })();
   },[]);
 
-  const resetGame=async()=>{
-    // Mark old game as terminated so phones know to drop back to PIN screen
-    if(pinRef.current){
-      await dbUpdate("games/"+pinRef.current,{terminated:true});
-    }
-    const newPin=genPin();
-    const rounds=generateRounds();
-    await dbSet("games/"+newPin,{pin:newPin,status:"lobby",currentRound:0,totalScores:{},rounds:rounds,teams:{}});
-    localStorage.setItem("fitb_cut_host_pin",newPin);
+  async function resetGame(){
+    if(pinRef.current)await dbUpdate('games/'+pinRef.current,{terminated:true});
+    var newPin=genPin();
+    var rounds=generateRounds();
+    await dbSet('games/'+newPin,{pin:newPin,status:'lobby',currentRound:0,totalScores:{},rounds:rounds,teams:{}});
+    localStorage.setItem('fitb_cut_host_pin',newPin);
     pinRef.current=newPin;setPin(newPin);
     setDisputeState(null);setWatchingTeam(null);setAnnouncing(false);
     subscribeGame(newPin);
-  };
+  }
 
-  const startGame=async()=>{
+  async function startGame(){
     setAnnouncing(true);
-    await dbUpdate("games/"+pinRef.current,{status:"started",currentRound:0});
-  };
+    await dbUpdate('games/'+pinRef.current,{status:'started',currentRound:0});
+  }
 
-  const awardPoints=async(teamId,pts)=>{
-    const cur=game.currentRound;
-    const prev=(game.totalScores&&game.totalScores[teamId])||0;
-    const su={};su[teamId]=pts;
-    const sc={};sc[teamId]=true;
-    const ts={};ts[teamId]=prev+pts;
-    await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scores",su);
-    await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scored",sc);
-    await dbUpdate("games/"+pinRef.current+"/totalScores",ts);
+  async function awardPoints(teamId,pts){
+    var cur=game.currentRound;
+    var prev=(game.totalScores&&game.totalScores[teamId])||0;
+    var su={};su[teamId]=pts;
+    var sc2={};sc2[teamId]=true;
+    var ts={};ts[teamId]=prev+pts;
+    await dbUpdate('games/'+pinRef.current+'/rounds/'+cur+'/scores',su);
+    await dbUpdate('games/'+pinRef.current+'/rounds/'+cur+'/scored',sc2);
+    await dbUpdate('games/'+pinRef.current+'/totalScores',ts);
     setWatchingTeam(null);
-  };
+  }
 
-  const skipRound=async()=>{
-    const cur=game.currentRound;
-    const directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
-    const scored=game.rounds&&game.rounds[cur]&&game.rounds[cur].scored||{};
-    for(const d of directors){
+  async function skipRound(){
+    var cur=game.currentRound;
+    var directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
+    var scored=(game.rounds&&game.rounds[cur]&&game.rounds[cur].scored)||{};
+    for(var i=0;i<directors.length;i++){
+      var d=directors[i];
       if(!scored[d.id]){
-        const prev=(game.totalScores&&game.totalScores[d.id])||0;
-        const su={};su[d.id]=0;const sc={};sc[d.id]=true;const ts={};ts[d.id]=prev;
-        await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scores",su);
-        await dbUpdate("games/"+pinRef.current+"/rounds/"+cur+"/scored",sc);
-        await dbUpdate("games/"+pinRef.current+"/totalScores",ts);
+        var prev=(game.totalScores&&game.totalScores[d.id])||0;
+        var su={};su[d.id]=0;var sc2={};sc2[d.id]=true;var ts={};ts[d.id]=prev;
+        await dbUpdate('games/'+pinRef.current+'/rounds/'+cur+'/scores',su);
+        await dbUpdate('games/'+pinRef.current+'/rounds/'+cur+'/scored',sc2);
+        await dbUpdate('games/'+pinRef.current+'/totalScores',ts);
       }
     }
-    await dbUpdate("games/"+pinRef.current,{currentRound:cur+1});
+    await dbUpdate('games/'+pinRef.current,{currentRound:cur+1});
     setDisputeState(null);setWatchingTeam(null);setAnnouncing(true);
-  };
+  }
 
-  const confirmDispute=async()=>{
+  async function confirmDispute(){
     if(!disputeState)return;
     await awardPoints(disputeState.teamId,disputeState.cards.filter(Boolean).length);
     setDisputeState(null);
-  };
+  }
 
-  const nextRound=async()=>{
-    const cur=game.currentRound;
-    await dbUpdate("games/"+pinRef.current,{currentRound:cur+1});
+  async function nextRound(){
+    var cur=game.currentRound;
+    await dbUpdate('games/'+pinRef.current,{currentRound:cur+1});
     setDisputeState(null);setWatchingTeam(null);setAnnouncing(true);
-  };
+  }
 
-  if(loading)return(
-    <div className="page">
-      <div className="header"><a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Cut</small></a></div>
-      <div className="main"><span className="spinner"/>Setting up…</div>
-    </div>
-  );
-  if(!game)return(
-    <div className="page">
-      <div className="header"><a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Cut</small></a></div>
-      <div className="main"><span className="spinner"/>Connecting…</div>
-    </div>
-  );
+  var logoEl=h('a',{href:'index.html',className:'logo',style:{textDecoration:'none'}},'Film ',h('span',null,'In'),' The Blank',h('small',{className:'logo-sub'},"Director's Cut"));
 
-  const directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
-  const baseUrl=window.location.href.split("?")[0].replace(/#.*/,"");
-  const cur=game.currentRound;
-  const round=game.rounds&&game.rounds[cur];
-  const totalScores=game.totalScores||{};
+  if(loading)return h('div',{className:'page'},h('div',{className:'header'},logoEl),h('div',{className:'main'},h('span',{className:'spinner'}),' Setting up…'));
+  if(!game)return h('div',{className:'page'},h('div',{className:'header'},logoEl),h('div',{className:'main'},h('span',{className:'spinner'}),' Connecting…'));
+
+  var directors=game.teams?Object.entries(game.teams).map(function(e){return Object.assign({id:e[0]},e[1]);}):[];
+  var baseUrl=window.location.href.split('?')[0].replace(/#.*/,'');
+  var cur=game.currentRound;
+  var round=game.rounds&&game.rounds[cur];
+  var totalScores=game.totalScores||{};
 
   // LOBBY
-  if(game.status==="lobby")return(
-    <div className="page">
-      <div className="header">
-        <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Cut</small></a>
-        <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>New Game</button>
-      </div>
-      <div className="main">
-        <div style={{textAlign:"center"}}>
-          <div style={{fontFamily:"'Playfair Display',serif",fontStyle:"italic",color:"#777",fontSize:"1rem",marginBottom:".8rem"}}>Welcome to the screening room</div>
-          <p style={{color:"#555",fontSize:".85rem",textTransform:"uppercase",letterSpacing:2,marginBottom:".3rem"}}>Game PIN</p>
-          <div className="pin-display">{pin}</div>
-          <p className="pin-sub" style={{marginTop:".6rem"}}>Scan to join</p>
-          <QRBlock url={baseUrl+"#player?pin="+pin} size={160}/>
-          <p style={{color:"#444",fontSize:".72rem",marginTop:".5rem"}}>or visit <span style={{color:"#f59e0b"}}>{baseUrl}#player</span> and enter PIN <span style={{color:"#f59e0b"}}>{pin}</span></p>
-        </div>
-        <div style={{width:"100%",maxWidth:480}}>
-          <p style={{color:"#555",fontSize:".78rem",textTransform:"uppercase",letterSpacing:1,marginBottom:".8rem",textAlign:"center"}}>Directors in the room ({directors.length}/8)</p>
-          {directors.length===0
-            ?<p className="waiting-directors">Waiting for directors to arrive…</p>
-            :<div className="directors-grid">
-              {directors.map(function(d){return(
-                <div key={d.id} className="director-row" style={{borderColor:hex2rgba(d.color,.4)}}>
-                  <div className="director-swatch" style={{background:d.color}}/>
-                  <span className="director-name" style={{color:d.color}}>{d.name}</span>
-                </div>
-              );})}
-            </div>
-          }
-        </div>
-        <button className="btn btn-gold btn-lg" onClick={startGame} disabled={directors.length<1} style={{minWidth:220}}>
-          {directors.length<1?"Waiting for directors…":"🎬 Call Action →"}
-        </button>
-      </div>
-    </div>
+  if(game.status==='lobby')return h('div',{className:'page'},
+    h('div',{className:'header'},logoEl,h('button',{className:'btn btn-outline',onClick:resetGame,style:{fontSize:'.75rem'}},'New Game')),
+    h('div',{className:'main'},
+      h('div',{style:{textAlign:'center'}},
+        h('div',{style:{fontFamily:"'Playfair Display',serif",fontStyle:'italic',color:'#777',fontSize:'1rem',marginBottom:'.8rem'}},'Welcome to the screening room'),
+        h('p',{style:{color:'#555',fontSize:'.85rem',textTransform:'uppercase',letterSpacing:2,marginBottom:'.3rem'}},'Game PIN'),
+        h('div',{className:'pin-display'},pin),
+        h('p',{className:'pin-sub',style:{marginTop:'.6rem'}},'Scan to join'),
+        h(QRBlock,{url:baseUrl+'#player?pin='+pin,size:160}),
+        h('p',{style:{color:'#444',fontSize:'.72rem',marginTop:'.5rem'}},'or visit ',h('span',{style:{color:'#f59e0b'}},baseUrl+'#player'),' and enter PIN ',h('span',{style:{color:'#f59e0b'}},pin))
+      ),
+      h('div',{style:{width:'100%',maxWidth:480}},
+        h('p',{style:{color:'#555',fontSize:'.78rem',textTransform:'uppercase',letterSpacing:1,marginBottom:'.8rem',textAlign:'center'}},'Directors in the room ('+directors.length+'/8)'),
+        directors.length===0
+          ?h('p',{className:'waiting-directors'},'Waiting for directors to arrive…')
+          :h('div',{className:'directors-grid'},directors.map(function(d){return h('div',{key:d.id,className:'director-row',style:{borderColor:hex2rgba(d.color,.4)}},
+              h('div',{className:'director-swatch',style:{background:d.color}}),
+              h('span',{className:'director-name',style:{color:d.color}},d.name));}))
+      ),
+      h('button',{className:'btn btn-gold btn-lg',onClick:startGame,disabled:directors.length<1,style:{minWidth:220}},directors.length<1?'Waiting for directors…':'🎬 Call Action →')
+    )
   );
 
   // ANNOUNCEMENT
-  if(announcing&&round&&round.cards)return(
-    <div className="page">
-      <div className="header">
-        <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Cut</small></a>
-        <span className="round-badge">Round {cur+1}/5</span>
-      </div>
-      <div className="main">
-        <CardAnnouncement cards={round.cards} onDone={async function(){
-          // Record when the round actually starts so the timer is server-synced
-          await dbUpdate("games/"+pinRef.current+"/rounds/"+cur,{timerStartedAt:Date.now()});
-          setAnnouncing(false);
-        }}/>
-      </div>
-    </div>
+  if(announcing&&round&&round.cards)return h('div',{className:'page'},
+    h('div',{className:'header'},logoEl,h('span',{className:'round-badge'},'Round '+(cur+1)+'/5')),
+    h('div',{className:'main'},
+      h(CardAnnouncement,{cards:round.cards,onDone:async function(){
+        await dbUpdate('games/'+pinRef.current+'/rounds/'+cur,{timerStartedAt:Date.now()});
+        setAnnouncing(false);
+      }})
+    )
   );
 
-  if(!round)return <div className="page"><div className="main"><span className="spinner"/></div></div>;
+  if(!round)return h('div',{className:'page'},h('div',{className:'main'},h('span',{className:'spinner'})));
 
-  const submissions=round.submissions||{};
-  const scored=round.scored||{};
-  const scores=round.scores||{};
-  const anySubmitted=directors.some(function(d){return submissions[d.id]!=null;});
-  const allSubmitted=directors.every(function(d){return submissions[d.id]!=null;});
-  const allScored=directors.length>0&&directors.every(function(d){return scored[d.id];});
-  const gameOver=cur>=4&&allScored;
+  var submissions=round.submissions||{};
+  var scored=round.scored||{};
+  var scores=round.scores||{};
+  var anySubmitted=directors.some(function(d){return submissions[d.id]!=null;});
+  var allSubmitted=directors.every(function(d){return submissions[d.id]!=null;});
+  var allScored=directors.length>0&&directors.every(function(d){return scored[d.id];});
+  var gameOver=cur>=4&&allScored;
+
+  function getYTEmbed(url){var id=extractYouTubeId(url);return id?'https://www.youtube.com/embed/'+id+'?autoplay=1':null;}
 
   // WINNER
   if(gameOver){
-    const sorted=[...directors].sort(function(a,b){return (totalScores[b.id]||0)-(totalScores[a.id]||0);});
-    const topScore=totalScores[sorted[0]&&sorted[0].id]||0;
-    const winners=sorted.filter(function(d){return (totalScores[d.id]||0)===topScore;});
-    return(
-      <div className="page">
-        <div className="header">
-          <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Cut</small></a>
-        </div>
-        <div className="main">
-          <WinnerReveal winners={winners} allDirectors={sorted} totalScores={totalScores} onPlayAgain={resetGame}/>
-        </div>
-      </div>
+    var sorted=directors.slice().sort(function(a,b){return (totalScores[b.id]||0)-(totalScores[a.id]||0);});
+    var topScore=totalScores[sorted[0]&&sorted[0].id]||0;
+    var winners=sorted.filter(function(d){return (totalScores[d.id]||0)===topScore;});
+    return h('div',{className:'page'},
+      h('div',{className:'header'},logoEl),
+      h('div',{className:'main'},h(WinnerReveal,{winners:winners,allDirectors:sorted,totalScores:totalScores,onPlayAgain:resetGame}))
     );
   }
 
-  function getYTEmbed(url){var id=extractYouTubeId(url);return id?"https://www.youtube.com/embed/"+id+"?autoplay=1":null;}
-
-  return(
-    <div className="page">
-      {showCoin&&<CoinFlip onClose={function(){setShowCoin(false);}}/>}
-      <div className="header">
-        <a href="index.html" className="logo" style={{textDecoration:"none"}}>Film <span>In</span> The Blank<small className="logo-sub">Director's Cut</small></a>
-        <div className="score-chips">
-          {directors.map(function(d){return <span key={d.id} className="score-chip" style={{background:d.color}}>{d.name}: {totalScores[d.id]||0} pts</span>;})}
-          <span className="round-badge">Round {cur+1}/5</span>
-        </div>
-        <div style={{display:"flex",gap:".5rem",alignItems:"center"}}>
-          <span style={{fontSize:".68rem",color:"#16a34a"}}><span className="dot-live"/>LIVE</span>
-          <button className="btn btn-outline" onClick={resetGame} style={{fontSize:".75rem"}}>Reset</button>
-        </div>
-      </div>
-
-      <div className="main">
-        {/* Award show framing */}
-        <div className="announce-wrap" style={{marginBottom:"-.5rem"}}>
-          <div className="curtain-label">🎬 Round {cur+1} — The nominees for <span style={{fontFamily:"'Bebas Neue',sans-serif",fontStyle:"normal",color:"#f59e0b",letterSpacing:1}}>Best Movie Scene</span> featuring</div>
-          <div className="cards-reveal" style={{marginTop:".4rem"}}>
-            {round.cards.map(function(c,i){return(
-              <div key={i} className="reveal-card visible">
-                <span className="reveal-card-num">{i+1}</span>
-                <span>{c}</span>
-              </div>
-            );})}
-          </div>
-          <div className="are-label visible">…are</div>
-        </div>
-
-        {/* Timer */}
-        {round.timerStartedAt&&!allScored&&(
-          <Timer startedAt={round.timerStartedAt}/>
-        )}
-
-        {/* Submissions */}
-        <div className="subs-grid">
-          {directors.map(function(d){
-            const sub=submissions[d.id];
-            return(
-              <div key={d.id} className="sub-box" style={{borderColor:sub?hex2rgba(d.color,.5):"#222"}}>
-                <div className="sub-title" style={{color:d.color}}>
-                  {d.name} {sub?"✓":""}
-                  {scored[d.id]&&<span className="scored-badge">+{scores[d.id]||0} pts</span>}
-                </div>
-                {sub
-                  ?<div style={{fontSize:".82rem",color:"#aaa",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>Nomination received</div>
-                  :<div className="sub-waiting">Awaiting nomination…</div>
-                }
-              </div>
-            );
-          })}
-        </div>
-
-        {/* PIN reminder + skip */}
-        {!allScored&&(
-          <div style={{textAlign:"center"}}>
-            {!allSubmitted&&(
-              <>
-                <p style={{color:"#333",fontSize:".72rem",marginBottom:".2rem"}}>PIN</p>
-                <p style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:"2rem",color:"#f59e0b",letterSpacing:6,marginBottom:".8rem"}}>{pin}</p>
-              </>
-            )}
-            {anySubmitted&&!allSubmitted&&(
-              <div style={{marginTop:".4rem"}}>
-                <p style={{color:"#555",fontSize:".78rem",marginBottom:".5rem",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>Still waiting on some directors…</p>
-                <div className="row">
-                  <button className="btn btn-outline" style={{fontSize:".78rem"}} onClick={function(){setWatchingTeam(null);}}>▶ Start reviewing what's in</button>
-                  {cur<4&&<button className="btn btn-gray" style={{fontSize:".78rem"}} onClick={skipRound}>Skip Round →</button>}
-                </div>
-              </div>
-            )}
-            {!anySubmitted&&cur<4&&(
-              <button className="btn btn-gray" style={{fontSize:".75rem",marginTop:".5rem"}} onClick={skipRound}>Skip Round →</button>
-            )}
-          </div>
-        )}
-
-        {/* Video review */}
-        {anySubmitted&&!allScored&&(
-          watchingTeam?(function(){
-            const d=directors.find(function(x){return x.id===watchingTeam;});
-            const sub=submissions[watchingTeam];
-            if(!d||!sub)return null;
-            return(
-              <div className="video-area">
-                <div className="review-label" style={{color:d.color}}>Now screening: {d.name}</div>
-                <iframe src={getYTEmbed(sub.link)} title="Scene" allowFullScreen allow="autoplay"/>
-                <div className="row" style={{marginTop:"1rem"}}>
-                  {!scored[watchingTeam]?(
-                    <>
-                      <button className="btn btn-green" onClick={function(){awardPoints(watchingTeam,(sub.cards||[]).length);}}>✓ Grant Full ({(sub.cards||[]).length} pts)</button>
-                      <button className="btn btn-red" onClick={function(){setDisputeState({teamId:watchingTeam,cards:(sub.cards||[]).map(function(){return true;})});setWatchingTeam(null);}}>Dispute</button>
-                      <button className="btn btn-outline" onClick={function(){setShowCoin(true);}}>🪙 Coin Flip</button>
-                      <button className="btn btn-gray" onClick={function(){setWatchingTeam(null);}}>← Back</button>
-                    </>
-                  ):(
-                    <p style={{color:"#16a34a",fontWeight:600}}>+{scores[watchingTeam]} pts awarded!</p>
-                  )}
-                </div>
-              </div>
-            );
-          })():(
-            <div style={{textAlign:"center"}}>
-              <p style={{color:"#888",fontFamily:"'Playfair Display',serif",fontStyle:"italic",marginBottom:".8rem"}}>
-                {allSubmitted?"All nominations are in.":"Some nominations are in."} Screen each director's scene:
-              </p>
-              <div className="row">
-                {directors.filter(function(d){return submissions[d.id]!=null;}).map(function(d){return(
-                  <button key={d.id} className="btn" style={{background:d.color,color:"#fff"}} onClick={function(){setWatchingTeam(d.id);}}>
-                    {scored[d.id]?"✓ ":""}▶ {d.name}
-                  </button>
-                );})}
-              </div>
-              {directors.some(function(d){return scored[d.id];})&&!allScored&&(
-                <p style={{color:"#555",fontSize:".82rem",marginTop:".5rem"}}>Still to screen: {directors.filter(function(d){return !scored[d.id];}).map(function(d){return d.name;}).join(", ")}</p>
-              )}
-            </div>
-          )
-        )}
-
-        {/* Dispute */}
-        {disputeState&&(function(){
-          const d=directors.find(function(x){return x.id===disputeState.teamId;});
-          const sub=submissions[disputeState.teamId];
-          if(!d||!sub)return null;
-          return(
-            <div style={{background:"#111",border:"1.5px solid #333",borderRadius:14,padding:"1.5rem",maxWidth:600,width:"100%"}}>
-              <p style={{color:"#aaa",fontSize:".82rem",marginBottom:"1rem",textAlign:"center"}}>
-                Toggle off cards <strong style={{color:d.color}}>{d.name}</strong> didn't cover
-              </p>
-              <div className="dispute-cards">
-                {(sub.cards||[]).map(function(ci,idx){return(
-                  <div key={idx} className={"dispute-card "+(disputeState.cards[idx]?"on":"off")} onClick={function(){setDisputeState(function(ds){var c=[...ds.cards];c[idx]=!c[idx];return Object.assign({},ds,{cards:c});});}}>
-                    {round.cards[ci]}
-                  </div>
-                );})}
-              </div>
-              <div className="row" style={{marginTop:"1rem"}}>
-                <button className="btn btn-green" onClick={confirmDispute}>Confirm ({disputeState.cards.filter(Boolean).length} pts)</button>
-                <button className="btn btn-outline" onClick={function(){setShowCoin(true);}}>🪙 Coin Flip</button>
-                <button className="btn btn-gray" onClick={function(){setDisputeState(null);}}>Cancel</button>
-              </div>
-            </div>
+  return h('div',{className:'page'},
+    showCoin&&h(CoinFlip,{onClose:function(){setShowCoin(false);}}),
+    h('div',{className:'header'},
+      logoEl,
+      h('div',{className:'score-chips'},
+        directors.map(function(d){return h('span',{key:d.id,className:'score-chip',style:{background:d.color}},d.name+': '+(totalScores[d.id]||0)+' pts');}),
+        h('span',{className:'round-badge'},'Round '+(cur+1)+'/5')
+      ),
+      h('div',{style:{display:'flex',gap:'.5rem',alignItems:'center'}},
+        h('span',{style:{fontSize:'.68rem',color:'#16a34a'}},h('span',{className:'dot-live'}),'LIVE'),
+        h('button',{className:'btn btn-outline',onClick:resetGame,style:{fontSize:'.75rem'}},'Reset')
+      )
+    ),
+    h('div',{className:'main'},
+      round.timerStartedAt&&!allScored&&h(Timer,{startedAt:round.timerStartedAt}),
+      h('div',{className:'announce-wrap',style:{marginBottom:'-.5rem'}},
+        h('div',{className:'curtain-label'},'🎬 Round '+(cur+1)+' — The nominees for ',h('span',{style:{fontFamily:"'Bebas Neue',sans-serif",fontStyle:'normal',color:'#f59e0b',letterSpacing:1}},'Best Movie Scene'),' featuring'),
+        h('div',{className:'cards-reveal',style:{marginTop:'.4rem'}},
+          round.cards.map(function(c,i){return h('div',{key:i,className:'reveal-card visible'},h('span',{className:'reveal-card-num'},i+1),h('span',null,c));})),
+        h('div',{className:'are-label visible'},'…are')
+      ),
+      h('div',{className:'subs-grid'},
+        directors.map(function(d){
+          var sub=submissions[d.id];
+          return h('div',{key:d.id,className:'sub-box',style:{borderColor:sub?hex2rgba(d.color,.5):'#222'}},
+            h('div',{className:'sub-title',style:{color:d.color}},d.name,' ',sub?'✓':'',scored[d.id]&&h('span',{className:'scored-badge'},'+'+( scores[d.id]||0)+' pts')),
+            sub?h('div',{style:{fontSize:'.82rem',color:'#aaa',fontFamily:"'Playfair Display',serif",fontStyle:'italic'}},'Nomination received')
+               :h('div',{className:'sub-waiting'},'Awaiting nomination…')
           );
-        })()}
-
-        {/* Next round */}
-        {allScored&&!gameOver&&(
-          <div style={{textAlign:"center"}}>
-            <p style={{color:"#888",marginBottom:"1rem",fontFamily:"'Playfair Display',serif",fontStyle:"italic"}}>
-              Round {cur+1} complete — {directors.map(function(d){return d.name+" +"+(scores[d.id]||0);}).join(" · ")}
-            </p>
-            <button className="btn btn-gold btn-lg" onClick={nextRound}>Next Round →</button>
-          </div>
-        )}
-      </div>
-    </div>
+        })
+      ),
+      !allScored&&h('div',{style:{textAlign:'center'}},
+        !allSubmitted&&h('div',null,
+          h('p',{style:{color:'#333',fontSize:'.72rem',marginBottom:'.2rem'}},'PIN'),
+          h('p',{style:{fontFamily:"'Bebas Neue',sans-serif",fontSize:'2rem',color:'#f59e0b',letterSpacing:6,marginBottom:'.8rem'}},pin)
+        ),
+        anySubmitted&&!allSubmitted&&h('div',{style:{marginTop:'.4rem'}},
+          h('p',{style:{color:'#555',fontSize:'.78rem',marginBottom:'.5rem',fontFamily:"'Playfair Display',serif",fontStyle:'italic'}},'Still waiting on some directors…'),
+          h('div',{className:'row'},
+            h('button',{className:'btn btn-outline',style:{fontSize:'.78rem'},onClick:function(){setWatchingTeam(null);}},'▶ Start reviewing what\'s in'),
+            cur<4&&h('button',{className:'btn btn-gray',style:{fontSize:'.78rem'},onClick:skipRound},'Skip Round →')
+          )
+        ),
+        !anySubmitted&&cur<4&&h('button',{className:'btn btn-gray',style:{fontSize:'.75rem',marginTop:'.5rem'},onClick:skipRound},'Skip Round →')
+      ),
+      anySubmitted&&!allScored&&(
+        watchingTeam?(function(){
+          var d=directors.find(function(x){return x.id===watchingTeam;});
+          var sub=submissions[watchingTeam];
+          if(!d||!sub)return null;
+          return h('div',{className:'video-area'},
+            h('div',{className:'review-label',style:{color:d.color}},'Now screening: '+d.name),
+            h('iframe',{src:getYTEmbed(sub.link),title:'Scene',allowFullScreen:true,allow:'autoplay'}),
+            h('div',{className:'row',style:{marginTop:'1rem'}},
+              !scored[watchingTeam]?h('div',{className:'row'},
+                h('button',{className:'btn btn-green',onClick:function(){awardPoints(watchingTeam,(sub.cards||[]).length);}},'✓ Grant Full ('+( sub.cards||[]).length+' pts)'),
+                h('button',{className:'btn btn-red',onClick:function(){setDisputeState({teamId:watchingTeam,cards:(sub.cards||[]).map(function(){return true;})});setWatchingTeam(null);}},'Dispute'),
+                h('button',{className:'btn btn-outline',onClick:function(){setShowCoin(true);}},'🪙 Coin Flip'),
+                h('button',{className:'btn btn-gray',onClick:function(){setWatchingTeam(null);}},'← Back')
+              ):h('p',{style:{color:'#16a34a',fontWeight:600}},'+'+scores[watchingTeam]+' pts awarded!')
+            )
+          );
+        })():h('div',{style:{textAlign:'center'}},
+          h('p',{style:{color:'#888',fontFamily:"'Playfair Display',serif",fontStyle:'italic',marginBottom:'.8rem'}},allSubmitted?'All nominations are in.':'Some nominations are in.',' Screen each director\'s scene:'),
+          h('div',{className:'row'},
+            directors.filter(function(d){return submissions[d.id]!=null;}).map(function(d){return h('button',{key:d.id,className:'btn',style:{background:d.color,color:'#fff'},onClick:function(){setWatchingTeam(d.id);}},scored[d.id]?'✓ ':'',' ▶ '+d.name);})),
+          directors.some(function(d){return scored[d.id];})&&!allScored&&h('p',{style:{color:'#555',fontSize:'.82rem',marginTop:'.5rem'}},'Still to screen: '+directors.filter(function(d){return !scored[d.id];}).map(function(d){return d.name;}).join(', '))
+        )
+      ),
+      disputeState&&(function(){
+        var d=directors.find(function(x){return x.id===disputeState.teamId;});
+        var sub=submissions[disputeState.teamId];
+        if(!d||!sub)return null;
+        return h('div',{style:{background:'#111',border:'1.5px solid #333',borderRadius:14,padding:'1.5rem',maxWidth:600,width:'100%'}},
+          h('p',{style:{color:'#aaa',fontSize:'.82rem',marginBottom:'1rem',textAlign:'center'}},'Toggle off cards ',h('strong',{style:{color:d.color}},d.name),' didn\'t cover'),
+          h('div',{className:'dispute-cards'},
+            (sub.cards||[]).map(function(ci,idx){return h('div',{key:idx,className:'dispute-card '+(disputeState.cards[idx]?'on':'off'),onClick:function(){setDisputeState(function(ds){var c=ds.cards.slice();c[idx]=!c[idx];return Object.assign({},ds,{cards:c});});}},round.cards[ci]);})),
+          h('div',{className:'row',style:{marginTop:'1rem'}},
+            h('button',{className:'btn btn-green',onClick:confirmDispute},'Confirm ('+disputeState.cards.filter(Boolean).length+' pts)'),
+            h('button',{className:'btn btn-outline',onClick:function(){setShowCoin(true);}},'🪙 Coin Flip'),
+            h('button',{className:'btn btn-gray',onClick:function(){setDisputeState(null);}},'Cancel')
+          )
+        );
+      })(),
+      allScored&&!gameOver&&h('div',{style:{textAlign:'center'}},
+        h('p',{style:{color:'#888',marginBottom:'1rem',fontFamily:"'Playfair Display',serif",fontStyle:'italic'}},'Round '+(cur+1)+' complete — '+directors.map(function(d){return d.name+' +'+(scores[d.id]||0);}).join(' · ')),
+        h('button',{className:'btn btn-gold btn-lg',onClick:nextRound},'Next Round →')
+      )
+    )
   );
 }
 
-/* ══ ROUTER ══ */
 function App(){
-  const hash=window.location.hash;
-  const isPlayer=hash.startsWith("#player")||hash==="#join";
-  return isPlayer?<PlayerApp/>:<HostApp/>;
+  var hash=window.location.hash;
+  var isPlayer=hash.startsWith('#player')||hash==='#join';
+  return isPlayer?h(PlayerApp,null):h(HostApp,null);
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+ReactDOM.createRoot(document.getElementById('root')).render(h(App,null));
+})();
 </script>
 </body>
 </html>
