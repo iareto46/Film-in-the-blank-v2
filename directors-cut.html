@@ -153,7 +153,7 @@ var PALETTE=[
   {hex:"#00897b",name:"Mint"},{hex:"#e64a19",name:"Crimson"},{hex:"#5c6bc0",name:"Indigo"}
 ];
 
-var ROUND_SECONDS=120;
+var ROUND_SECONDS=120; // fallback only
 
 function shuffle(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=b[i];b[i]=b[j];b[j]=t;}return b;}
 function genPin(){return String(Math.floor(1000+Math.random()*9000));}
@@ -196,18 +196,19 @@ function QRBlock(props){
 
 function Timer(props){
   var startedAt=props.startedAt;
-  var sr=useState(ROUND_SECONDS);
+  var totalSeconds=props.totalSeconds||ROUND_SECONDS;
+  var sr=useState(totalSeconds);
   var secsLeft=sr[0],setSecsLeft=sr[1];
   useEffect(function(){
     if(!startedAt)return;
-    function tick(){var elapsed=Math.floor((Date.now()-startedAt)/1000);setSecsLeft(Math.max(0,ROUND_SECONDS-elapsed));}
+    function tick(){var elapsed=Math.floor((Date.now()-startedAt)/1000);setSecsLeft(Math.max(0,totalSeconds-elapsed));}
     tick();
     var id=setInterval(tick,500);
     return function(){clearInterval(id);};
-  },[startedAt]);
+  },[startedAt,totalSeconds]);
   var mins=Math.floor(secsLeft/60);
   var secs=secsLeft%60;
-  var pct=(secsLeft/ROUND_SECONDS)*100;
+  var pct=(secsLeft/totalSeconds)*100;
   var isWarning=secsLeft<=30,isUrgent=secsLeft<=10;
   var color=isUrgent?'#dc2626':isWarning?'#f59e0b':'#16a34a';
   var timeStr=mins+':'+(secs<10?'0':'')+secs;
@@ -531,6 +532,8 @@ function HostApp(){
   var sd=useState(null);var disputeState=sd[0],setDisputeState=sd[1];
   var sw=useState(null);var watchingTeam=sw[0],setWatchingTeam=sw[1];
   var sa=useState(false);var announcing=sa[0],setAnnouncing=sa[1];
+  var ste=useState(false);var timerEnabled=ste[0],setTimerEnabled=ste[1];
+  var stm=useState(2);var timerMinutes=stm[0],setTimerMinutes=stm[1];
   var pinRef=useRef(null);
 
   var subscribeGame=useCallback(function(p){
@@ -570,7 +573,7 @@ function HostApp(){
 
   async function startGame(){
     setAnnouncing(true);
-    await dbUpdate('games/'+pinRef.current,{status:'started',currentRound:0});
+    await dbUpdate('games/'+pinRef.current,{status:'started',currentRound:0,timerEnabled:timerEnabled,timerSeconds:timerEnabled?timerMinutes*60:0});
   }
 
   async function awardPoints(teamId,pts){
@@ -646,6 +649,23 @@ function HostApp(){
               h('div',{className:'director-swatch',style:{background:d.color}}),
               h('span',{className:'director-name',style:{color:d.color}},d.name));}))
       ),
+      h('div',{style:{background:'#111',border:'1.5px solid #222',borderRadius:12,padding:'1rem 1.4rem',maxWidth:400,width:'100%',textAlign:'center'}},
+        h('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:'1rem',marginBottom:timerEnabled?'.8rem':'0'}},
+          h('span',{style:{color:'#aaa',fontSize:'.88rem'}},'Round Timer'),
+          h('button',{
+            onClick:function(){setTimerEnabled(function(v){return !v;});},
+            style:{padding:'.3rem .9rem',borderRadius:999,border:'none',cursor:'pointer',fontWeight:600,fontSize:'.8rem',background:timerEnabled?'#16a34a':'#333',color:'#fff'}
+          },timerEnabled?'ON':'OFF')
+        ),
+        timerEnabled&&h('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:'.5rem'}},
+          h('span',{style:{color:'#777',fontSize:'.82rem'}},'Minutes per round:'),
+          h('input',{type:'number',min:1,max:10,value:timerMinutes,
+            onChange:function(e){var v=parseInt(e.target.value)||1;setTimerMinutes(Math.min(10,Math.max(1,v)));},
+            style:{width:60,background:'#1a1a1a',border:'1.5px solid #444',borderRadius:6,color:'#f59e0b',fontFamily:"'Bebas Neue',sans-serif",fontSize:'1.4rem',textAlign:'center',padding:'.2rem .4rem',outline:'none'}
+          }),
+          h('span',{style:{color:'#555',fontSize:'.78rem'}},'(1–10)')
+        )
+      ),
       h('button',{className:'btn btn-gold btn-lg',onClick:startGame,disabled:directors.length<1,style:{minWidth:220}},directors.length<1?'Waiting for directors…':'🎬 Call Action →')
     )
   );
@@ -655,7 +675,7 @@ function HostApp(){
     h('div',{className:'header'},logoEl,h('span',{className:'round-badge'},'Round '+(cur+1)+'/5')),
     h('div',{className:'main'},
       h(CardAnnouncement,{cards:round.cards,onDone:async function(){
-        await dbUpdate('games/'+pinRef.current+'/rounds/'+cur,{timerStartedAt:Date.now()});
+        if(game.timerEnabled)await dbUpdate('games/'+pinRef.current+'/rounds/'+cur,{timerStartedAt:Date.now()});
         setAnnouncing(false);
       }})
     )
@@ -698,7 +718,7 @@ function HostApp(){
       )
     ),
     h('div',{className:'main'},
-      round.timerStartedAt&&!allScored&&h(Timer,{startedAt:round.timerStartedAt}),
+      game.timerEnabled&&round.timerStartedAt&&!allScored&&h(Timer,{startedAt:round.timerStartedAt,totalSeconds:game.timerSeconds||120}),
       h('div',{className:'announce-wrap',style:{marginBottom:'-.5rem'}},
         h('div',{className:'curtain-label'},'🎬 Round '+(cur+1)+' — The nominees for ',h('span',{style:{fontFamily:"'Bebas Neue',sans-serif",fontStyle:'normal',color:'#f59e0b',letterSpacing:1}},'Best Movie Scene'),' featuring'),
         h('div',{className:'cards-reveal',style:{marginTop:'.4rem'}},
