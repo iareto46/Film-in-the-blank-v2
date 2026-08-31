@@ -161,12 +161,13 @@ function hex2rgba(hex,a){try{var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.sl
 function extractYouTubeId(url){try{var u=new URL(url);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1).split('?')[0];return u.searchParams.get('v');}catch(e){return null;}}
 function isYouTubeUrl(url){return /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)/.test(url);}
 
-function generateRounds(){
+function generateRounds(numRounds){
+  var n=numRounds||5;
   var pools={};
   CATEGORY_NAMES.forEach(function(cat){pools[cat]=shuffle(CARD_CATEGORIES[cat].slice());});
   var used={};
   CATEGORY_NAMES.forEach(function(cat){used[cat]=0;});
-  return Array.from({length:5},function(_,i){
+  return Array.from({length:n},function(_,i){
     var roundCats=shuffle(CATEGORY_NAMES.slice()).slice(0,5);
     var cards=roundCats.map(function(cat){
       var card=pools[cat][used[cat]%pools[cat].length];
@@ -532,8 +533,10 @@ function HostApp(){
   var sd=useState(null);var disputeState=sd[0],setDisputeState=sd[1];
   var sw=useState(null);var watchingTeam=sw[0],setWatchingTeam=sw[1];
   var sa=useState(false);var announcing=sa[0],setAnnouncing=sa[1];
-  var ste=useState(false);var timerEnabled=ste[0],setTimerEnabled=ste[1];
-  var stm=useState(2);var timerMinutes=stm[0],setTimerMinutes=stm[1];
+  var snr=useState(5);var numRounds=snr[0],setNumRounds=snr[1];
+  var sst=useState(false);var showTimerPicker=sst[0],setShowTimerPicker=sst[1];
+  var stmm=useState(2);var timerPickerMinutes=stmm[0],setTimerPickerMinutes=stmm[1];
+  var stss=useState(0);var timerPickerSeconds=stss[0],setTimerPickerSeconds=stss[1];
   var pinRef=useRef(null);
 
   var subscribeGame=useCallback(function(p){
@@ -552,7 +555,7 @@ function HostApp(){
           if(g&&!g.terminated){pinRef.current=savedPin;setPin(savedPin);setLoading(false);subscribeGame(savedPin);return;}
         }
         var newPin=genPin();
-        var rounds=generateRounds();
+        var rounds=generateRounds(5);
         await dbSet('games/'+newPin,{pin:newPin,status:'lobby',currentRound:0,totalScores:{},rounds:rounds,teams:{}});
         localStorage.setItem('fitb_cut_host_pin',newPin);
         pinRef.current=newPin;setPin(newPin);setLoading(false);subscribeGame(newPin);
@@ -563,7 +566,7 @@ function HostApp(){
   async function resetGame(){
     if(pinRef.current)await dbUpdate('games/'+pinRef.current,{terminated:true});
     var newPin=genPin();
-    var rounds=generateRounds();
+    var rounds=generateRounds(5);
     await dbSet('games/'+newPin,{pin:newPin,status:'lobby',currentRound:0,totalScores:{},rounds:rounds,teams:{}});
     localStorage.setItem('fitb_cut_host_pin',newPin);
     pinRef.current=newPin;setPin(newPin);
@@ -573,7 +576,7 @@ function HostApp(){
 
   async function startGame(){
     setAnnouncing(true);
-    await dbUpdate('games/'+pinRef.current,{status:'started',currentRound:0,timerEnabled:timerEnabled,timerSeconds:timerEnabled?timerMinutes*60:0});
+    await dbUpdate('games/'+pinRef.current,{status:'started',currentRound:0,numRounds:numRounds,rounds:(game&&game.rounds?game.rounds.slice(0,numRounds):generateRounds(numRounds))});
   }
 
   async function awardPoints(teamId,pts){
@@ -603,7 +606,7 @@ function HostApp(){
       }
     }
     await dbUpdate('games/'+pinRef.current,{currentRound:cur+1});
-    setDisputeState(null);setWatchingTeam(null);setAnnouncing(true);
+    setDisputeState(null);setWatchingTeam(null);setAnnouncing(true);setShowTimerPicker(false);
   }
 
   async function confirmDispute(){
@@ -615,7 +618,7 @@ function HostApp(){
   async function nextRound(){
     var cur=game.currentRound;
     await dbUpdate('games/'+pinRef.current,{currentRound:cur+1});
-    setDisputeState(null);setWatchingTeam(null);setAnnouncing(true);
+    setDisputeState(null);setWatchingTeam(null);setAnnouncing(true);setShowTimerPicker(false);
   }
 
   var logoEl=h('a',{href:'index.html',className:'logo',style:{textDecoration:'none'}},'Film ',h('span',null,'In'),' The Blank',h('small',{className:'logo-sub'},"Director's Cut"));
@@ -650,20 +653,14 @@ function HostApp(){
               h('span',{className:'director-name',style:{color:d.color}},d.name));}))
       ),
       h('div',{style:{background:'#111',border:'1.5px solid #222',borderRadius:12,padding:'1rem 1.4rem',maxWidth:400,width:'100%',textAlign:'center'}},
-        h('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:'1rem',marginBottom:timerEnabled?'.8rem':'0'}},
-          h('span',{style:{color:'#aaa',fontSize:'.88rem'}},'Round Timer'),
-          h('button',{
-            onClick:function(){setTimerEnabled(function(v){return !v;});},
-            style:{padding:'.3rem .9rem',borderRadius:999,border:'none',cursor:'pointer',fontWeight:600,fontSize:'.8rem',background:timerEnabled?'#16a34a':'#333',color:'#fff'}
-          },timerEnabled?'ON':'OFF')
-        ),
-        timerEnabled&&h('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:'.5rem'}},
-          h('span',{style:{color:'#777',fontSize:'.82rem'}},'Minutes per round:'),
-          h('input',{type:'number',min:1,max:10,value:timerMinutes,
-            onChange:function(e){var v=parseInt(e.target.value)||1;setTimerMinutes(Math.min(10,Math.max(1,v)));},
-            style:{width:60,background:'#1a1a1a',border:'1.5px solid #444',borderRadius:6,color:'#f59e0b',fontFamily:"'Bebas Neue',sans-serif",fontSize:'1.4rem',textAlign:'center',padding:'.2rem .4rem',outline:'none'}
-          }),
-          h('span',{style:{color:'#555',fontSize:'.78rem'}},'(1–10)')
+        h('p',{style:{color:'#777',fontSize:'.78rem',textTransform:'uppercase',letterSpacing:1,marginBottom:'.7rem'}},'Number of Rounds'),
+        h('div',{style:{display:'flex',gap:'.4rem',justifyContent:'center'}},
+          [1,2,3,4,5].map(function(n){
+            return h('button',{key:n,
+              onClick:function(){setNumRounds(n);},
+              style:{width:40,height:40,borderRadius:8,border:'1.5px solid '+(numRounds===n?'#f59e0b':'#333'),background:numRounds===n?'rgba(245,158,11,.15)':'#1a1a1a',color:numRounds===n?'#f59e0b':'#777',fontFamily:"'Bebas Neue',sans-serif",fontSize:'1.3rem',cursor:'pointer'}
+            },n);
+          })
         )
       ),
       h('button',{className:'btn btn-gold btn-lg',onClick:startGame,disabled:directors.length<1,style:{minWidth:220}},directors.length<1?'Waiting for directors…':'🎬 Call Action →')
@@ -672,10 +669,10 @@ function HostApp(){
 
   // ANNOUNCEMENT
   if(announcing&&round&&round.cards)return h('div',{className:'page'},
-    h('div',{className:'header'},logoEl,h('span',{className:'round-badge'},'Round '+(cur+1)+'/5')),
+    h('div',{className:'header'},logoEl,h('span',{className:'round-badge'},'Round '+(cur+1)+'/'+(game.numRounds||5))),
     h('div',{className:'main'},
       h(CardAnnouncement,{cards:round.cards,onDone:async function(){
-        if(game.timerEnabled)await dbUpdate('games/'+pinRef.current+'/rounds/'+cur,{timerStartedAt:Date.now()});
+        // timer is started manually per round
         setAnnouncing(false);
       }})
     )
@@ -689,7 +686,8 @@ function HostApp(){
   var anySubmitted=directors.some(function(d){return submissions[d.id]!=null;});
   var allSubmitted=directors.every(function(d){return submissions[d.id]!=null;});
   var allScored=directors.length>0&&directors.every(function(d){return scored[d.id];});
-  var gameOver=cur>=4&&allScored;
+  var totalRounds=game.numRounds||5;
+  var gameOver=cur>=totalRounds-1&&allScored;
 
   function getYTEmbed(url){var id=extractYouTubeId(url);return id?'https://www.youtube.com/embed/'+id+'?autoplay=1':null;}
 
@@ -710,7 +708,7 @@ function HostApp(){
       logoEl,
       h('div',{className:'score-chips'},
         directors.map(function(d){return h('span',{key:d.id,className:'score-chip',style:{background:d.color}},d.name+': '+(totalScores[d.id]||0)+' pts');}),
-        h('span',{className:'round-badge'},'Round '+(cur+1)+'/5')
+        h('span',{className:'round-badge'},'Round '+(cur+1)+'/'+(game.numRounds||5))
       ),
       h('div',{style:{display:'flex',gap:'.5rem',alignItems:'center'}},
         h('span',{style:{fontSize:'.68rem',color:'#16a34a'}},h('span',{className:'dot-live'}),'LIVE'),
@@ -718,7 +716,46 @@ function HostApp(){
       )
     ),
     h('div',{className:'main'},
-      game.timerEnabled&&round.timerStartedAt&&!allScored&&h(Timer,{startedAt:round.timerStartedAt,totalSeconds:game.timerSeconds||120}),
+      // Timer: show running timer OR picker button
+      !allScored&&h('div',{style:{width:'100%',maxWidth:500,textAlign:'center'}},
+        round.timerStartedAt
+          ?h(Timer,{startedAt:round.timerStartedAt,totalSeconds:round.timerSeconds||120})
+          :h('div',null,
+            !showTimerPicker&&h('button',{className:'btn btn-outline',style:{fontSize:'.82rem'},onClick:function(){setShowTimerPicker(true);}},'⏱ Set Timer'),
+            showTimerPicker&&h('div',{style:{background:'#111',border:'1.5px solid #333',borderRadius:12,padding:'1rem 1.4rem',display:'inline-block',marginTop:'.5rem'}},
+              h('p',{style:{color:'#aaa',fontSize:'.8rem',marginBottom:'.7rem',textAlign:'center'}},'Set round timer (30s – 10 min)'),
+              h('div',{style:{display:'flex',gap:'.5rem',alignItems:'center',justifyContent:'center',marginBottom:'.8rem'}},
+                h('div',{style:{textAlign:'center'}},
+                  h('label',{style:{display:'block',fontSize:'.7rem',color:'#777',marginBottom:'.2rem',textTransform:'uppercase',letterSpacing:1}},'Min'),
+                  h('input',{type:'number',min:0,max:10,value:timerPickerMinutes,
+                    onChange:function(e){setTimerPickerMinutes(Math.min(10,Math.max(0,parseInt(e.target.value)||0)));},
+                    style:{width:64,background:'#1a1a1a',border:'1.5px solid #444',borderRadius:6,color:'#f59e0b',fontFamily:"'Bebas Neue',sans-serif",fontSize:'1.6rem',textAlign:'center',padding:'.2rem .3rem',outline:'none'}
+                  })
+                ),
+                h('span',{style:{color:'#555',fontSize:'1.5rem',paddingTop:'1rem'}},':'),
+                h('div',{style:{textAlign:'center'}},
+                  h('label',{style:{display:'block',fontSize:'.7rem',color:'#777',marginBottom:'.2rem',textTransform:'uppercase',letterSpacing:1}},'Sec'),
+                  h('input',{type:'number',min:0,max:59,step:5,value:timerPickerSeconds,
+                    onChange:function(e){setTimerPickerSeconds(Math.min(59,Math.max(0,parseInt(e.target.value)||0)));},
+                    style:{width:64,background:'#1a1a1a',border:'1.5px solid #444',borderRadius:6,color:'#f59e0b',fontFamily:"'Bebas Neue',sans-serif",fontSize:'1.6rem',textAlign:'center',padding:'.2rem .3rem',outline:'none'}
+                  })
+                )
+              ),
+              h('div',{style:{display:'flex',gap:'.5rem',justifyContent:'center'}},
+                h('button',{className:'btn btn-gold',
+                  disabled:(timerPickerMinutes*60+timerPickerSeconds)<30,
+                  onClick:async function(){
+                    var secs=timerPickerMinutes*60+timerPickerSeconds;
+                    await dbUpdate('games/'+pinRef.current+'/rounds/'+cur,{timerStartedAt:Date.now(),timerSeconds:secs});
+                    setShowTimerPicker(false);
+                  }
+                },'Start'),
+                h('button',{className:'btn btn-gray',onClick:function(){setShowTimerPicker(false);}},'Cancel')
+              ),
+              (timerPickerMinutes*60+timerPickerSeconds)<30&&h('p',{style:{color:'#f87171',fontSize:'.75rem',marginTop:'.4rem'}},'Minimum 30 seconds')
+            )
+          )
+      ),
       h('div',{className:'announce-wrap',style:{marginBottom:'-.5rem'}},
         h('div',{className:'curtain-label'},'🎬 Round '+(cur+1)+' — The nominees for ',h('span',{style:{fontFamily:"'Bebas Neue',sans-serif",fontStyle:'normal',color:'#f59e0b',letterSpacing:1}},'Best Movie Scene'),' featuring'),
         h('div',{className:'cards-reveal',style:{marginTop:'.4rem'}},
